@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A User can either be a boss or worker, not both
+model User {
+  id              Int         @id @default(autoincrement())
+  name            String
+  username        String      @unique
+  email           String      @default("")
+  password        String
+  boss            Boss?       @relation
+  worker          Worker?     @relation
+  transactions    Transaction[]
+  logs            Log[]
+}
+
+// A Boss has one User (one-to-one)
+// A Boss can have many stores (one to many)
+model Boss {
+  id              Int         @id @default(autoincrement())
+  user_id         Int         @unique
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  stores          Store[]
+}
+
+// A Store has one Boss (one to one)
+// A Store has an inventory (one to one)
+// A Store has multiple workers (one to many)
+// A Store has multiple transactions (one to many)
+// A Store has multiple logs (one to many)
+model Store {
+  id              Int         @id @default(autoincrement())
+  name            String
+  code            String      @unique
+  boss_id         Int      
+  boss            Boss        @relation(fields: [boss_id], references: [id])
+  inventory       Inventory?
+  workers         Worker[]
+  transactions    Transaction[]
+  logs            Log[]
+  tax             Float       @default(0)
+}
+
+// A Worker has one User (one to one)
+// Workers belongs to one Store (many to one)
+model Worker {
+  id              Int         @id @default(autoincrement())
+  user_id         Int         @unique
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  store_id        Int      
+  store           Store       @relation(fields: [store_id], references: [id])
+  permission      Permission? 
+}
+
+// An Inventory belongs to one store (one to one)
+model Inventory {
+  id              Int         @id @default(autoincrement())
+  store_id        Int         @unique
+  store           Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  unique_key      Int         
+  version         Int         @default(0)
+  stock           Json
+  columns         String[]    @default([])
+  name_column     String      @default("")
+  price_column    String      @default("")
+  quantity_column String      @default("")
+  discount_column String      @default("")
+  cost_column     String      @default("")
+}
+
+// Transactions belongs to one store (many to one)
+model Transaction {
+  id              Int         @id @default(autoincrement())
+  timestamp       DateTime    @default(now())
+  store_id        Int         
+  store           Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  user_id         Int         
+  user            User        @relation(fields: [user_id], references: [id])
+  items           Json        //[name, qty, price, discount, cost]
+  tax             Float       @default(0)
+}
+
+// Inventory Logs belongs to one store (many to one)
+model Log {
+  id              Int         @id @default(autoincrement())
+  timestamp       DateTime    @default(now())
+  store_id        Int         
+  store           Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  user_id         Int         
+  user            User        @relation(fields: [user_id], references: [id])
+  action          String      //Export; Add, Edit, Delete Item; Add, Edit, Delete Column;
+  before          Json?        
+  after           Json?
+}
+
+// Inventory Logs belongs to one store (many to one)
+model Permission {
+  id              Int         @id @default(autoincrement())
+  worker_id       Int         @unique
+  worker          Worker      @relation(fields: [worker_id], references: [id], onDelete: Cascade)
+
+  add_item        Boolean     @default(true)
+  edit_item       Boolean     @default(true)
+  delete_item     Boolean     @default(false)
+}

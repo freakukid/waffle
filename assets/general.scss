@@ -1,0 +1,16 @@
+// Font that we specify in nuxt.config.ts
+$family: "Poppins", sans-serif;
+
+html { 
+  overflow-y: auto;
+}
+
+body {
+  margin: 0;
+}
+
+$transition: all 200ms ease-in-out;
+$bg: #1c1c1c;
+$surface: #000000;
+$color: #ffffff;
+$success: #67c23a;

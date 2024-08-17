@@ -1,0 +1,63 @@
+<template>
+  <div>
+    <!-- Popup -->
+    <el-dialog v-model="popup" title="Delete Table">
+      <p style="text-align: center; color: #ff4545; font-size: 24px;">
+        <b>Are you sure you want to delete everything? <br> THIS CANNOT BE UNDONE.</b>
+      </p>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="popup = false">Cancel</el-button>
+          <el-button type="danger" @click="dropTable()">Delete</el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <!-- Popup -->
+    
+    <!-- Drop Table Btn -->
+    <el-button @click="openPopup" type="danger">Drop Table</el-button>
+    <!-- Drop Table Btn -->
+  </div>
+</template>
+
+<script setup>
+const { handleInventoryRequest } = useHandleRequests()
+
+const loading = reactive({ dropTable: false })
+const popup = ref(false)
+const form = reactive({value: []})
+
+//Component Emits,Props
+const emits = defineEmits(['setInventory'])
+const props = defineProps({
+  storeId: {
+    type: Number,
+    required: true
+  }
+})
+
+//Prompt
+function openPopup() {
+  popup.value = true
+}
+
+//Request
+async function dropTable() {
+  //Make inventory request
+  loading.dropTable = true
+  let inventory = await handleInventoryRequest({
+    path: 'drop-table',
+    data: { store_id: props.storeId },
+  })
+
+  //Emit to parent component
+  if(inventory) {
+    emits('setInventory', inventory)
+  }
+
+  //Loading complete, Close popup
+  loading.dropTable = false
+  popup.value = false
+}
+</script>
