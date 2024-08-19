@@ -10,7 +10,9 @@ export default defineEventHandler(async (event) => {
         user: {
           select: {
             id: true,
-            name: true
+            username: true,
+            name: true,
+            email: true
           }
         },
         permission: {
@@ -23,7 +25,7 @@ export default defineEventHandler(async (event) => {
       },
       orderBy: {
         user: {
-          name: 'desc' // or 'asc' for ascending order
+          id: 'desc' // or 'asc' for ascending order
         }
       }
     })

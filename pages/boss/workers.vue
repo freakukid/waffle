@@ -44,28 +44,53 @@
         </div>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="popup.editUser" title="Edit User">
+      <el-form :model="form.edit.model" label-position="top" @submit.prevent="editUser()">
+        <el-form-item label="Username" prop="username"
+        :rules="[{required: true, message: 'Username is required', trigger: 'blur'},
+        { min: 3, max: 15, message: 'Username must be between 3 and 15 characters', trigger: 'blur' },
+        { validator: validateUsername, trigger: 'change' }]"
+        >
+          <el-input v-model="form.edit.model.username" :value="form.edit.model.username" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="Name" prop="name" :rules="[{ required: true, message: 'Name is required', trigger: 'blur' }]">
+          <el-input v-model="form.edit.model.name" :value="form.edit.model.name" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="Email (optional)" prop="email" :rules="[{ validator: validateOptionalEmail, trigger: 'blur' }]">
+          <el-input v-model="form.edit.model.email" :value="form.edit.model.email" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="Password (optional)">
+          <el-input v-model="form.edit.model.password" :value="form.edit.model.password" type="password" placeholder="******" autocomplete="off" />
+        </el-form-item>
+
+        <div class="dialog-footer">
+          <el-button @click="popup.editUser = false">Cancel</el-button>
+          <el-button type="warning" @click="editUser()" :loading="loading.editUser" native-type="submit">Edit</el-button>
+        </div>
+      </el-form>
+    </el-dialog>
     <!-- Popup -->
   </div>
 </template>
 
-
-
 <script setup>
 //Imports
 const { notify } = useNotification()
+const { validateUsername, validateOptionalEmail } = useValidator()
 const pinia = useStore()
 //Data
 const storeId = computed(() => pinia.store)
 const workers = ref([])
-const loading = reactive({ startedLoading: true, deleteUser: false })
+const loading = reactive({ startedLoading: true, editUser: false, deleteUser: false })
 //Element Plus Tree Data
 const tree = ref([])
 const expanded = ref([])
 const checked = ref([])
 //Form
-const popup = reactive({ deleteUser: false })
+const popup = reactive({editUser: false, deleteUser: false })
 const form = reactive({
-  edit: {user: null, index: 0},
+  edit: {id: 0, model: {username: '', name: '', email: '', password: ''}, index: 0},
   delete: {user: null, index: 0}
 })
 
@@ -85,11 +110,14 @@ onBeforeMount(async () => {
 function editPrompt(e, data) {
   e.stopPropagation()
   //Setup data
-  form.delete.index = data.index
-  form.delete.user = workers.value[data.index]
+  const worker = workers.value[data.index].user
+  form.edit.index = data.index
+  form.edit.id = worker.id
+  form.edit.model.username = worker.username
+  form.edit.model.name = worker.name
+  form.edit.model.email = worker.email
+  form.edit.model.password = ''
   popup.editUser = true
-
-  console.log(JSON.stringify(data))
 }
 
 function deletePrompt(e, data) {
@@ -98,12 +126,44 @@ function deletePrompt(e, data) {
   form.delete.index = data.index
   form.delete.user = workers.value[data.index]
   popup.deleteUser = true
-
-  console.log(JSON.stringify(form.delete.user))
 }
 // Prompt
 
 //Form
+async function editUser() {
+  //Setup data
+  const {username, name, email, password} = form.edit.model
+
+  //Make request
+  loading.editUser = true
+  const response = await useFetchApi(`/api/protected/workers/edit`, {
+    method: "POST",
+    body: {
+      id: form.edit.id,
+      username: username.toLowerCase().trim(),
+      name: name,
+      email: email,
+      password: password,
+      prevUsername: workers.value[form.edit.index].user.username
+    }
+  })
+  loading.editUser = false
+
+  //Error case
+  if (response.statusCode) {
+    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    return
+  }
+
+  // Success case
+  notify({ title: 'Success', text: response.message, type: 'success'})
+
+  //Update local data
+  workers.value[form.edit.index].user = response.user
+  setupTreeData()
+  popup.editUser = false
+}
+
 async function deleteUser() {
   loading.deleteUser = true
   const response = await useFetchApi(`/api/protected/workers/delete`, {
@@ -127,9 +187,6 @@ async function deleteUser() {
   setupTreeData()
   loading.deleteUser = false
   popup.deleteUser = false
-
-
-  console.log(JSON.stringify(workers.value))
 }
 
 //Edit permissions
