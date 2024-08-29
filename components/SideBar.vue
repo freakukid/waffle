@@ -7,25 +7,25 @@
       </el-menu-item>
     </NuxtLink>
     <NuxtLink to="/boss/workers">
-      <el-menu-item class="sidebar-item" index="4">
+      <el-menu-item class="sidebar-item" index="2">
         <Icon name="gravity-ui:person-worker" />
         <template #title>Workers</template>
       </el-menu-item>
     </NuxtLink>
     <NuxtLink to="/boss/cashier">
-      <el-menu-item class="sidebar-item" index="2">
+      <el-menu-item class="sidebar-item" index="3">
         <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
         <template #title>Cashier</template>
       </el-menu-item>
     </NuxtLink>
     <NuxtLink to="/transactions">
-      <el-menu-item class="sidebar-item" index="3">
+      <el-menu-item class="sidebar-item" index="4">
         <Icon name="uil:transaction" />
         <template #title>Transactions</template>
       </el-menu-item>
     </NuxtLink>
     <NuxtLink to="/logs">
-      <el-menu-item class="sidebar-item" index="3">
+      <el-menu-item class="sidebar-item" index="5">
         <Icon name="mingcute:inventory-line" />
         <template #title>Logs</template>
       </el-menu-item>
