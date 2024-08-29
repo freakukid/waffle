@@ -54,8 +54,9 @@
             <div>Tax ({{store.tax}}%): {{form.transaction.taxTotal}}</div>
             <div>Total Price: {{form.transaction.total}}</div>
           </div>
+          <el-checkbox v-model="printReceiptAfterTransaction" size="large" border @change="pinia.togglePrintReceipt()">Print Receipt After Transaction</el-checkbox>
 
-          <el-button @click="createTransaction()" type="success" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" :loading="loading.createTransaction">Create Transaction</el-button>
+          <el-button @click="createTransaction()" type="success" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" :loading="loading.createTransaction" style="margin-left: auto;">Create Transaction</el-button>
         </div>
       </div>
     </div>
@@ -70,6 +71,7 @@ const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 
 //Data
 const storeId = computed(() => pinia.store)
+const printReceiptAfterTransaction = computed(() => pinia.printReceipt)
 const store = ref({})
 const options = ref([])
 const loading = reactive({ startedLoading: true, query: false, createTransaction: false })
@@ -134,7 +136,7 @@ function setStore(data) {
 
 //Checks if we have name and price columns set, if not prompt user
 function columnChecks() {
-  if(!store.value.inventory.name_column || !store.value.inventory.price_column) {
+  if(store.value.inventory && (!store.value.inventory.name_column || !store.value.inventory.price_column)) {
     registerColumnsRef.value.openPopup()
   }
 }
@@ -189,7 +191,7 @@ function calcTransactionTotal() {
 
 //Creates a transaction
 async function createTransaction() {
-  //Data
+  //Setup Data
   const { name_column, price_column, quantity_column, discount_column, cost_column } = store.value.inventory
   const transactionItems = Object.values(form.transaction.items).map(item => ({
     name: item[name_column],
@@ -224,10 +226,41 @@ async function createTransaction() {
     return
   }
 
-  //Reset transaction, show success message, set inventory data
-  $resetTransactionState()
+  //show success message
   notify({ title: 'Success', text: response.message, type: 'success'})
+
+  //Print Reciept
+  if(printReceiptAfterTransaction.value) {
+    const {subtotal, total, taxTotal, savings} = form.transaction
+    await printReceipt(transactionItems, store.value.tax.toFixed(2), subtotal, taxTotal, savings, total)
+  }
+
+  //Reset transaction, set inventory data
+  $resetTransactionState()
   store.value.inventory = response.inventory
+}
+
+//Prints receipt
+async function printReceipt(items, tax, subtotal, tax_total, savings, total) {
+  //Make Request
+  const response = await useFetchApi(`/api/protected/transaction/print`, {
+    method: "POST",
+    body: {
+      store_id: storeId.value,
+      items: items,
+      tax: tax,
+      subtotal: subtotal,
+      tax_total: tax_total,
+      savings: savings,
+      total: total
+    }
+  })
+
+  //Display error
+  if (response.statusCode) {
+    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    return
+  }
 }
 </script>
 
@@ -235,7 +268,7 @@ async function createTransaction() {
 #footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 32px;
 }
 
 #toolbar {

@@ -2,15 +2,129 @@
   <div>
     <!-- Popup -->
     <el-dialog v-model="popup" title="Settings" fullscreen>
-      <el-form :model="form" label-position="top" @submit.prevent="changeSettings()">
-        <label>Tax: </label>
-        <el-input-number v-model="form.tax" :precision="2" :step="0.1" :max="100" />
-        <span> % </span>
+      <el-form v-if="!loading.startedLoading" :model="form" label-position="top" @submit.prevent="changeSettings()">
+        <el-form-item label="Tax" prop="tax">
+          <el-input-number v-model="form.tax" :precision="2" :step="0.1" :max="100" />%
+        </el-form-item>
+
+        <el-form-item label="Reciept IP (ex. 192.168.1.xxx)" prop="receipt_ip">
+          <el-input v-model="form.receipt_ip" />
+        </el-form-item>
+        <!-- IMG NEXT -->
+
+        <!-- HEADER -->
+        <div id="receipt-wrapper">
+          <div>
+            <label>Receipt Header</label>
+
+            <div v-for="header in form.header" :key="header">
+              <div class="input">
+                <div>
+                  <label>Font Size</label>
+                  <el-select v-model="header.size" placeholder="Select" size="" style="width: 50px;">
+                    <el-option v-for="i in [1, 2, 3]" :key="i" :label="i" :value="i" />
+                  </el-select>
+                </div>
+
+                <div>
+                  <label>Font Alignment</label>
+                  <el-select v-model="header.align" placeholder="Select" size="" style="width: 100px;">
+                    <el-option v-for="i in ['left', 'center', 'right']" :key="i" :label="i.charAt(0).toUpperCase() + i.substring(1).toLowerCase()" :value="i" />
+                  </el-select>
+                </div>
+
+                <el-form-item label="Text" prop="text">
+                  <el-input v-model="header.text" />
+                </el-form-item> 
+              </div>
+            </div>
+
+            <div style="text-align: center;">
+              <el-button type="success" @click="addHeader()">Add</el-button>
+            </div>
+
+            <!-- FOOTER -->
+            <div style="margin-top: 16px;"><label>Receipt Footer</label></div>
+
+            <div v-for="footer in form.footer" :key="footer">
+              <div class="input">
+                <div>
+                  <label>Font Size</label>
+                  <el-select v-model="footer.size" placeholder="Select" size="" style="width: 50px;">
+                    <el-option v-for="i in [1, 2, 3]" :key="i" :label="i" :value="i" />
+                  </el-select>
+                </div>
+
+                <div>
+                  <label>Font Alignment</label>
+                  <el-select v-model="footer.align" placeholder="Select" size="" style="width: 100px;">
+                    <el-option v-for="i in ['left', 'center', 'right']" :key="i" :label="i.charAt(0).toUpperCase() + i.substring(1).toLowerCase()" :value="i" />
+                  </el-select>
+                </div>
+
+                <el-form-item label="Text" prop="text">
+                  <el-input v-model="footer.text" />
+                </el-form-item> 
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <el-button type="success" @click="addFooter()">Add</el-button>
+            </div>
+          </div>
+
+          <div id="receipt">
+            <img src="@/public/test.png" />
+
+            <br/>
+
+            <div v-for="header in form.header" :key="header" class="line" 
+            :class="{'align-left': header.align === 'left', 'align-center': header.align === 'center', 'align-right': header.align === 'right',
+                     'font-1': header.size === 1, 'font-2': header.size === 2, 'font-3': header.size === 3}">{{header.text}}</div>
+            
+            <br/>
+
+            <div v-for="item in items" :key="item" >
+              <div class="table-line">
+                <div class="product-name">{{item.name}}</div>
+                <div class="price">{{item.price}}</div>
+              </div>
+
+              <div v-if="item.discount > 0" class="line">{{`&nbsp;&nbsp;(${item.qty} @ ${item.price} ea) | Discount ${item.discount}%`}}</div>
+              <div v-else-if="item.qty > 1" class="line">{{`&nbsp;&nbsp;(${item.qty} @ ${item.price} ea)`}}</div>
+            </div>
+
+            <br/>
+
+            <div class="table-line">
+              <div class="output-name">SUBTOTAL:</div>
+              <div class="price">0.00</div>
+            </div>
+            <div class="table-line">
+              <div class="output-name">TAX(0.00%):</div>
+              <div class="price">0.00</div>
+            </div>
+            <div class="table-line bold">
+              <div class="output-name">TOTAL:</div>
+              <div class="price">0.00</div>
+            </div>
+            <br/>
+
+            <div v-for="footer in form.footer" :key="footer" class="line" 
+            :class="{'align-left': footer.align === 'left', 'align-center': footer.align === 'center', 'align-right': footer.align === 'right',
+                     'font-1': footer.size === 1, 'font-2': footer.size === 2, 'font-3': footer.size === 3}">{{footer.text}}</div>
+          </div>
+        </div>
       </el-form>
+
+      <!-- PRINT TEST RECEIPT -->
+      <div style="text-align: center; margin: 32px 0;">
+        <el-button type="success" @click="printReceipt()">Print Sample</el-button>
+      </div>
+
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="warning" @click="changeSettings()" :loading="loading.settings">Submit</el-button>
+          <el-button type="warning" @click="changeSettings()" :loading="loading.settings" native-type="submit">Submit</el-button>
         </div>
       </template>
     </el-dialog>
@@ -23,13 +137,20 @@
 </template>
 
 <script setup>
+//Import
 const { notify } = useNotification()
-
-const loading = reactive({ settings: false })
+//Data
+const loading = reactive({ startedLoading: true, settings: false })
 const popup = ref(false)
+const settings = ref(null)
+//Form
 const form = reactive({
-  tax: 0
+  tax: 0,
+  receipt_ip: '',
+  header: [{text: '', align: 'left', size: 1}],
+  footer: [{text: '', align: 'left', size: 1}]
 })
+const items = ref([{name: 'Product Name', qty: 1, price: '100.00', discount: 0}, {name: 'Product Name', qty: 2, price: '50.00', discount: 0}, {name: 'Product Name', qty: 10, price: '25.00', discount: 10}])
 
 //Component Emits,Props
 const emits = defineEmits(['setStore'])
@@ -40,13 +161,85 @@ const props = defineProps({
   }
 })
 
+//Mount
+onBeforeMount(async () => {
+  await getUserSettings()
+  loading.startedLoading = false
+})
+//Mount
+
 //Prompt
 function openPopup() {
   form.tax = props.store.tax
+
+  if(props.store.header)
+    form.header = props.store.header
+
+  if(props.store.footer)
+    form.footer = props.store.footer
+
   popup.value = true
 }
 
-//Request
+//Receipt
+function addHeader() {
+  form.header.push({text: '', align: 'left', size: 1})
+}
+
+function addFooter() {
+  form.footer.push({text: '', align: 'left', size: 1})
+}
+
+//Print Test Receipt
+async function printReceipt() {
+  //Check if tax is withing 0 to 100%
+  if(form.tax < 0 || form.tax > 100) {
+    notify({ title: 'Error', text: 'Tax percentage cannot be under 0% or above 100%', type: 'error'})
+    return
+  }
+
+  //Save settings before printing receipt
+  await useFetchApi(`/api/protected/settings/edit`, {
+    method: "POST",
+    body: {
+      id: props.store.id,
+      tax: form.tax,
+      receipt_ip: form.receipt_ip,
+      header: form.header,
+      footer: form.footer
+    }
+  })
+
+  //Then print test receipt
+  const response = await useFetchApi(`/api/protected/transaction/print`, {
+    method: "POST",
+    body: {
+      store_id: props.store.id,
+      items: items.value,
+      tax: '0.00',
+      subtotal: '0.00',
+      tax_total: '0.00',
+      total: '0.00'
+    }
+  })
+
+  //Display error
+  if (response.statusCode) {
+    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    return
+  }
+
+  //Display Success
+  notify({ title: 'Success', text: response.message, type: 'success'})
+}
+
+//Request to get settings
+async function getUserSettings() {
+  settings.value = await useFetchApi(`/api/protected/settings/user-settings`)
+  form.receipt_ip = settings.value.settings.ip
+}
+
+//Change settings
 async function changeSettings() {
   //Check if tax is withing 0 to 100%
   if(form.tax < 0 || form.tax > 100) {
@@ -56,11 +249,14 @@ async function changeSettings() {
 
   //Request
   loading.settings = true
-  const response = await useFetchApi(`/api/protected/store/edit-settings`, {
+  const response = await useFetchApi(`/api/protected/settings/edit`, {
     method: "POST",
     body: {
       id: props.store.id,
       tax: form.tax,
+      receipt_ip: form.receipt_ip,
+      header: form.header,
+      footer: form.footer
     }
   })
   loading.settings = false
@@ -80,3 +276,97 @@ async function changeSettings() {
   notify({ title: 'Success', text: response.message, type: 'success'})
 }
 </script>
+
+<style scoped lang="scss">
+.input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  div {
+    margin-bottom: 2px;
+  }
+  label {
+    display: block;
+    padding-bottom: 12px;
+  }
+}
+
+#receipt-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 10px;
+  #receipt {
+    width: 360px;
+    height: fit-content;
+    padding-bottom: 40px;
+    background: white;
+    font-family: 'Lucida Console';
+    color: #000;
+
+    img {
+      display: block;
+      margin: 20px auto 0 auto;
+      max-width: 66%;
+    }
+
+    .line {
+      width: 308px;
+      font-size: 12px;
+      margin: 0 auto;
+    }
+
+    .table-line {
+      display: flex;
+      justify-content: space-between;
+      width: 308px;
+      margin: 0 auto;
+      font-size: 12px;
+
+      .product-name {
+        width: 200px;
+        word-break: break-all;
+      }
+      .price {
+        text-align: right;
+        width: 90px;
+        word-break: break-all;
+      }
+      .output-name {
+        width: 175px;
+        text-align: right;
+      }
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .font-1 {
+      width: 290px;
+      font-size: 10px;
+    }
+
+    .font-2 {
+      font-size: 12px;
+    }
+
+    .font-3 {
+      font-size: 18px;
+    }
+
+    .align-left {
+      text-align: left;
+    }
+    .align-center {
+      text-align: center;
+    }
+    .align-right {
+      text-align: right;
+    }
+  }
+}
+</style>

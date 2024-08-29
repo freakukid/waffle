@@ -48,6 +48,7 @@
 <script setup>
 //Imports
 const pinia = useStore()
+const { notify } = useNotification()
 const { formatDate } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 //Data
@@ -64,26 +65,56 @@ onBeforeMount(async () => {
 })
 //Mount
 
+//Make Request
 async function getTransactions() {
+  //Make Request
   transactions.value = await useFetchApi(`/api/protected/transaction/${storeId.value}`)
 
+  //Setup data
   for (const transaction of transactions.value) {
     const {subtotal, noDiscountSubtotal, savings, profit} = calcSubtotal(transaction.items)
     const taxTotal = calcTaxTotal(subtotal, transaction.tax)
     const total = calcTotal(subtotal, taxTotal)
     transaction.date = formatDate(transaction.timestamp)
-    
+    transaction.tax = transaction.tax.toFixed(2)
     transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.profit = profit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
-    
-  console.log(JSON.stringify(transactions.value))
+
+  //Test Data
+  //console.log(JSON.stringify(transactions.value))
 }
 
-function printReceipt(transaction) {
-  alert('Print Reciept')
+//Print receipt
+async function printReceipt(transaction) {
+  //Setup data
+  const {items, tax, subtotal, tax_total, savings, total} = transaction
+
+  //Make request
+  const response = await useFetchApi(`/api/protected/transaction/print`, {
+    method: "POST",
+    body: {
+      store_id: storeId.value,
+      items: items,
+      tax: tax,
+      subtotal: subtotal,
+      tax_total: tax_total,
+      savings: savings,
+      total: total
+    }
+  })
+
+  //Display error
+  if (response.statusCode) {
+    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    return
+  }
+
+  //Display success
+  notify({ title: 'Success', text: response.message, type: 'success'})
 }
 </script>
 

@@ -4,7 +4,8 @@ export const useStore = defineStore('store', {
   state: () => ({
     darkMode: true,
     store: 0,
-    filteredColumns: {}
+    filteredColumns: {},
+    printReceipt: true
   }),
   actions: {
     toggleDarkMode() {
@@ -24,6 +25,9 @@ export const useStore = defineStore('store', {
     },
     setFilteredColumns(columns) {
       this.filteredColumns[this.store] = columns
+    },
+    togglePrintReceipt() {
+      this.printReceipt = !this.printReceipt
     }
   },
   persist: {

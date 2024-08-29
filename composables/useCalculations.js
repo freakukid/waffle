@@ -23,7 +23,6 @@ export default () => {
         discountSubtotal = discountSubtotal.plus(discountSubtotalPrice)
         item['new_price'] = price.minus(price.times(discount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         totalPrice = totalPrice.plus(discountSubtotalPrice)
-
       } else {
         discountSubtotal = discountSubtotal.plus(itemSubtotal)
         totalPrice = totalPrice.plus(itemSubtotal)

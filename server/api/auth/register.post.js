@@ -4,14 +4,14 @@ export default defineEventHandler(async (event) => {
   let { username, name, email, password, storeCode, storeName } = await readBody(event)
 
   //Check if the bare minimum was filled out
-  if (!username || !password || !name) {
+  if (!username || !password || !name || !storeName) {
     throw createError({statusCode: 400, statusMessage: "All fields are required."})
   }
 
   //Check if we at least have a store code or store name
-  if (!storeCode && !storeName) {
-    throw createError({statusCode: 400, statusMessage: "Either Store Code or Store Name must be provided"})
-  }
+  // if (!storeCode && !storeName) {
+  //   throw createError({statusCode: 400, statusMessage: "Either Store Code or Store Name must be provided"})
+  // }
 
   //Check username params
   if (!/^(?:[a-zA-Z0-9]{3,15})$/.test(username)) {
@@ -58,12 +58,19 @@ export default defineEventHandler(async (event) => {
         }
       })
 
+      //Connect user to settings
+      const settings = await prisma.settings.create({
+        data: {
+          user: { connect: { id: user.id } },
+        }
+      })
+
       //Connect boss to user
       const boss = await prisma.boss.create({
         data: {
           user: { connect: { id: user.id } }
         }
-      });
+      })
 
       //Create store 
       const store = await prisma.store.create({
@@ -72,7 +79,7 @@ export default defineEventHandler(async (event) => {
           code: `${Array.from({ length: 3 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + (Math.random() < 0.5 ? 65 : 97))).join('')}${storeName.substring(0, 3).replace(/[^a-zA-Z]/g, '').split('').sort(() => Math.random() < 0.5 ? -1 : 1).join('')}`,
           boss: { connect: { id: boss.id } }
         }
-      });
+      })
     } else {
       // Create a new user
       const user = await prisma.user.create({
@@ -81,6 +88,13 @@ export default defineEventHandler(async (event) => {
           name,
           email: email ? email : '',
           password: await hash(password, 12)
+        }
+      })
+
+      //Connect user to settings
+      const settings = await prisma.settings.create({
+        data: {
+          user: { connect: { id: user.id } },
         }
       })
 

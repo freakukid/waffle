@@ -2,6 +2,11 @@
   <div id="worker-page">
     <div id="wrapper">
       <h1>Worker Permissions</h1>
+
+      <div id="toolbar">
+        <WorkerCreateWorker @addUser="addUser" />
+      </div>
+
       <div id="tree-wrapper">
         <el-tree
           v-if="!loading.startedLoading"
@@ -129,6 +134,12 @@ function deletePrompt(e, data) {
 }
 // Prompt
 
+//Get workers
+async function getWorkers() {
+  workers.value = await useFetchApi(`/api/protected/workers/${storeId.value}`)
+  setupTreeData()
+}
+
 //Form
 async function editUser() {
   //Setup data
@@ -165,6 +176,7 @@ async function editUser() {
 }
 
 async function deleteUser() {
+  //Make request
   loading.deleteUser = true
   const response = await useFetchApi(`/api/protected/workers/delete`, {
     method: "POST",
@@ -172,6 +184,7 @@ async function deleteUser() {
       id: form.delete.user.user.id
     }
   })
+  loading.deleteUser = false
 
   //Error case
   if (response.statusCode) {
@@ -185,16 +198,17 @@ async function deleteUser() {
   //Update local data
   workers.value.splice(form.delete.index, 1)
   setupTreeData()
-  loading.deleteUser = false
   popup.deleteUser = false
 }
 
 //Edit permissions
 async function handleCheckChange(data, checked) {
   if(data.permission) {
+    //Setup data
     const currentWorker = workers.value[data.worker_index]
     currentWorker.permission[data.value] = checked
 
+    //Make request
     const response = await useFetchApi(`/api/protected/workers/set-permissions`, {
       method: "POST",
       body: {
@@ -215,13 +229,10 @@ async function handleCheckChange(data, checked) {
   }
 }
 
-//Get workers
-async function getWorkers() {
-  workers.value = await useFetchApi(`/api/protected/workers/${storeId.value}`)
-
+//Add new user to the list
+function addUser(user) {
+  workers.value.push(user)
   setupTreeData()
-
-  console.log(JSON.stringify(workers.value))
 }
 
 //Setups data for element plus tree component
@@ -256,8 +267,14 @@ function setupTreeData() {
     text-align: center;
     margin: 0;
   }
+  #toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 32px;
+  }
   #tree-wrapper {
-    margin: 0 auto;
+    margin: 16px auto 0 auto;
     height: calc(100% - 128px);
     width: calc(100% - 128px);
     max-width: 900px;

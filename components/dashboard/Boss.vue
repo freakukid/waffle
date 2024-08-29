@@ -72,10 +72,6 @@
               <el-button v-if="stores.length > 1" type="danger" plain @click="popup.deleteStore = true, form.deleteName = store.name, form.deleteId = store.id">
                 Delete
               </el-button>
-
-              <el-button type="primary" plain @click="invWorker(store.code)">
-                Invite
-              </el-button>
             </div>
           </div>
           <nuxt-link v-if="store.id != storeId" to="/boss/inventory" @click="setStore(store.id, store.name)">
@@ -102,7 +98,6 @@
 
 <script setup>
 import { ref } from '#imports'
-const { copyToClipboard } = useHelpers()
 const { notify } = useNotification()
 const pinia = useStore()
 
@@ -154,11 +149,6 @@ onBeforeMount(async () => {
 //Mount
 
 //Methods
-function invWorker(code) {
-  copyToClipboard(useRequestURL().host + '/register?code=' + code)
-  notify({ title: 'Success', text: 'Register Url Copied', type: 'success'})
-}
-
 function setStore(id, name) {
   pinia.setStore(id)
   notify({ title: 'Success', text: 'Enter store: ' + name, type: 'success'})

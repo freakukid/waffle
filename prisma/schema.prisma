@@ -22,6 +22,7 @@ model User {
   password        String
   boss            Boss?       @relation
   worker          Worker?     @relation
+  settings        Settings?
   transactions    Transaction[]
   logs            Log[]
 }
@@ -33,6 +34,14 @@ model Boss {
   user_id         Int         @unique
   user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
   stores          Store[]
+}
+
+// Settings has one User (one-to-one)
+model Settings {
+  id              Int         @id @default(autoincrement())
+  user_id         Int         @unique
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  ip              String      @default("")
 }
 
 // A Store has one Boss (one to one)
@@ -51,6 +60,8 @@ model Store {
   transactions    Transaction[]
   logs            Log[]
   tax             Float       @default(0)
+  header          Json?
+  footer          Json?
 }
 
 // A Worker has one User (one to one)

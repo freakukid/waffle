@@ -6,6 +6,12 @@
         <template #title>Inventory</template>
       </el-menu-item>
     </NuxtLink>
+    <NuxtLink to="/boss/workers">
+      <el-menu-item class="sidebar-item" index="4">
+        <Icon name="gravity-ui:person-worker" />
+        <template #title>Workers</template>
+      </el-menu-item>
+    </NuxtLink>
     <NuxtLink to="/boss/cashier">
       <el-menu-item class="sidebar-item" index="2">
         <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
@@ -22,12 +28,6 @@
       <el-menu-item class="sidebar-item" index="3">
         <Icon name="mingcute:inventory-line" />
         <template #title>Logs</template>
-      </el-menu-item>
-    </NuxtLink>
-    <NuxtLink to="/boss/workers">
-      <el-menu-item class="sidebar-item" index="4">
-        <Icon name="gravity-ui:person-worker" />
-        <template #title>Workers</template>
       </el-menu-item>
     </NuxtLink>
     <NuxtLink v-if="store.id != storeId" to="/dashboard" @click="exitStore()">

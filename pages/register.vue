@@ -17,12 +17,8 @@
         <el-input v-model="form.password" type="password" autocomplete="off" />
       </el-form-item>
 
-      <el-form-item v-if="!hasStoreCode" label="Store Name" prop="storeName">
+      <el-form-item label="Store Name" prop="storeName">
         <el-input v-model="form.storeName" type="text" autocomplete="off" />
-      </el-form-item>
-
-      <el-form-item label="Store Code" prop="storeCode">
-        <el-input v-model="form.storeCode" type="text" autocomplete="off" />
       </el-form-item>
 
       <el-button id="register" type="primary" native-type="submit" @click="register(formRef)">Register</el-button>
@@ -56,8 +52,7 @@ const form = reactive({
   name: '',
   email: '',
   password: '',
-  storeName: '',
-  storeCode: route.query.code
+  storeName: ''
 })
 
 const rules = reactive({
@@ -78,6 +73,7 @@ const rules = reactive({
     { validator: validateEmail, trigger: 'change' }
   ],
   storeName: [
+    { required: true, message: 'Store Name is required', trigger: 'blur' },
     { min: 2, message: 'Store Name must be at least 2 characters long', trigger: 'blur' },
   ]
 })
@@ -93,8 +89,7 @@ const register = async (formEl) => {
       name: form.name.trim(),
       email: form.email.trim(),
       password: form.password,
-      storeName: form.storeName.trim(),
-      storeCode: form.storeCode
+      storeName: form.storeName.trim()
     }
   })
 
