@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
-    authOrigin: 'https://prismatic-stardust-325f17.netlify.app',
+    authOrigin: 'https://soloplayer.netlify.app',
   },
   auth: {
     provider: {
