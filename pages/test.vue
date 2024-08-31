@@ -5,8 +5,14 @@
 </template>
 
 <script setup>
+const { data } = useAuth()
+const pinia = useStore()
+const storeId = computed(pinia.getStore)
 
+
+console.log(storeId.value)
 </script>
+
 
 <style scoped>
 

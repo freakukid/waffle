@@ -68,6 +68,12 @@ export default defineEventHandler(async (event) => {
       }
     })
     
+    //Connect user to settings
+    const settings = await prisma.settings.create({
+      data: {
+        user: { connect: { id: user.id } },
+      }
+    })
   } catch (error) {
     console.error(error)
     return {statusCode: 500, statusMessage: "Error creating user"}

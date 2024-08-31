@@ -52,7 +52,7 @@ const { notify } = useNotification()
 const { formatDate } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 //Data
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 const transactions = ref([])
 
 //General

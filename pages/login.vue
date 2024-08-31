@@ -18,8 +18,10 @@
 </template>
 
 <script setup>
-const { signIn } = useAuth()
+//Import
+const { signIn, data } = useAuth()
 const { notify } = useNotification()
+const pinia = useStore()
 
 definePageMeta({
   layout: "auth",
@@ -29,19 +31,28 @@ definePageMeta({
   }
 })
 
+//Form
 const form = reactive({
   username: '',
   password: ''
 })
 
 const login = async () => {
+  //Make Request
   const response = await signIn('credentials', { redirect: false, username: form.username, password: form.password })
-
+  
+  //Show error if a failed request
   if (response.error) {
     notify({ title: 'Error', text: response.error, type: 'error'})
     return
   }
 
+  //Set store for workers
+  const user = data?.value?.user
+  if(user && !user.is_boss)
+    pinia.setStore(user.worker.store_id)
+  
+  //Go to dashboard page
   await navigateTo('/dashboard')
 }
 </script>

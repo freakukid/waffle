@@ -53,7 +53,7 @@ const { data } = useAuth()
 const pinia = useStore()
 
 //Data
-const storeId = computed(() => data.value.user.worker.store_id)
+const storeId = computed(pinia.getStore)
 const permissions = computed(() => data.value.user.worker.permission)
 const store = ref({})
 const inventory = ref([])

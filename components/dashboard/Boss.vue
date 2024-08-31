@@ -97,6 +97,7 @@
 </template>
 
 <script setup>
+//Import
 import { ref } from '#imports'
 const { notify } = useNotification()
 const pinia = useStore()
@@ -105,7 +106,7 @@ const pinia = useStore()
 const loading = reactive({ startedLoading: true, createStore: false, editStore: false, deleteStore: false })
 const popup = reactive({ createStore: false, editStore: false, deleteStore: false })
 const stores = ref([])
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 
 //Create Input
 const createRef = ref()

@@ -66,26 +66,10 @@ ophthalmologists
 
 
 
-Cashier
-need to know what i need (price, quantity, barcode (if scanning))
-Need to figure out what receipt printers i can use
-
-sales tax
-receipt
-logo up top
-bottom optional
-
-epson printer?
+Need to block of cashier if columns are not set for worker
+Need to figure out what a worker can and cannot see
 
 
-Also need to scan?
-
-Permissions for employee
-(cashier or inventory manager or both)
-
-
-
-Need to install pinia
 
 
 Store viewer for worker

@@ -47,7 +47,7 @@ const { notify } = useNotification()
 const pinia = useStore()
 
 //Data
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 const loading = reactive({ createUser: false })
 const popup = ref(false)
 const form = reactive({

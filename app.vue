@@ -9,8 +9,8 @@
 </template>
 
 <script setup>
-const store = useStore()
-const storeId = computed(() => store.store)
+const pinia = useStore()
+const storeId = computed(() => pinia.store)
 
 useHead({
   htmlAttrs: {

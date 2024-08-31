@@ -59,7 +59,7 @@ const { notify } = useNotification()
 const pinia = useStore()
 
 //Data
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 const store = ref({})
 const inventory = ref([])
 const loading = reactive({startedLoading: true})

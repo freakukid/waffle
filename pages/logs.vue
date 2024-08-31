@@ -18,7 +18,7 @@ const pinia = useStore()
 const { formatDate } = useFormatter()
 
 //Data
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 const logs = ref([])
 
 //General

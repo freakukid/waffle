@@ -70,7 +70,7 @@ const pinia = useStore()
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 
 //Data
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 const printReceiptAfterTransaction = computed(() => pinia.printReceipt)
 const store = ref({})
 const options = ref([])

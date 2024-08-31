@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAuth } from '#imports'
 
 export const useStore = defineStore('store', {
   state: () => ({
@@ -10,6 +11,26 @@ export const useStore = defineStore('store', {
   actions: {
     toggleDarkMode() {
       this.darkMode = !this.darkMode
+    },
+    getStore() {
+      if(!this.store) {
+        const { data, signOut } = useAuth()
+        const user = data.value?.user
+        //If we are not a boss then get store id from auth data
+        if(user.is_boss) {
+          navigateTo('/dashboard')
+        } else {
+          const storeId = user.worker.store_id
+          if(!storeId)
+            signOut({ callbackUrl: '/login' })
+          else {
+            this.store = storeId
+            return storeId
+          }
+        }
+      } else {
+        return this.store
+      }
     },
     setStore(id) {
       this.store = id

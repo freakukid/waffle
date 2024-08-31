@@ -85,7 +85,7 @@ const { notify } = useNotification()
 const { validateUsername, validateOptionalEmail } = useValidator()
 const pinia = useStore()
 //Data
-const storeId = computed(() => pinia.store)
+const storeId = computed(pinia.getStore)
 const workers = ref([])
 const loading = reactive({ startedLoading: true, editUser: false, deleteUser: false })
 //Element Plus Tree Data
