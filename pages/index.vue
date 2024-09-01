@@ -12,7 +12,7 @@
       <br><br><br>
 
       <el-link :underline="false" href="/register" type="primary">
-      Register
+        Register
       </el-link>
     </div>
   </div>

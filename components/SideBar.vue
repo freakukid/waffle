@@ -1,18 +1,18 @@
 <template>
   <el-menu default-active="2" id="sidebar" :collapse="true">
-    <NuxtLink to="/boss/inventory">
+    <NuxtLink :to="isBossAccount ? '/boss/inventory' : '/worker/inventory'">
       <el-menu-item class="sidebar-item" index="1">
         <Icon name="gravity-ui:boxes-3" />
         <template #title>Inventory</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink to="/boss/workers">
+    <NuxtLink v-if="isBossAccount" to="/boss/workers">
       <el-menu-item class="sidebar-item" index="2">
         <Icon name="gravity-ui:person-worker" />
         <template #title>Workers</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink to="/boss/cashier">
+    <NuxtLink to="/cashier">
       <el-menu-item class="sidebar-item" index="3">
         <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
         <template #title>Cashier</template>
@@ -30,7 +30,7 @@
         <template #title>Logs</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink v-if="store.id != storeId" to="/dashboard" @click="exitStore()">
+    <NuxtLink v-if="store.id != storeId && isBossAccount" to="/dashboard" @click="exitStore()">
       <el-menu-item class="sidebar-item" index="5">
         <Icon name="tabler:door-exit" style="color: red" />
         <template #title>Exit Store</template>
@@ -40,19 +40,22 @@
 </template>
 
 <script setup>
+//Imports
 const { notify } = useNotification()
 const store = useStore()
+const { isBoss } = useChecks()
+
+//Data
 const storeId = computed(() => store.store)
+const isBossAccount = computed(isBoss)
 
 function exitStore(name) {
-  store.exitStore()
-  notify({ title: 'Success', text: 'You exited a store', type: 'success'})
+  if(isBossAccount.value) {
+    store.exitStore()
+    notify({ title: 'Success', text: 'You exited a store', type: 'success'})
+  }
 }
 </script>
-
-<style lang="scss">
-
-</style>
 
 <style lang="scss" scoped>
 #sidebar {

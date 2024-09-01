@@ -49,12 +49,13 @@
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { notify } = useNotification()
-const { data } = useAuth()
 const pinia = useStore()
+const { isBoss, getPermissions } = useChecks()
 
 //Data
 const storeId = computed(pinia.getStore)
-const permissions = computed(() => data.value.user.worker.permission)
+const isBossAccount = computed(isBoss)
+const permissions = ref(null)
 const store = ref({})
 const inventory = ref([])
 const loading = reactive({startedLoading: true})
@@ -86,7 +87,14 @@ onBeforeMount(async () => {
     await navigateTo('/dashboard')
     return
   }
-    
+
+  if(isBossAccount.value) {
+    await navigateTo('/boss/inventory')
+    return
+  }
+  
+  permissions.value = await getPermissions()
+
   await getStore()
   loading.startedLoading = false
 })
@@ -146,8 +154,9 @@ async function getStore() {
   const filtered = pinia.getFilteredColumns()
   if(!filtered.length && store.value.inventory?.columns.length)
     resetFilteredColumns(store.value.inventory.columns)
-    
-  console.log(JSON.stringify(store.value))
+  
+  //Test data
+  // console.log(JSON.stringify(store.value))
 }
 </script>
 

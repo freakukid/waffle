@@ -15,8 +15,9 @@
         </el-select>
 
         <div id="toolbar">
-          <CashierRegisterColumns ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
-          <CashierSettings :store="store ? store : {}" @setStore="setStore" />
+          <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
+          <CashierSettings :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
+          <CashierDisabled ref="disabledCashierRef" />
         </div>
 
         <el-table :data="Object.keys(form.transaction.items).map(key => form.transaction.items[key])" style="width: 100%; height: 100%;" table-layout="auto" >
@@ -68,9 +69,11 @@
 const { notify } = useNotification()
 const pinia = useStore()
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
+const { isBoss } = useChecks()
 
 //Data
 const storeId = computed(pinia.getStore)
+const isBossAccount = computed(isBoss)
 const printReceiptAfterTransaction = computed(() => pinia.printReceipt)
 const store = ref({})
 const options = ref([])
@@ -87,6 +90,7 @@ const $resetTransactionState = () => {
 
 //Element Reference
 const registerColumnsRef = ref(null)
+const disabledCashierRef = ref(null)
 
 //Filters inventory depending on search query
 const filterInventory = (query) => {
@@ -105,6 +109,8 @@ const filterInventory = (query) => {
 
 //Mount//
 onBeforeMount(async () => {
+  //If no store id is present return to dashboard
+  //If columns are not set and we are a worker return to dashboard
   if(!storeId.value) {
     await navigateTo('/dashboard')
     return
@@ -137,7 +143,11 @@ function setStore(data) {
 //Checks if we have name and price columns set, if not prompt user
 function columnChecks() {
   if(store.value.inventory && (!store.value.inventory.name_column || !store.value.inventory.price_column)) {
-    registerColumnsRef.value.openPopup()
+    if(isBossAccount.value) {
+      registerColumnsRef.value.openPopup()
+    } else {
+      disabledCashierRef.value.openPopup()
+    }
   }
 }
 

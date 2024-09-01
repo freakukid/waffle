@@ -17,11 +17,7 @@ export default NuxtAuthHandler({
           where: { username: credentials?.username },
           include: {
             boss: true,
-            worker: {
-              include: {
-                permission: true
-              }
-            }
+            worker: true
           }
         })
 

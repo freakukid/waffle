@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     return { statusCode: 400, statusMessage: 'Worker ID is not present.' }
   }
 
-  //Create store 
+  //Update permissions 
   const permission = await prisma.permission.update({
     where: {
       worker_id: worker_id

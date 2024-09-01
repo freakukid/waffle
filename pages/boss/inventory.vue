@@ -56,10 +56,12 @@
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { notify } = useNotification()
+const { isBoss } = useChecks()
 const pinia = useStore()
 
 //Data
 const storeId = computed(pinia.getStore)
+const isBossAccount = computed(isBoss)
 const store = ref({})
 const inventory = ref([])
 const loading = reactive({startedLoading: true})
@@ -89,6 +91,12 @@ const filteredInventory = computed(() => {
 onBeforeMount(async () => {
   if(!storeId.value) {
     await navigateTo('/dashboard')
+    return
+  }
+
+  //Only boss accounts have access to this page
+  if(!isBossAccount.value) {
+    await navigateTo('/worker/inventory')
     return
   }
     
@@ -151,16 +159,20 @@ function resetFilteredColumns(columns) {
 
 //Gets the store the user is in
 async function getStore() {
+  //Make Request
   store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
   
+  //If we have inventory format add id (index) to data
   if(store.value.inventory)
     inventory.value = formatInventory()
 
+  //Get store value filtering
   const filtered = pinia.getFilteredColumns()
   if(!filtered.length && store.value.inventory?.columns.length)
     resetFilteredColumns(store.value.inventory.columns)
-    
-  console.log(JSON.stringify(store.value))
+  
+  //Test Data
+  // console.log(JSON.stringify(store.value))
 }
 </script>
 

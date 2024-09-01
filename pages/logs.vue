@@ -81,7 +81,9 @@ async function getLogs() {
       log.description = html
     }
   }
-  console.log(JSON.stringify(logs.value))
+  
+  //Test data
+  // console.log(JSON.stringify(logs.value))
 }
 </script>
 

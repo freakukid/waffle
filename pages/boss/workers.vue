@@ -83,9 +83,11 @@
 //Imports
 const { notify } = useNotification()
 const { validateUsername, validateOptionalEmail } = useValidator()
+const { isBoss } = useChecks()
 const pinia = useStore()
 //Data
 const storeId = computed(pinia.getStore)
+const isBossAccount = computed(isBoss)
 const workers = ref([])
 const loading = reactive({ startedLoading: true, editUser: false, deleteUser: false })
 //Element Plus Tree Data
@@ -101,7 +103,8 @@ const form = reactive({
 
 //Mount
 onBeforeMount(async () => {
-  if(!storeId.value) {
+  //Only boss accounts have access to this page
+  if(!storeId.value || !isBossAccount.value) {
     await navigateTo('/dashboard')
     return
   }
@@ -209,7 +212,7 @@ async function handleCheckChange(data, checked) {
     currentWorker.permission[data.value] = checked
 
     //Make request
-    const response = await useFetchApi(`/api/protected/workers/set-permissions`, {
+    const response = await useFetchApi(`/api/protected/workers/permissions/update`, {
       method: "POST",
       body: {
         worker_id: currentWorker.id,

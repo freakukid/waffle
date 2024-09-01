@@ -3,17 +3,16 @@
     <!-- Popup -->
     <el-dialog v-model="popup" title="Settings" fullscreen>
       <el-form v-if="!loading.startedLoading" :model="form" label-position="top" @submit.prevent="changeSettings()">
-        <el-form-item label="Tax" prop="tax">
-          <el-input-number v-model="form.tax" :precision="2" :step="0.1" :max="100" />%
-        </el-form-item>
-
         <el-form-item label="Reciept IP (ex. 192.168.1.xxx)" prop="receipt_ip">
           <el-input v-model="form.receipt_ip" />
         </el-form-item>
-        <!-- IMG NEXT -->
+
+        <el-form-item v-if="isBoss" label="Tax" prop="tax">
+          <el-input-number v-model="form.tax" :precision="2" :step="0.1" :max="100" />%
+        </el-form-item>
 
         <!-- HEADER -->
-        <div id="receipt-wrapper">
+        <div v-if="isBoss" id="receipt-wrapper">
           <div>
             <label>Receipt Header</label>
 
@@ -157,6 +156,10 @@ const emits = defineEmits(['setStore'])
 const props = defineProps({
   store: {
     type: Object,
+    required: true
+  },
+  isBoss: {
+    type: Boolean,
     required: true
   }
 })
