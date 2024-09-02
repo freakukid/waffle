@@ -60,15 +60,18 @@ ophthalmologists
 
 
 
+frostedfreeze.com
+
+waffle
 
 
+Need to add permission for to see log or not for workers
+Need to add permission to see inventory
+Need to add permission to see cashier
 
+Need to bug test
 
-
-
-Need to block of cashier if columns are not set for worker
-Need to figure out what a worker can and cannot see
-
+Then need to ask what actions are to be added, add to permissions, add to log
 
 
 

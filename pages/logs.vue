@@ -1,5 +1,5 @@
 <template>
-  <div style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+  <div v-if="!loading.startedLoading" style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
     <el-table :data="logs" style="width: 100%; height: 100%;" table-layout="auto" >
       <el-table-column prop="date" label="Date" />
       <el-table-column prop="user.name" label="User" />
@@ -16,9 +16,11 @@
 //Import
 const pinia = useStore()
 const { formatDate } = useFormatter()
+const { isBoss, getPermissions } = useChecks()
 
 //Data
 const storeId = computed(pinia.getStore)
+const isBossAccount = computed(isBoss)
 const logs = ref([])
 
 //General
@@ -26,6 +28,16 @@ const loading = reactive({ startedLoading: true })
 
 //Mount
 onBeforeMount(async () => {
+  //If you are not permitted to be here then return to dashboard
+  if(!isBossAccount.value) {
+    const permissions = await getPermissions()
+
+    if(!permissions.view_log) {
+      window.location.href = '/dashboard'
+      return
+    }
+  }
+
   await getLogs()
   loading.startedLoading = false
 })

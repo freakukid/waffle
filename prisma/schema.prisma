@@ -118,11 +118,14 @@ model Log {
 
 // Inventory Logs belongs to one store (many to one)
 model Permission {
-  id              Int         @id @default(autoincrement())
-  worker_id       Int         @unique
-  worker          Worker      @relation(fields: [worker_id], references: [id], onDelete: Cascade)
+  id                Int         @id @default(autoincrement())
+  worker_id         Int         @unique
+  worker            Worker      @relation(fields: [worker_id], references: [id], onDelete: Cascade)
 
-  add_item        Boolean     @default(true)
-  edit_item       Boolean     @default(true)
-  delete_item     Boolean     @default(false)
+  add_item          Boolean     @default(true)
+  edit_item         Boolean     @default(true)
+  delete_item       Boolean     @default(false)
+
+  view_log          Boolean     @default(true)
+  make_transactions Boolean     @default(true)
 }

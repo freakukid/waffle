@@ -1,6 +1,5 @@
 import { useAuth } from '#imports'
 
-
 export default () => {
   function isBoss() {
     const { data } = useAuth()

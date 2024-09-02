@@ -20,15 +20,6 @@ useHead({
 </script>
 
 <style lang="scss">
-.page-enter-active, .page-leave-active {
-  transition: opacity 0.5s ease;
-  animation: pulse 0.5s ease forwards;
-}
-
-.page-enter, .page-leave-to {
-  opacity: 0;
-}
-
 .vue-notification-group {
   top: 5px !important;
   max-width: calc(100vw - 50px);

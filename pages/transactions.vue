@@ -1,5 +1,5 @@
 <template>
-  <div style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+  <div v-if="!loading.startedLoading" style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
     <el-table :data="transactions" style="width: 100%; height: 100%;" table-layout="auto" >
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" label="Date" />
@@ -51,8 +51,11 @@ const pinia = useStore()
 const { notify } = useNotification()
 const { formatDate } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal } = useCalculations()
+const { isBoss, getPermissions } = useChecks()
+
 //Data
 const storeId = computed(pinia.getStore)
+const isBossAccount = computed(isBoss)
 const transactions = ref([])
 
 //General
@@ -60,6 +63,16 @@ const loading = reactive({ startedLoading: true })
 
 //Mount
 onBeforeMount(async () => {
+  //If you are not permitted to be here then return to dashboard
+  if(!isBossAccount.value) {
+    const permissions = await getPermissions()
+
+    if(!permissions.make_transactions) {
+      window.location.href = '/dashboard'
+      return
+    }
+  }
+
   await getTransactions()
   loading.startedLoading = false
 })

@@ -1,5 +1,5 @@
 <template>
-  <el-menu default-active="2" id="sidebar" :collapse="true">
+  <el-menu v-if="!loading.startedLoading" default-active="1" id="sidebar" :collapse="true">
     <NuxtLink :to="isBossAccount ? '/boss/inventory' : '/worker/inventory'">
       <el-menu-item class="sidebar-item" index="1">
         <Icon name="gravity-ui:boxes-3" />
@@ -12,19 +12,19 @@
         <template #title>Workers</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink to="/cashier">
+    <NuxtLink v-if="permissions?.make_transactions" to="/cashier">
       <el-menu-item class="sidebar-item" index="3">
         <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
         <template #title>Cashier</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink to="/transactions">
+    <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
       <el-menu-item class="sidebar-item" index="4">
         <Icon name="uil:transaction" />
         <template #title>Transactions</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink to="/logs">
+    <NuxtLink v-if="permissions?.view_log" to="/logs">
       <el-menu-item class="sidebar-item" index="5">
         <Icon name="mingcute:inventory-line" />
         <template #title>Logs</template>
@@ -43,11 +43,25 @@
 //Imports
 const { notify } = useNotification()
 const store = useStore()
-const { isBoss } = useChecks()
+const { isBoss, getPermissions } = useChecks()
 
 //Data
 const storeId = computed(() => store.store)
 const isBossAccount = computed(isBoss)
+const permissions = ref({make_transactions: true, view_log: true})
+
+//General
+const loading = reactive({ startedLoading: true })
+
+//Mount
+onBeforeMount(async () => {
+  if(!isBossAccount.value) {
+    permissions.value = await getPermissions()
+  }
+
+  loading.startedLoading = false
+})
+//Mount
 
 function exitStore(name) {
   if(isBossAccount.value) {

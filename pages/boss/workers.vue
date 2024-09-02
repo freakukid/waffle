@@ -1,5 +1,5 @@
 <template>
-  <div id="worker-page">
+  <div v-if="!loading.startedLoading" id="worker-page">
     <div id="wrapper">
       <h1>Worker Permissions</h1>
 

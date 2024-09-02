@@ -36,6 +36,7 @@
 
           <!-- TABLE -->
           <el-table 
+          v-if="inventory.length"
           :data="filteredInventory" 
           style="width: 100%; height: 100%;" 
           table-layout="auto" 

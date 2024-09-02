@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="!loading.startedLoading">
       <div style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
         <el-select
           v-model="form.transaction.query"
@@ -69,7 +69,7 @@
 const { notify } = useNotification()
 const pinia = useStore()
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
-const { isBoss } = useChecks()
+const { isBoss, getPermissions } = useChecks()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -114,6 +114,16 @@ onBeforeMount(async () => {
   if(!storeId.value) {
     await navigateTo('/dashboard')
     return
+  }
+
+  //If you are not permitted to be here then return to dashboard
+  if(!isBossAccount.value) {
+    const permissions = await getPermissions()
+
+    if(!permissions.make_transactions) {
+      window.location.href = '/dashboard'
+      return
+    }
   }
   
   await getStore()

@@ -11,7 +11,9 @@ export default defineEventHandler(async (event) => {
       select: {
         add_item: true,
         edit_item: true,
-        delete_item: true
+        delete_item: true,
+        make_transactions: true,
+        view_log: true
       }
     })
   } else {

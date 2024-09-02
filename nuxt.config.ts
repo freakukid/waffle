@@ -37,9 +37,6 @@ export default defineNuxtConfig({
     download: false,
     useStylesheet: true
   },
-  app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
-  },
   elementPlus: {
     importStyle: 'scss',
     themes: ['dark'],
