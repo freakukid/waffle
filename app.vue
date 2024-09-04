@@ -4,11 +4,12 @@
   <div id="app">
     <NavBar />
     <NuxtPage />
-    <SideBar v-if="storeId" />
+    <SideBar v-if="storeId && status === 'authenticated'" />
   </div>
 </template>
 
 <script setup>
+const { status } = useAuth()
 const pinia = useStore()
 const storeId = computed(() => pinia.store)
 

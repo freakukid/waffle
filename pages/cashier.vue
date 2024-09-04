@@ -132,10 +132,10 @@ onBeforeMount(async () => {
     await navigateTo('/boss/inventory')
     return
   }
-
-  columnChecks()
-
   loading.startedLoading = false
+
+  await nextTick()
+  columnChecks()
 })
 //Mount//
 

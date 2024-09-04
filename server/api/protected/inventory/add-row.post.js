@@ -1,18 +1,20 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const user_id = session?.user?.id
+  //Imports
+  const { getAuthUser, isStoreOwner, isStoreWorker } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const user_id = authUser?.id
+  const { store_id, item } = await readBody(event)
 
-  //Check if this user is login
-  if(!user_id)
-    return { statusCode: 400, statusMessage: 'You must be login to add an item.' }
+  //Check if we have required fields
+  if (!store_id || !item)
+    return { statusCode: 400, statusMessage: 'Required: store_id, item' }
 
-  let { store_id, item } = await readBody(event)
-
-  //Check if we have a store id
-  if (!store_id)
-    return { statusCode: 400, statusMessage: 'Store Id must be provided.' }
+  //Check if this user has access rights to this store
+  if(!isStoreOwner(authUser, store_id) && !isStoreWorker(authUser, store_id))
+    return { statusCode: 400, statusMessage: `You do not have access rights to edit this store.` }
 
   let query = `
     WITH unique_key_value AS (

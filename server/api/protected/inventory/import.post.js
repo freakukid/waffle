@@ -1,19 +1,20 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const boss_id = session?.user?.boss?.id
-  const user_id = session?.user?.id
+  //Imports
+  const { getAuthUser, isStoreOwner } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const user_id = authUser?.id
+  const { store_id, stock, columns, unique_key } = await readBody(event)
 
-  //Check if this is a boss account
-  if(!boss_id)
-    return { statusCode: 400, statusMessage: 'You must be a boss account to create an inventory.' }
+  //Check if we have required fields
+  if (!store_id || !stock || !columns || !unique_key)
+    return { statusCode: 400, statusMessage: 'Required: store_id, stock, columns, unique_key.' }
 
-  let { store_id, stock, columns, unique_key } = await readBody(event)
-
-  //Check if we have a store id
-  if (!store_id)
-    return { statusCode: 400, statusMessage: 'Store Id must be provided.' }
+  //Check if this user has access rights to this store
+  if(!isStoreOwner(authUser, store_id))
+    return { statusCode: 400, statusMessage: `You do not have access rights to edit this store.` }
 
   //Upsert: If inventory exist update else create inventory
   const inventory = await prisma.inventory.upsert({

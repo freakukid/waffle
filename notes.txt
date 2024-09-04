@@ -65,9 +65,8 @@ frostedfreeze.com
 waffle
 
 
-Need to add permission for to see log or not for workers
 Need to add permission to see inventory
-Need to add permission to see cashier
+Need to check permissions in the backend
 
 Need to bug test
 
