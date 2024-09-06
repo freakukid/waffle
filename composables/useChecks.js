@@ -19,7 +19,6 @@ export default () => {
     return response
   }
 
-
   return {
     isBoss,
     getPermissions

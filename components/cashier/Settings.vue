@@ -205,7 +205,7 @@ async function printReceipt() {
   await useFetchApi(`/api/protected/settings/edit`, {
     method: "POST",
     body: {
-      id: props.store.id,
+      store_id: props.store.id,
       tax: form.tax,
       receipt_ip: form.receipt_ip,
       header: form.header,
@@ -255,7 +255,7 @@ async function changeSettings() {
   const response = await useFetchApi(`/api/protected/settings/edit`, {
     method: "POST",
     body: {
-      id: props.store.id,
+      store_id: props.store.id,
       tax: form.tax,
       receipt_ip: form.receipt_ip,
       header: form.header,

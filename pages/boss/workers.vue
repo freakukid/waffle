@@ -154,6 +154,7 @@ async function editUser() {
     method: "POST",
     body: {
       id: form.edit.id,
+      store_id: storeId.value,
       username: username.toLowerCase().trim(),
       name: name,
       email: email,
@@ -184,6 +185,7 @@ async function deleteUser() {
   const response = await useFetchApi(`/api/protected/workers/delete`, {
     method: "POST",
     body: {
+      store_id: storeId.value,
       id: form.delete.user.user.id
     }
   })
@@ -215,6 +217,7 @@ async function handleCheckChange(data, checked) {
     const response = await useFetchApi(`/api/protected/workers/permissions/update`, {
       method: "POST",
       body: {
+        store_id: storeId.value,
         worker_id: currentWorker.id,
         name: currentWorker.user.name,
         permissions: currentWorker.permission

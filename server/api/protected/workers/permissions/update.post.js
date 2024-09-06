@@ -1,20 +1,19 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const boss_id = session?.user?.boss?.id
+  //Imports
+  const { getAuthUser, isStoreOwner } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const { store_id, worker_id, name, permissions } = await readBody(event)
 
-  //Check if this is a boss account
-  if(!boss_id) {
-    return { statusCode: 400, statusMessage: 'You must be a boss account to edit permissions.' }
-  }
+  //Check if we have required fields
+  if (!store_id || !worker_id || !name || !permissions)
+    return { statusCode: 400, statusMessage: 'Required: store_id, item, worker_id, permissions' }
 
-  let { worker_id, name, permissions } = await readBody(event)
-
-  //Check if we have a worker id
-  if (!worker_id) {
-    return { statusCode: 400, statusMessage: 'Worker ID is not present.' }
-  }
+  //Check if this user has access rights to change permissions for this worker
+  if(!isStoreOwner(authUser, store_id))
+    return { statusCode: 400, statusMessage: `You do not have access rights to edit a worker's permission.` }
 
   //Update permissions 
   const permission = await prisma.permission.update({

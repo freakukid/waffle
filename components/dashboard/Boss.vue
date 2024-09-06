@@ -2,6 +2,7 @@
   <div>
     <!-- Create -->
     <el-dialog v-model="popup.createStore" title="Create Store" width="300" @opened="focusCreateInput">
+      <p style="color: red;">Warning: You will be logout and must sign in to refresh local data. This is necessary to make this application much faster & safe.</p>
       <el-form :model="form" @submit.prevent="createStore()" :rules="rules">
         <el-form-item label="Store name" prop="name">
           <el-input v-model="form.name" ref="createRef" autocomplete="off" />
@@ -99,6 +100,7 @@
 <script setup>
 //Import
 import { ref } from '#imports'
+const { signOut } = useAuth()
 const { notify } = useNotification()
 const pinia = useStore()
 
@@ -161,7 +163,10 @@ function exitStore() {
 }
 
 async function updateStores() {
-  stores.value = await useFetchApi(`/api/boss/stores/${props.user.boss.id}`)
+  //Make request
+  stores.value = await useFetchApi(`/api/protected/store/stores`)
+  //Test data
+  // console.log(JSON.stringify(stores.value))
 }
 
 async function createStore() {
@@ -189,6 +194,10 @@ async function createStore() {
   notify({ title: 'Success', text: response.message, type: 'success'})
 
   stores.value.push(response.store)
+
+  //Sign out user to reset data
+  signOut({ callbackUrl: '/login' })
+  pinia.exitStore()
 }
 
 async function editStore() {

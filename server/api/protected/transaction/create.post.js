@@ -1,19 +1,27 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const user_id = session?.user?.id
+  //Imports
+  const { getAuthUser, isStoreOwner, isStoreWorker, getWorkerPermissions } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const user_id = authUser?.id
+  const { store_id, tax, items, quantity_column } = await readBody(event)
+  const isValidWorker = isStoreWorker(authUser, store_id)
+  
+  //Check if we have required fields
+  if (!store_id || !items.length)
+    return { statusCode: 400, statusMessage: `Required: store_id, items.` }
+  
+  //Check if this user has access rights to this store
+  if(!isStoreOwner(authUser, store_id) && !isValidWorker)
+    return { statusCode: 400, statusMessage: `You do not have access rights to make this transaction.` }
 
-  //Check if this user is login
-  if(!user_id) {
-    return { statusCode: 400, statusMessage: 'You must be login to create a transaction.' }
-  }
-
-  let { store_id, tax, items, quantity_column } = await readBody(event)
-
-  //Check if we all fields before we create a transaction
-  if (!store_id || items.length === 0) {
-    return { statusCode: 400, statusMessage: 'All fields must be provided to create a transaction.' }
+  //Check if this worker has permission to commit this action
+  if(isValidWorker) {
+    const permissions = await getWorkerPermissions(authUser.worker.id)
+    if(!permissions.make_transactions)
+      return { statusCode: 400, statusMessage: `You do not have the rights to make this transaction.` }
   }
 
   //If we have a quantity provided then subtract from quantity

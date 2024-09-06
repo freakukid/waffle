@@ -1,12 +1,15 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const user_id = session?.user?.id
+  //Imports
+  const { getAuthUser } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const user_id = authUser?.id
 
   //Check if this user is login
   if(!user_id) {
-    return { statusCode: 400, statusMessage: 'You must be login get user settings.' }
+    throw new Error(`You must be login fetch user settings.`)
   }
 
   const settings = await prisma.settings.findUnique({

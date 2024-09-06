@@ -1,20 +1,20 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const boss_id = session?.user?.boss?.id
+  //Imports
+  const { getAuthUser, isStoreOwner } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const boss_id = authUser?.boss?.id
+  const { id, store_id } = await readBody(event)
 
-  //Check if this is a boss account
-  if(!boss_id) {
-    return { statusCode: 400, statusMessage: 'You must be a boss account to delete a user.' }
-  }
+  //Check if we have required fields
+  if (!id || !store_id)
+    return {statusCode: 400, statusMessage: `Required: id.`}
 
-  let { id } = await readBody(event)
-
-  //Check if we have a store id
-  if (!id) {
-    return { statusCode: 400, statusMessage: 'User id is required.' }
-  }
+  //Check if this user has access rights to view workers
+  if(!isStoreOwner(authUser, store_id))
+    return {statusCode: 400, statusMessage: `You do not have access rights to create a worker in this store.`}
 
   //Delete all users associated with boss
   const user = await prisma.user.delete({
@@ -28,9 +28,9 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  if(!user) {
+  if(!user)
     return { statusCode: 400, statusMessage: 'User was not found.' }
-  }
+  
 
   setResponseStatus(event, 201)
   

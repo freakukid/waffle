@@ -1,31 +1,28 @@
 import { hash } from "bcrypt"
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const boss_id = session?.user?.boss?.id
+  //Imports
+  const { getAuthUser, isStoreOwner } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const { username, name, email, password, store_id } = await readBody(event)
+  
+  //Check if we have required fields
+  if (!store_id || !username || !password || !name)
+    return {statusCode: 400, statusMessage: `Required: store_id, username, password, name.`}
 
-  //Check if this is a boss account
-  if(!boss_id) {
-    return { statusCode: 400, statusMessage: 'You must be a boss account to create a user.' }
-  }
-
-  let { username, name, email, password, store_id } = await readBody(event)
-
-  //Check if the bare minimum was filled out
-  if (!username || !password || !name) {
-    return {statusCode: 400, statusMessage: "All fields are required."}
-  }
+  //Check if this user has access rights to view workers
+  if(!isStoreOwner(authUser, store_id))
+    return {statusCode: 400, statusMessage: `You do not have access rights to create a worker in this store.`}
 
   //Check username params
-  if (!/^(?:[a-zA-Z0-9]{3,15})$/.test(username)) {
+  if (!/^(?:[a-zA-Z0-9]{3,15})$/.test(username))
     return {statusCode: 400, statusMessage: "Username must be between 3 and 15 characters and contain only letters and numbers"}
-  }
 
   //Check password params
-  if (password.length < 6) {
+  if (password.length < 6)
     return {statusCode: 400, statusMessage: "Password must be at least 6 characters long"}
-  }
 
   //Checks if user already exist
   const userExists = await prisma.user.findFirst({
@@ -97,7 +94,9 @@ export default defineEventHandler(async (event) => {
         select: {
           add_item: true,
           edit_item: true,
-          delete_item: true
+          delete_item: true,
+          make_transactions: true,
+          view_log: true
         }
       }
     },

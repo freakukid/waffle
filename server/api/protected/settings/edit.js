@@ -1,26 +1,26 @@
-import { getServerSession } from '#auth'
+import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const user_id = session?.user?.boss?.id
-  const boss_id = session?.user?.boss?.id
+  //Imports
+  const { getAuthUser, isStoreOwner, isStoreWorker } = useAuthChecks()
+  //Setup data
+  const authUser = await getAuthUser(event)
+  const user_id = authUser?.id
+  const boss_id = authUser?.boss?.id
+  const { store_id, tax, receipt_ip, header, footer } = await readBody(event)
 
-  //Check if this is a boss account
-  if(!user_id) {
-    return { statusCode: 400, statusMessage: 'You must be login to edit these settings.' }
-  }
+  //Check if we have required fields
+  if (!store_id)
+    return { statusCode: 400, statusMessage: `Required: store_id.` }
 
-  let { id, tax, receipt_ip, header, footer } = await readBody(event)
-
-  //Check if we have tax
-  if (!tax) {
-    return { statusCode: 400, statusMessage: 'Tax must be provided.' }
-  }
+  //Check if this user has access rights to this store
+  if(!isStoreOwner(authUser, store_id) && !isStoreWorker(authUser, store_id))
+    return { statusCode: 400, statusMessage: `You do not have save settings for this store/user.` }
 
   //Edit store 
   const store = await prisma.store.update({
     where: {
-      id: id,
+      id: store_id,
       boss_id: boss_id
     },
     data: {
