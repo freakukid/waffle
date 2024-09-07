@@ -1,5 +1,5 @@
 <template>
-  <el-menu v-if="!loading.startedLoading" default-active="1" id="sidebar" :collapse="true">
+  <el-menu default-active="1" id="sidebar" :collapse="true">
     <NuxtLink :to="isBossAccount ? '/boss/inventory' : '/worker/inventory'">
       <el-menu-item class="sidebar-item" index="1">
         <Icon name="gravity-ui:boxes-3" />
@@ -51,7 +51,7 @@ const isBossAccount = computed(isBoss)
 const permissions = ref({make_transactions: true, view_log: true})
 
 //General
-const loading = reactive({ startedLoading: true })
+const loading = ref(true)
 
 //Mount
 onBeforeMount(async () => {
@@ -59,7 +59,7 @@ onBeforeMount(async () => {
     permissions.value = await getPermissions()
   }
 
-  loading.startedLoading = false
+  loading.value = false
 })
 //Mount
 

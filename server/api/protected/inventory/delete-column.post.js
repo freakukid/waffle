@@ -32,7 +32,15 @@ export default defineEventHandler(async (event) => {
     )
     UPDATE "Inventory" i
     SET stock = u.new_stock,
-    columns = ARRAY(SELECT unnest(columns) EXCEPT SELECT $2),
+    columns = (
+        SELECT ARRAY_AGG(col)
+        FROM (
+            SELECT col
+            FROM unnest(columns) AS col
+            WHERE col <> $2
+            ORDER BY array_position(columns, col)
+        ) AS filtered
+    ),
     name_column = $3,
     price_column = $4,
     quantity_column = $5,
