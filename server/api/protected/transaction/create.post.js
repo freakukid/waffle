@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
   //Setup data
   const authUser = await getAuthUser(event)
   const user_id = authUser?.id
+  const name = authUser?.name
   const { store_id, tax, items, quantity_column } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
   
@@ -77,7 +78,7 @@ export default defineEventHandler(async (event) => {
   } else {
     inventory = await prisma.inventory.findUnique({
       where: {
-        id: parseInt(id)
+        store_id: store_id
       }
     })
   }
@@ -88,6 +89,7 @@ export default defineEventHandler(async (event) => {
     data: {
       items: items,
       tax: tax,
+      name: name,
       user: { connect: { id: user_id } },
       store: { connect: { id: store_id } }
     }

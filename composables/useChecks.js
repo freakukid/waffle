@@ -14,7 +14,14 @@ export default () => {
     const { data } = useAuth()
     const workerId = data?.value?.user?.worker?.id
     //Make request
-    const response = await useFetchApi(`/api/protected/workers/permissions/${workerId}`)
+    let response = null
+    try {
+      response = await useFetchApi(`/api/protected/workers/permissions/${workerId}`)
+    } catch (e) { //If permissions can't be retrieved user might be deleted so sign him out
+      const { signOut } = useAuth()
+      signOut({ callbackUrl: '/login' })
+    }
+
     //Return value
     return response
   }

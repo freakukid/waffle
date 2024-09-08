@@ -3,7 +3,14 @@
     <el-table :data="transactions" style="width: 100%; height: 100%;" table-layout="auto" >
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" label="Date" />
-      <el-table-column prop="user.name" label="User" />
+      <el-table-column prop="user.name" label="User">
+        <template #default="scope">
+          <div>
+            <span v-if="scope.row.user?.name">{{scope.row.user.name}}</span>
+            <span v-else>{{scope.row.name}}</span>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="Items Sold">
         <el-table-column label="Qty">
           <template #default="scope">

@@ -196,8 +196,8 @@ async function createStore() {
   stores.value.push(response.store)
 
   //Sign out user to reset data
-  signOut({ callbackUrl: '/login' })
   pinia.exitStore()
+  signOut({ callbackUrl: '/login' })
 }
 
 async function editStore() {
@@ -231,24 +231,32 @@ async function editStore() {
 }
 
 async function deleteStore() {
-  loading.deleteStore = true
+  //Setup data
+  const { deleteId } = form
+  //If we are inside store then exit store
+  if(deleteId === storeId.value)
+    pinia.exitStore()
 
+  //Make Request
+  loading.deleteStore = true
   const response = await useFetchApi(`/api/protected/store/delete`, {
     method: "POST",
     body: {
-      id: form.deleteId,
+      id: deleteId,
     }
   })
-
   loading.deleteStore = false
 
+  //Show error notification
   if (response.statusCode) {
     notify({ title: 'Error', text: response.statusMessage, type: 'error'})
     return
   }
 
+  //Close popup, notify user
   popup.deleteStore = false
   notify({ title: 'Success', text: response.message, type: 'success'})
+  //Remove store from list
   stores.value = stores.value.filter(item => item.id !== response.store_id)
 }
 //Methods
