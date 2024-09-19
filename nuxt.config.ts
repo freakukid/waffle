@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     authOrigin: 'https://soloplayer.netlify.app',
   },
   auth: {
+    baseURL: process.env.BASE_URL,
     provider: {
       type: 'authjs',
     },
