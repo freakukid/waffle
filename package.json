@@ -29,6 +29,6 @@
     "cloudinary": "^2.4.0",
     "decimal.js": "^10.4.3",
     "exceljs": "^4.4.0",
-    "node-thermal-printer": "^4.4.2"
+    "node-thermal-printer": "^4.4.3"
   }
 }
