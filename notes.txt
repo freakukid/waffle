@@ -63,15 +63,7 @@ ophthalmologists
 frostedfreeze.com
 
 waffle
-
-
-Need to add permission to see inventory
-Need to check permissions in the backend
-
-Need to bug test
-
-Then need to ask what actions are to be added, add to permissions, add to log
-
-
-
-Store viewer for worker
+Recievables: (Add on to qty and cost)
+Qty:
+Notes:
+Cost(Dynamic):
