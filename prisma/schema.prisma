@@ -129,4 +129,5 @@ model Permission {
 
   view_log          Boolean     @default(true)
   make_transactions Boolean     @default(true)
+  recieving         Boolean     @default(false)
 }

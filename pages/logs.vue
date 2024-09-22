@@ -91,6 +91,14 @@ async function getLogs() {
         }
       }
       log.description = html
+    } else if(log.action === 'recieving') {
+      let html = `
+        <span><b style="color: green">Recieved</b> <b>${log.after.name}</b></span>
+        <div>Recieved Quantity: <b style="color: green">+${log.after.qty}</b></div>
+        <div>Total Cost of Recieved Items: ${log.after.total_cost}</div>
+        <div>Cost Per Item: From ${log.before.cost} to <b>${log.after.cost}</b></div>`
+
+      log.description = html
     }
   }
   

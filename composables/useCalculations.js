@@ -67,10 +67,15 @@ export default () => {
     return subtotal.plus(taxTotal)
   }
 
+  function calcTotalCost(qty, costPerItem) {
+    return new Decimal(qty).times(new Decimal(costPerItem))
+  }
+
   return {
     calcSubtotal,
     calcDictSubtotal,
     calcTaxTotal,
-    calcTotal
+    calcTotal,
+    calcTotalCost
   }
 }

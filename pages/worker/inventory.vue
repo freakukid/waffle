@@ -23,7 +23,7 @@
             <InventoryAddRow v-if="permissions.add_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
             <el-button v-if="permissions.edit_item" @click="toggleEditMode()" type="warning">Edit Mode</el-button>
             <el-button v-if="permissions.delete_item" @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
-            <InventoryExport :inventory="store.inventory" />
+            <OperationsRecieving v-if="permissions.recieving" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           </div>
           <!-- TABLE ACTIONS -->
 

@@ -25,7 +25,8 @@ export default defineEventHandler(async (event) => {
       edit_item: permissions.edit_item,
       delete_item: permissions.delete_item,
       make_transactions: permissions.make_transactions,
-      view_log: permissions.view_log
+      view_log: permissions.view_log,
+      recieving: permissions.recieving,
     },
   })
 

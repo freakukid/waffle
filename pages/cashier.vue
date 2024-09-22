@@ -95,14 +95,20 @@ const disabledCashierRef = ref(null)
 //Filters inventory depending on search query
 const filterInventory = (query) => {
   loading.query = true
-  const name = store.value.inventory.name_column
+  const { name_column, stock } = store.value.inventory
 
   if (query) {
-    options.value = store.value.inventory.stock.filter((data) => {
-      return data[name].toLowerCase().trim().includes(query.toLowerCase().trim())
-    })
+    const filteredDictionary = {}
+
+    for (const key in stock) {
+      const data = stock[key]
+      if (data[name_column].toLowerCase().includes(query.toLowerCase()))
+        filteredDictionary[key] = data
+    }
+    
+    options.value = filteredDictionary
   } else {
-    options.value = store.value.inventory.stock
+    options.value = stock
   }
   loading.query = false
 }

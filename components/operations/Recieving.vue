@@ -1,7 +1,8 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Add Column" width="300" @opened="focusInput">
+    <el-dialog v-model="popup" title="Recieve Item" fullscreen>
+      <label>Item Recieved:</label>
       <el-select
         v-model="search"
         filterable
@@ -11,16 +12,35 @@
         :remote-method="filterInventory"
         @change="addItem"
       >
-        <el-option v-for="(item, key) in options" :key="key" :label="item[store.inventory?.name_column]" :value="key" />
+        <el-option v-for="(item, key) in options" :key="key" :label="item[inventory?.name_column]" :value="key" />
       </el-select>
 
-
-      <el-form :model="form" @submit.prevent="addColumn()">
-        <el-form-item prop="name">
-          <el-input v-model="form.name" ref="addColumnInput" autocomplete="off" />
+      <el-form :model="form" @submit.prevent="recieveItem()" style="margin-top: 16px;">
+        <label>Qty Recieved:</label>
+        <el-form-item prop="tax">
+          <el-input-number v-model="form.qty" />
         </el-form-item>
-      </el-form>
 
+        <p>You can either submit cost per item or total cost of all items recieved</p>
+
+        <div style="display:flex; align-items:center; gap: 10px;">
+          <div>
+            <label>Cost Per Item:</label>
+            <el-form-item prop="tax">
+              <el-input-number v-model="form.costPerItem" :precision="2" @change="form.totalCost = 0" />
+            </el-form-item>
+          </div>
+
+          <div>or</div>
+
+          <div>
+            <label>Total Cost:</label>
+            <el-form-item prop="tax">
+              <el-input-number v-model="form.totalCost" :precision="2" @change="form.costPerItem = 0" />
+            </el-form-item>
+          </div>
+        </div>
+      </el-form>
 
       <template #footer>
         <div class="dialog-footer">
@@ -32,7 +52,12 @@
     <!-- Popup -->
     
     <!-- Receiving Btn -->
-    <el-button @click="openPopup()" type="success">Recieving</el-button>
+    <el-tooltip v-if="!inventory.name_column || !inventory.quantity_column || !inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
+      <el-button disabled type="success">Recieving</el-button>
+    </el-tooltip>
+    <el-button v-else @click="openPopup()" type="success">
+      <span>Recieving</span>
+    </el-button>
     <!-- Receiving Btn -->
   </div>
 </template>
@@ -44,11 +69,14 @@
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
 const { notify } = useNotification()
+const { calcTotalCost } = useCalculations()
 const loading = reactive({ recieve: false, search: false })
 const popup = ref(false)
 const search = ref('')
+const options = ref([])
+
 const form = reactive({
-  item: null,
+  key: 0,
   qty: 0,
   costPerItem: 0,
   totalCost: 0
@@ -67,58 +95,74 @@ const props = defineProps({
   }
 })
 
-//Focus Input
-const addColumnInput = ref()
-const focusInput = () => {
-  addColumnInput.value?.focus()
-}
-
 //Filters inventory depending on search query
 const filterInventory = (query) => {
   loading.search = true
-  const name = props.inventory.name_column
+  const { name_column, stock } = props.inventory
   if (query) {
-    options.value = store.value.inventory.stock.filter((data) => {
-      return data[name].toLowerCase().trim().includes(query.toLowerCase().trim())
-    })
+    const filteredDictionary = {}
+
+    for (const key in stock) {
+      const data = stock[key]
+      if (data[name_column].toLowerCase().includes(query.toLowerCase()))
+        filteredDictionary[key] = data
+    }
+    
+    options.value = filteredDictionary
   } else {
-    options.value = store.value.inventory.stock
+    options.value = stock
   }
   loading.search = false
 }
 
 //Prompt
 function openPopup() {
+  form.key = 0
+  form.qty = 0
+  form.costPerItem = 0
+  form.totalCost = 0
+  search.value = ''
+  options.value = []
+
   popup.value = true
-  form.name = ''
 }
 
-//Add item for the form
-function addItem(item) {
-  props.item = item
+//Add item to form
+function addItem(key) {
+  form.key = key
 }
 
 //Request
 async function recieveItem() {
-  const columnName = form.name.trim()
+  const { quantity_column, cost_column } = props.inventory
+  let { key, qty, costPerItem, totalCost } = form
+  const prevCost = props.inventory.stock[key][cost_column]
 
-  //Check if we at least have a string
-  if(!columnName) {
-    notify({ title: 'Warning', text: 'No column name was provided.', type: 'warn'})
+  //Checks
+  if(!key) {
+    notify({ title: 'Warning', text: 'No item was selected.', type: 'warn'})
     return
   }
 
-  //Check if this column already exist
-  if (props.inventory.columns.includes(columnName)) {
-    notify({ title: 'Warning', text: `Column '${columnName}' already exist.`, type: 'warn'})
+  if(!qty) {
+    notify({ title: 'Warning', text: 'Must have a quantity greater than 0.', type: 'warn'})
     return
   }
+
+  if(!costPerItem && !totalCost) {
+    notify({ title: 'Warning', text: 'Cost per item or Total cost is required.', type: 'warn'})
+    return
+  }
+
+  //Calculate total cost
+  if(costPerItem)
+    totalCost = calcTotalCost(qty, costPerItem)
 
   //Make inventory request
-  loading.addColumn = true
+  loading.recieve = true
   let inventory = await handleInventoryRequest({
-    path: 'add-column',
-    data: { store_id: props.storeId, column_name: columnName },
+    path: 'recieving',
+    data: { store_id: props.storeId, key: key, qty: qty, total_cost: totalCost, prev_cost: prevCost, quantity_column: quantity_column, cost_column: cost_column },
   })
 
   //Emit to parent component
@@ -126,7 +170,7 @@ async function recieveItem() {
     emits('setInventory', inventory)
 
   //Loading complete, Close popup
-  loading.addColumn = false
+  loading.recieve = false
   popup.value = false
 }
 </script>

@@ -30,6 +30,7 @@
             <InventoryEditColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
             <InventorySortColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
             <InventoryDropTable :storeId="storeId" @setInventory="setInventory" />
+            <OperationsRecieving :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
             <InventoryExport :inventory="store.inventory" />
           </div>
           <!-- TABLE ACTIONS -->

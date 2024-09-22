@@ -96,7 +96,8 @@ export default defineEventHandler(async (event) => {
           edit_item: true,
           delete_item: true,
           make_transactions: true,
-          view_log: true
+          view_log: true,
+          recieving: true,
         }
       }
     },
