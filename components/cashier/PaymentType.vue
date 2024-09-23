@@ -72,7 +72,7 @@ const checkRef = ref()
 
 const focusInput = (value) => {
   if(value === 'cash')
-    cashRef.value?.focus()
+    cashRef.value?.select()
   else if(value === 'check')
     checkRef.value?.focus()
 }
