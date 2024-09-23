@@ -217,6 +217,7 @@ function calcTransactionTotal() {
   //Calculate Total
   const total = calcTotal(subtotal, taxTotal)
   form.transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  form.transaction.cash = total.toFixed(2)
 }
 
 //Creates a transaction
