@@ -2,10 +2,13 @@
 export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
-  css: ['@/assets/general.scss'],
+  css: [
+    '@/assets/general.scss',
+    '@/assets/tailwind.scss'
+  ],
   build:{ transpile: ["pinia-plugin-persistedstate"] },
-  // sourcemap: { server: false, client: false },
   modules: [
+    '@nuxtjs/tailwindcss',
     '@sidebase/nuxt-auth',
     'nuxt-icon',
     '@element-plus/nuxt',
@@ -27,15 +30,6 @@ export default defineNuxtConfig({
     globalAppMiddleware: {
       isEnabled: true
     }
-  },
-  // @ts-ignore
-  // Here you can specify a custom font for the app
-  googleFonts: {
-    families: {
-      Poppins: [100, 200, 300, 400 , 500, 600, 700, 800, 900],
-    },
-    download: false,
-    useStylesheet: true
   },
   elementPlus: {
     importStyle: 'scss',

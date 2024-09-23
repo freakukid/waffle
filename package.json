@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.9",
-    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.7.2",
     "@types/bcrypt": "^5.0.0",

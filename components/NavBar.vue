@@ -43,9 +43,9 @@ header {
   background: black;
   position: fixed;
   top: 0;
-  width: calc(100% - 32px);
-  height: 24px;
-  max-height: 24px;
+  width: 100%;
+  height: 36px;
+  max-height: 36px;
   font-size: 20px;
   max-width:100%;
 }

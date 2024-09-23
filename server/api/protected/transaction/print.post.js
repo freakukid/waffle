@@ -10,25 +10,21 @@ export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
   const user_id = session?.user?.boss?.id
   //Check if user is login
-  if(!user_id) {
+  if(!user_id)
     return { statusCode: 400, statusMessage: 'You must be login print a receipt.' }
-  }
 
   //Data
-  let { store_id, items, tax, subtotal, tax_total, savings, total } = await readBody(event)
+  const { store_id, items, tax, subtotal, tax_total, savings, total, payment, cash, card, change } = await readBody(event)
 
   //Check data
-  if(!store_id) {
+  if(!store_id)
     return { statusCode: 400, statusMessage: 'Need store id.' }
-  }
 
-  if(!items || !items.length) {
+  if(!items || !items.length)
     return { statusCode: 400, statusMessage: 'Receipt needs items.' }
-  }
 
-  if(!subtotal || !tax_total || !total) {
+  if(!subtotal || !tax_total || !total)
     return { statusCode: 400, statusMessage: 'Missing subtotal, tax total, or total' }
-  }
 
   //Get store
   const store = await prisma.store.findUnique({
@@ -45,9 +41,8 @@ export default defineEventHandler(async (event) => {
   })
 
   //Check if ip address is present
-  if(!settings.ip) {
+  if(!settings.ip)
     return { statusCode: 400, statusMessage: 'You must setup an ip address to connect to.' }
-  }
 
   //Connect to printer
   let printer = new ThermalPrinter({
@@ -57,9 +52,8 @@ export default defineEventHandler(async (event) => {
 
   //Check if printer is connected
   let isConnected = await printer.isPrinterConnected()
-  if(!isConnected) {
+  if(!isConnected)
     return { statusCode: 400, statusMessage: 'Printer is not connected.' }
-  }
 
   //Setup Logo
   const image = join(cwd(), 'public', 'test.png')
@@ -118,6 +112,36 @@ export default defineEventHandler(async (event) => {
     { text: `TOTAL:`, align:"RIGHT", width:0.6, bold: true },
     { text: total, align:"RIGHT", width:0.25, bold: true },
   ])
+
+  printer.newLine()
+
+  if(payment === 'cash') {
+    printer.tableCustom([
+      { text: `CASH:`, align:"RIGHT", width:0.6, bold: true },
+      { text: cash, align:"RIGHT", width:0.25, bold: true },
+    ])
+
+    if(change && parseFloat(change.replace(/,/g, '')) > 0) {
+      printer.tableCustom([
+        { text: `CHANGE DUE:`, align:"RIGHT", width:0.6, bold: true },
+        { text: change, align:"RIGHT", width:0.25, bold: true },
+      ])
+    }
+  }
+
+  if(payment === 'card') {
+    printer.tableCustom([
+      { text: `${card.toUpperCase()}:`, align:"RIGHT", width:0.6, bold: true },
+      { text: total, align:"RIGHT", width:0.25, bold: true },
+    ])
+  }
+
+  if(payment === 'check') {
+    printer.tableCustom([
+      { text: `CHECK:`, align:"RIGHT", width:0.6, bold: true },
+      { text: total, align:"RIGHT", width:0.25, bold: true },
+    ])
+  }
 
   //Setup Footer
   printer.newLine()

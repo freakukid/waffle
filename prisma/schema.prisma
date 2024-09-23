@@ -102,6 +102,10 @@ model Transaction {
   name            String      @default("")
   items           Json        //[name, qty, price, discount, cost]
   tax             Float       @default(0)
+  payment         String      @default("cash") //cash, credit card, check
+  cash            Float       @default(0)
+  card            String      @default("")
+  check           String      @default("")
 }
 
 // Inventory Logs belongs to one store (many to one)

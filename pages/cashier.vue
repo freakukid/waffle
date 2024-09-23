@@ -18,6 +18,7 @@
           <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
           <CashierSettings :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
           <CashierDisabled ref="disabledCashierRef" />
+          <CashierPaymentType ref="paymentTypeRef" @createTransaction="createTransaction" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loading.createTransaction" :total="form.transaction.total.replace(/,/g, '')" />
         </div>
 
         <el-table :data="Object.keys(form.transaction.items).map(key => form.transaction.items[key])" style="width: 100%; height: 100%;" table-layout="auto" >
@@ -57,7 +58,7 @@
           </div>
           <el-checkbox v-model="printReceiptAfterTransaction" size="large" border @change="pinia.togglePrintReceipt()">Print Receipt After Transaction</el-checkbox>
 
-          <el-button @click="createTransaction()" type="success" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" :loading="loading.createTransaction" style="margin-left: auto;">Create Transaction</el-button>
+          <el-button @click="paymentTypeRef.openPopup(true)" type="success" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" style="margin-left: auto;">Create Transaction</el-button>
         </div>
       </div>
     </div>
@@ -68,7 +69,7 @@
 //Imports
 const { notify } = useNotification()
 const pinia = useStore()
-const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
+const { calcDictSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 
 //Data
@@ -81,9 +82,9 @@ const loading = reactive({ startedLoading: true, query: false, createTransaction
 
 //Form
 const form = reactive({
-  transaction: {query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00'}
+  transaction: {query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: ''}
 })
-const initialTransaction = { query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00' }
+const initialTransaction = { query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: '' }
 const $resetTransactionState = () => {
   form.transaction = JSON.parse(JSON.stringify(initialTransaction))
 }
@@ -91,6 +92,7 @@ const $resetTransactionState = () => {
 //Element Reference
 const registerColumnsRef = ref(null)
 const disabledCashierRef = ref(null)
+const paymentTypeRef = ref(null)
 
 //Filters inventory depending on search query
 const filterInventory = (query) => {
@@ -170,7 +172,9 @@ function columnChecks() {
 //Gets the user store
 async function getStore() {
   store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
-  // console.log(JSON.stringify(store.value))
+
+  //Test data
+  //console.log(JSON.stringify(store.value))
 }
 
 // TRANSACTION METHODS //
@@ -219,19 +223,19 @@ function calcTransactionTotal() {
 async function createTransaction() {
   //Setup Data
   const { name_column, price_column, quantity_column, discount_column, cost_column } = store.value.inventory
+  const { payment, cash, card, check } = form.transaction
   const transactionItems = Object.values(form.transaction.items).map(item => ({
     name: item[name_column],
     key: item.__key,
     qty: item.__qty,
     price: item[price_column],
     discount: discount_column ? item[discount_column] : 0,
-    cost: cost_column ? item[cost_column] : item[price_column]
+    cost: cost_column ? item[cost_column] : item[price_column],
   }))
 
   //Exit function if no items in this transaction
-  if(transactionItems.length === 0) {
+  if(transactionItems.length === 0)
     return
-  }
 
   //Make request to create transaction
   loading.createTransaction = true
@@ -241,10 +245,13 @@ async function createTransaction() {
       store_id: storeId.value,
       tax: store.value.tax,
       items: transactionItems,
-      quantity_column: quantity_column
+      quantity_column: quantity_column,
+      payment: payment,
+      cash: cash,
+      card: card,
+      check: check
     }
-  })
-  loading.createTransaction = false
+  }) 
   
   //Display error
   if (response.statusCode) {
@@ -257,17 +264,23 @@ async function createTransaction() {
 
   //Print Reciept
   if(printReceiptAfterTransaction.value) {
-    const {subtotal, total, taxTotal, savings} = form.transaction
-    await printReceipt(transactionItems, store.value.tax.toFixed(2), subtotal, taxTotal, savings, total)
+    const { subtotal, total, taxTotal, savings } = form.transaction
+    const change = payment === 'cash' ? calcChange(cash, total.replace(/,/g, '')) : 0
+    await printReceipt(transactionItems, store.value.tax.toFixed(2), subtotal, taxTotal, savings, total, payment, cash, card, change)
   }
 
-  //Reset transaction, set inventory data
+  //Reset transaction, set inventory data, close popup
+  loading.createTransaction = false 
   $resetTransactionState()
   store.value.inventory = response.inventory
+  paymentTypeRef.value.openPopup(false)
+
+  //Test data
+  // console.log(JSON.stringify(response.transaction))
 }
 
 //Prints receipt
-async function printReceipt(items, tax, subtotal, tax_total, savings, total) {
+async function printReceipt(items, tax, subtotal, tax_total, savings, total, payment, cash, card, change) {
   //Make Request
   const response = await useFetchApi(`/api/protected/transaction/print`, {
     method: "POST",
@@ -278,7 +291,11 @@ async function printReceipt(items, tax, subtotal, tax_total, savings, total) {
       subtotal: subtotal,
       tax_total: tax_total,
       savings: savings,
-      total: total
+      total: total,
+      payment: payment,
+      cash: parseFloat(cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      card: card,
+      change: change.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
   })
 

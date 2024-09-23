@@ -7,12 +7,12 @@ export default defineEventHandler(async (event) => {
   const authUser = await getAuthUser(event)
   const user_id = authUser?.id
   const name = authUser?.name
-  const { store_id, tax, items, quantity_column } = await readBody(event)
+  const { store_id, tax, items, quantity_column, payment, cash, card, check } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
   
   //Check if we have required fields
-  if (!store_id || !items.length)
-    return { statusCode: 400, statusMessage: `Required: store_id, items.` }
+  if (!store_id || !items.length || !payment)
+    return { statusCode: 400, statusMessage: `Required: store_id, items, payment.` }
   
   //Check if this user has access rights to this store
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)
@@ -90,6 +90,10 @@ export default defineEventHandler(async (event) => {
       items: items,
       tax: tax,
       name: name,
+      payment: payment,
+      cash: cash ? parseFloat(cash) : 0,
+      card: card,
+      check: check,
       user: { connect: { id: user_id } },
       store: { connect: { id: store_id } }
     }

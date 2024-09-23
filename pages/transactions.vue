@@ -40,6 +40,23 @@
         </el-table-column>
       </el-table-column>
       <el-table-column prop="total" label="Total" />
+      <el-table-column label="Payment">
+        <template #default="scope">
+
+          <div v-if="scope.row.payment === 'cash'">
+            <div>
+              <div class="one-line">Cash: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+              <div v-if="parseFloat(scope.row.change) > 0" class="one-line">Change: ${{scope.row.change}}<b></b></div>
+            </div>
+          </div>
+          <div v-if="scope.row.payment === 'card'">
+            <div class="one-line">Card: <b class="capitalize">{{scope.row.card}}</b></div>
+          </div>
+          <div v-if="scope.row.payment === 'check'">
+            <div class="one-line">Check: <b>{{scope.row.check}}</b></div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="profit" label="Profit" />
       <el-table-column label="Operations">
         <template #default="scope">
@@ -57,7 +74,7 @@
 const pinia = useStore()
 const { notify } = useNotification()
 const { formatDate } = useFormatter()
-const { calcSubtotal, calcTaxTotal, calcTotal } = useCalculations()
+const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 
 //Data
@@ -102,6 +119,7 @@ async function getTransactions() {
     transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.profit = profit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0
   }
 
   //Test Data
@@ -111,7 +129,7 @@ async function getTransactions() {
 //Print receipt
 async function printReceipt(transaction) {
   //Setup data
-  const {items, tax, subtotal, tax_total, savings, total} = transaction
+  const {items, tax, subtotal, tax_total, savings, total, payment, cash, card, change} = transaction
 
   //Make request
   const response = await useFetchApi(`/api/protected/transaction/print`, {
@@ -123,7 +141,11 @@ async function printReceipt(transaction) {
       subtotal: subtotal,
       tax_total: tax_total,
       savings: savings,
-      total: total
+      total: total,
+      payment: payment,
+      cash: cash.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      card: card,
+      change: change
     }
   })
 

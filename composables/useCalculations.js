@@ -71,11 +71,16 @@ export default () => {
     return new Decimal(qty).times(new Decimal(costPerItem))
   }
 
+  function calcChange(cash, total) {
+    return new Decimal(cash).minus(new Decimal(total))
+  }
+
   return {
     calcSubtotal,
     calcDictSubtotal,
     calcTaxTotal,
     calcTotal,
-    calcTotalCost
+    calcTotalCost,
+    calcChange
   }
 }
