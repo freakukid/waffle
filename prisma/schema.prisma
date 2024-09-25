@@ -25,6 +25,7 @@ model User {
   settings        Settings?
   transactions    Transaction[]
   logs            Log[]
+  layaways        Layaway[]
 }
 
 // A Boss has one User (one-to-one)
@@ -58,6 +59,7 @@ model Store {
   inventory       Inventory?
   workers         Worker[]
   transactions    Transaction[]
+  layaways        Layaway[]
   logs            Log[]
   tax             Float       @default(0)
   header          Json?
@@ -134,4 +136,41 @@ model Permission {
   view_log          Boolean     @default(true)
   make_transactions Boolean     @default(true)
   recieving         Boolean     @default(false)
+}
+
+// Layaway belongs to one store (many to one)
+// Layaway transaction belongs to a customer
+model Layaway {
+  id              Int         @id @default(autoincrement())
+  timestamp       DateTime    @default(now())
+  status          String      @default("")  //Pending, Paid, Declined
+  store_id        Int         
+  store           Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  user_id         Int?         
+  user            User?       @relation(fields: [user_id], references: [id])
+  customer_id     Int         
+  customer        Customer    @relation(fields: [customer_id], references: [id])
+  name            String      @default("")
+  items           Json        //[name, qty, price, discount, cost]
+  tax             Float       @default(0)
+  payment         String      @default("cash") //cash, credit card, check
+  cash            Float       @default(0)
+  card            String      @default("")
+  check           String      @default("")
+}
+
+// Customer can have many layaways
+model Customer {
+  id                Int         @id @default(autoincrement())
+  name              String      
+  company           String?     @default("")
+  phone             String?     @default("")
+  email             String?     @default("")
+  // Address fields
+  address           String?     @default("")
+  city              String?     @default("")
+  zipcode           String?     @default("")
+  state             String?     @default("")
+  country           String?     @default("")
+  layaways          Layaway[]
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CashierComponent />
+    <CashierComponent :isLayaway="true" />
   </div>
 </template>
 

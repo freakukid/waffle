@@ -17,7 +17,7 @@
 
       <div class="flex justify-center my-4">
         <div v-show="payment === 'cash'">
-          <el-input :model-value="cash" ref="cashRef" class="w-60 text-center" placeholder="Cash Given" @input="test" />
+          <el-input :model-value="cash" ref="cashRef" class="w-60 text-center" placeholder="Cash Given" @input="sanitizeCash" />
           <div class="text-red-400 text-center text-2xl mt-2"><b v-if="cash && parseFloat(cash) > parseFloat(total)">Change Due: ${{calcChange(cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
         </div>
         <el-radio-group v-if="payment === 'card'" :model-value="card" @change="$emit('update:cash', ''), $emit('update:check', ''), $emit('update:card', $event)">
@@ -82,7 +82,7 @@ function openPopup(active) {
   popup.value = active
 }
 
-function test(val) {
+function sanitizeCash(val) {
   emit('update:card', '')
   emit('update:check', '')
 

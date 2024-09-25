@@ -18,14 +18,20 @@
         <template #title>Cashier</template>
       </el-menu-item>
     </NuxtLink>
-    <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
+    <NuxtLink v-if="permissions?.make_transactions" to="/layaway">
       <el-menu-item class="sidebar-item" index="4">
+        <Icon name="tabler:shopping-cart-pause" />
+        <template #title>Layaway</template>
+      </el-menu-item>
+    </NuxtLink>
+    <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
+      <el-menu-item class="sidebar-item" index="5">
         <Icon name="uil:transaction" />
         <template #title>Transactions</template>
       </el-menu-item>
     </NuxtLink>
     <NuxtLink v-if="permissions?.view_log" to="/logs">
-      <el-menu-item class="sidebar-item" index="5">
+      <el-menu-item class="sidebar-item" index="6">
         <Icon name="mingcute:inventory-line" />
         <template #title>Logs</template>
       </el-menu-item>
