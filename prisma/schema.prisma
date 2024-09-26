@@ -61,6 +61,7 @@ model Store {
   transactions    Transaction[]
   layaways        Layaway[]
   logs            Log[]
+  customers       Customer[]
   tax             Float       @default(0)
   header          Json?
   footer          Json?
@@ -143,7 +144,7 @@ model Permission {
 model Layaway {
   id              Int         @id @default(autoincrement())
   timestamp       DateTime    @default(now())
-  status          String      @default("")  //Pending, Paid, Declined
+  status          String      @default("pending")  //Pending, Paid, Declined
   store_id        Int         
   store           Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
   user_id         Int?         
@@ -153,7 +154,7 @@ model Layaway {
   name            String      @default("")
   items           Json        //[name, qty, price, discount, cost]
   tax             Float       @default(0)
-  payment         String      @default("cash") //cash, credit card, check
+  payment         String      @default("") //cash, credit card, check
   cash            Float       @default(0)
   card            String      @default("")
   check           String      @default("")
@@ -162,6 +163,8 @@ model Layaway {
 // Customer can have many layaways
 model Customer {
   id                Int         @id @default(autoincrement())
+  store_id          Int         
+  store             Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
   name              String      
   company           String?     @default("")
   phone             String?     @default("")

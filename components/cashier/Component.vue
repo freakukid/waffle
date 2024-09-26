@@ -1,21 +1,44 @@
 <template>
   <div v-if="!loading.startedLoading">
-    <div style="height: calc(100vh - 225px); width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+    <div style="height: calc(100vh - 225px); width: calc(100vw - 140px); padding-top: 16px; margin: 0 32px 0 auto;">
       
       <!-- SELECT -->
-      <el-select v-model="form.transaction.query" filterable remote reserve-keyword placeholder="Please enter a keyword" :remote-method="filterInventory" @change="addItemToTransaction">
-        <el-option v-for="(item, key) in options" :key="key" :label="item[store.inventory?.name_column]" :value="key" />
-      </el-select>
+      <div class="flex gap-2">
+
+        <el-select v-if="isLayaway" class="max-w-52" :model-value="customer" value-key="name" filterable remote reserve-keyword clearable placeholder="Search Customer" :remote-method="filterCustomer" @change="$emit('update:customer', $event)">
+          <template #footer>
+            <el-button @click="createCustomerRef.openPopup(true)" type="success" size="small">Create Customer</el-button>
+          </template>
+          <el-option v-for="item in customers" :key="item.id" :label="item.name" :value="item">
+            <div class="relative">
+              <div class="absolute -top-1 -left-3">
+                <el-tag size="small" type="success">Customer</el-tag>
+              </div>
+              <div class="pt-4">{{item.name}}</div>
+            </div>
+            <div v-if="item.company" class="relative">
+              <div class="absolute -top-4 -left-3">
+                <el-tag size="small" type="success" class="position-absolute">Company</el-tag>
+              </div>
+              <div class="pt-1">{{item.company}}</div>
+            </div>
+          </el-option>
+        </el-select>
+
+        <el-select v-model="form.transaction.query" filterable remote placeholder="Search Product" :remote-method="filterInventory" @change="addItemToTransaction">
+          <el-option v-for="(item, key) in options" :key="key" :label="item[store.inventory?.name_column]" :value="key" />
+        </el-select>
+      </div>
       <!-- SELECT -->
 
       <!-- TOOLBAR -->
       <div id="toolbar">
         <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
         <CashierSettings :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
-        <LayawayCreateCustomer v-if="isLayaway" />
+        <LayawayCreateCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
       </div>
       <CashierDisabled ref="disabledCashierRef" />
-      <CashierPaymentType ref="paymentTypeRef" @createTransaction="createTransaction" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loading.createTransaction" :total="form.transaction.total.replace(/,/g, '')" />
+      <CashierPaymentType ref="paymentTypeRef" @createTransaction="$emit('createTransaction', store, form.transaction)" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loadingTransaction" :total="form.transaction.total.replace(/,/g, '')" />
       <!-- TOOLBAR -->
 
       <!-- ITEMS -->
@@ -56,9 +79,16 @@
           <div>Tax ({{store.tax}}%): {{form.transaction.taxTotal}}</div>
           <div>Total Price: {{form.transaction.total}}</div>
         </div>
-        <el-checkbox v-model="printReceiptAfterTransaction" size="large" border @change="pinia.togglePrintReceipt()">Print Receipt After Transaction</el-checkbox>
 
-        <el-button @click="paymentTypeRef.openPopup(true)" type="success" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" style="margin-left: auto;">Create Transaction</el-button>
+        <el-card v-if="customer" class="text-sm ml-auto" style="width: 250px">
+          <div><b>Customer:</b> {{customer.name}}</div>
+          <div v-if="customer.company"><b>Company:</b> {{customer.company}}</div>
+        </el-card>
+
+        <el-checkbox v-if="!isLayaway" :model-value="printReceiptAfterTransaction" size="large" border @change="pinia.togglePrintReceipt()">Print Receipt After Transaction</el-checkbox>
+
+        <el-button v-if="isLayaway" @click="$emit('createLayaway', store, form.transaction)" :disabled="customer && !Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" :loading="loadingTransaction" type="success" style="margin-left: auto;">Create Layaway</el-button>
+        <el-button v-else @click="openPaymentPopup(true)" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" type="success" style="margin-left: auto;">Create Transaction</el-button>
       </div>
       <!-- RESULTS -->
     </div>
@@ -69,24 +99,29 @@
 //Imports
 const { notify } = useNotification()
 const pinia = useStore()
-const { calcDictSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
+const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 
 //Data
 const storeId = computed(pinia.getStore)
 const isBossAccount = computed(isBoss)
-const printReceiptAfterTransaction = computed(() => pinia.printReceipt)
 const store = ref({})
 const options = ref([])
-const loading = reactive({ startedLoading: true, query: false, createTransaction: false })
+const loading = reactive({ startedLoading: true, query: false })
 
 const props = defineProps({
-  isLayaway: { default: false }
+  loadingTransaction: { default: false },
+  isLayaway: { default: false },
+  customers: { default: [] },
+  customer: { default: '' },
+  printReceiptAfterTransaction: { default: true }
 })
+
+const emits = defineEmits(['filterCustomer', 'addCustomer', 'update:customer', 'createTransaction', 'createLayaway'])
 
 //Form
 const form = reactive({
-  transaction: {query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: ''}
+  transaction: {query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: ''},
 })
 const initialTransaction = { query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: '' }
 const $resetTransactionState = () => {
@@ -97,6 +132,7 @@ const $resetTransactionState = () => {
 const registerColumnsRef = ref(null)
 const disabledCashierRef = ref(null)
 const paymentTypeRef = ref(null)
+const createCustomerRef = ref(null)
 
 //Filters inventory depending on search query
 const filterInventory = (query) => {
@@ -151,17 +187,6 @@ onBeforeMount(async () => {
 })
 //Mount//
 
-//Sets a inventory value for components to set
-function setInventory(data) {
-  store.value.inventory = data
-}
-
-//Sets a store value for components to set
-function setStore(data) {
-  store.value = data
-  calcTransactionTotal()
-}
-
 //Checks if we have name and price columns set, if not prompt user
 function columnChecks() {
   if(store.value.inventory && (!store.value.inventory.name_column || !store.value.inventory.price_column)) {
@@ -195,6 +220,8 @@ function addItemToTransaction(value) {
     form.transaction.items[value] = item
   }
 
+  form.transaction.query = ''
+
   calcTransactionTotal()
 }
 
@@ -224,92 +251,41 @@ function calcTransactionTotal() {
   form.transaction.cash = total.toFixed(2)
 }
 
-//Creates a transaction
-async function createTransaction() {
-  //Setup Data
-  const { name_column, price_column, quantity_column, discount_column, cost_column } = store.value.inventory
-  const { payment, cash, card, check } = form.transaction
-  const transactionItems = Object.values(form.transaction.items).map(item => ({
-    name: item[name_column],
-    key: item.__key,
-    qty: item.__qty,
-    price: item[price_column],
-    discount: discount_column ? item[discount_column] : 0,
-    cost: cost_column ? item[cost_column] : item[price_column],
-  }))
-
-  //Exit function if no items in this transaction
-  if(transactionItems.length === 0)
-    return
-
-  //Make request to create transaction
-  loading.createTransaction = true
-  const response = await useFetchApi(`/api/protected/transaction/create`, {
-    method: "POST",
-    body: {
-      store_id: storeId.value,
-      tax: store.value.tax,
-      items: transactionItems,
-      quantity_column: quantity_column,
-      payment: payment,
-      cash: cash,
-      card: card,
-      check: check
-    }
-  }) 
-  
-  //Display error
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
-  }
-
-  //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
-
-  //Print Reciept
-  if(printReceiptAfterTransaction.value) {
-    const { subtotal, total, taxTotal, savings } = form.transaction
-    const change = payment === 'cash' ? calcChange(cash, total.replace(/,/g, '')) : 0
-    await printReceipt(transactionItems, store.value.tax.toFixed(2), subtotal, taxTotal, savings, total, payment, cash, card, change)
-  }
-
-  //Reset transaction, set inventory data, close popup
-  loading.createTransaction = false 
-  $resetTransactionState()
-  store.value.inventory = response.inventory
-  paymentTypeRef.value.openPopup(false)
-
-  //Test data
-  // console.log(JSON.stringify(response.transaction))
+//Sets a store value for components to set
+function setStore(data) {
+  store.value = data
+  calcTransactionTotal()
 }
 
-//Prints receipt
-async function printReceipt(items, tax, subtotal, tax_total, savings, total, payment, cash, card, change) {
-  //Make Request
-  const response = await useFetchApi(`/api/protected/transaction/print`, {
-    method: "POST",
-    body: {
-      store_id: storeId.value,
-      items: items,
-      tax: tax,
-      subtotal: subtotal,
-      tax_total: tax_total,
-      savings: savings,
-      total: total,
-      payment: payment,
-      cash: parseFloat(cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-      card: card,
-      change: change.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    }
-  })
-
-  //Display error
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
-  }
+//Sets a inventory value for components to set
+function setInventory(data) {
+  store.value.inventory = data
 }
+
+//Toggles Payment Popup
+function openPaymentPopup(active) {
+  paymentTypeRef.value.openPopup(active)
+}
+
+//Layaway Emits
+function addCustomer(customer) {
+  emits('addCustomer', customer)
+}
+
+function filterCustomer(query) {
+  emits('filterCustomer', query)
+}
+
+function updateCustomer(customer) {
+  emits('update:customer', customer)
+}
+
+// Expose the methods to parent
+defineExpose({
+  setInventory,
+  openPaymentPopup,
+  $resetTransactionState
+})
 </script>
 
 <style lang="scss" scoped>
@@ -330,5 +306,11 @@ async function printReceipt(items, tax, subtotal, tax_total, savings, total, pay
   position: relative;
   top: 10px;
   margin-left: 8px;
+}
+</style>
+
+<style lang="scss">
+.el-select-dropdown__item {
+  height: max-content;
 }
 </style>
