@@ -26,6 +26,9 @@ export default defineEventHandler(async (event) => {
   const customers = await prisma.customer.findMany({
     where: {
       store_id: parseInt(store_id)
+    },
+    orderBy: {
+      id: 'asc' // or 'asc' for ascending order
     }
   })
   

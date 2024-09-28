@@ -1,11 +1,11 @@
 <template>
   <div v-if="!loading.loading" style="height: calc(100vh - 215px); width: calc(100vw - 140px); margin: 0 32px 0 auto;">
-    
+    <!-- Tabs -->
     <div class="flex justify-center py-4 select-none">
       <el-segmented v-model="tab" :options="options" />
     </div>
 
-
+    <!-- Transaction -->
     <el-table v-if="tab === 'transaction'" :data="transactions" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" label="Date" />
@@ -47,6 +47,7 @@
       </el-table-column>
     </el-table>
 
+    <!-- Layaway -->
     <el-table v-if="tab === 'layaway'" :data="layaway" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" label="Date" />
@@ -109,6 +110,69 @@
       </el-table-column>
     </el-table>
 
+    <!-- Customer -->
+    <div v-if="tab === 'customer'">
+      <div class="mb-2">
+        <CustomerModifyCustomer :storeId="storeId" @addCustomer="addCustomer" />
+        <CustomerModifyCustomer ref="editCustomerRef" type="Edit"
+          :id="form.customer?.id"
+          :name="form.customer?.name"
+          :email="form.customer?.email"
+          :phone="form.customer?.phone"
+          :company="form.customer?.company"
+          :address="form.customer?.address"
+          :city="form.customer?.city"
+          :zipcode="form.customer?.zipcode"
+          :state="form.customer?.state"
+          :country="form.customer?.country"
+          :storeId="storeId"
+          @editCustomer="editCustomer"
+        />
+        <CustomerDeleteCustomer ref="deleteCustomerRef" :storeId="storeId" :id="form.customer?.id" :name="form.customer?.name" @deleteCustomer="deleteCustomer" />
+      </div>
+      <el-table :data="customers" style="width: 100%; height: 100%;" table-layout="auto">
+        <el-table-column prop="id" label="ID" />
+        <el-table-column prop="name" label="Customer" />
+        <el-table-column prop="company" label="Company" />
+        <el-table-column label="Contact">
+          <template #default="scope">
+            <div v-if="scope.row.email">{{scope.row.email}}</div>
+            <div v-if="scope.row.phone">{{formatPhoneNumber(scope.row.phone)}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="Address">
+          <template #default="scope">
+            <div v-if="scope.row.address">
+              <div>{{scope.row.address}}</div>
+              <div>
+                <span v-if="scope.row.city">{{scope.row.city}},&nbsp;</span>
+                <span v-if="scope.row.zipcode">{{scope.row.zipcode}}</span>
+                <span v-if="scope.row.country"><span v-if="scope.row.zipcode">,&nbsp;</span>{{scope.row.country}}</span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="Operations" width="140">
+          <template #default="scope">
+            <div class="flex flex-col justify-center gap-3">
+              <div>
+                <el-button size="small" type="warning" class="w-full" @click="openCustomerEdit(scope.row)">
+                  Edit Customer
+                </el-button>
+              </div>
+              <div>
+                <el-button size="small" type="danger" class="w-full" @click="form.customer = scope.row, deleteCustomerRef.openPopup(true)">
+                  Delete Customer
+                </el-button>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- Dialog -->
     <CashierPaymentType ref="paymentTypeRef"
       v-model:payment="form.layaway.payment"
       v-model:cash="form.layaway.cash"
@@ -134,15 +198,19 @@ const storeId = computed(pinia.getStore)
 const isBossAccount = computed(isBoss)
 const transactions = ref([])
 const layaway = ref([])
+const customers = ref([])
 const inventory = ref(null)
 const tab = ref('transaction')
 const options = [
   { label: 'Transaction', value: 'transaction', icon: 'uil:transaction' },
   { label: 'Layaway', value: 'layaway', icon: 'hugeicons:invoice-03'},
+  { label: 'Customer', value: 'customer', icon: 'material-symbols:person-rounded'}
 ]
 
 //Element Reference
 const paymentTypeRef = ref(null)
+const editCustomerRef = ref(null)
+const deleteCustomerRef = ref(null)
 
 //Form
 const loading = reactive({ loading: true, confirmPayment: false })
@@ -154,11 +222,14 @@ const form = reactive({
     card: '',
     check: '',
     total: '',
-  }
+  },
+  customer: null
 })
 
 const initialLayaway = { item: null, payment: 'cash', cash: '', card: '', check: '', total: '' }
 const $resetLayaway = () => { form.layaway = initialLayaway }
+const initialCustomer = { id: 0, name: '', email: '', phone: '', company: '', address: '', city: '', zipcode: '', state: '', country: '' }
+const $resetCustomer = () => { form.customer = initialLayaway }
 
 //Mount
 onBeforeMount(async () => {
@@ -174,6 +245,7 @@ onBeforeMount(async () => {
 
   await getTransactions()
   await getLayaway()
+  await getCustomers()
   await getInventory()
   loading.loading = false
 })
@@ -202,12 +274,20 @@ async function getLayaway() {
   // console.log(JSON.stringify(layaway.value))
 }
 
+//Fetch customers
+async function getCustomers() {
+  customers.value = await useFetchApi(`/api/protected/customer/${storeId.value}`)
+
+  //Test Data
+  // console.log(JSON.stringify(customers.value))
+}
+
 async function getInventory() {
   //Make Request
   inventory.value = await useFetchApi(`/api/protected/inventory/${storeId.value}`)
 
   //Test Data
-  console.log(JSON.stringify(inventory.value))
+  // console.log(JSON.stringify(inventory.value))
 }
 
 function openPaymentPrompt(layaway) {
@@ -219,6 +299,12 @@ function openPaymentPrompt(layaway) {
   form.layaway.cash = total
 
   paymentTypeRef.value.openPopup(true)
+}
+
+async function openCustomerEdit(customer) {
+  form.customer = customer
+  await nextTick()
+  editCustomerRef.value.openPopup(true)
 }
 
 async function confirmPayment() {
@@ -342,6 +428,21 @@ async function printReceipt(transaction) {
 
   //Display success
   notify({ title: 'Success', text: response.message, type: 'success'})
+}
+
+//Adds customers to the list
+function addCustomer(customer) {
+  customers.value.push(customer)
+}
+
+//Edits specific customer from the list
+function editCustomer(customer) {
+  customers.value = customers.value.map(user => (user.id === customer.id ? customer : user))
+}
+
+//Deletes specific customer from the list
+function deleteCustomer(id) {
+  customers.value = customers.value.filter(user => user.id !== id)
 }
 </script>
 

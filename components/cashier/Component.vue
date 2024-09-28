@@ -34,7 +34,7 @@
       <div id="toolbar">
         <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
         <CashierSettings :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
-        <LayawayCreateCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
+        <CustomerModifyCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
       </div>
       <CashierDisabled ref="disabledCashierRef" />
       <CashierPaymentType ref="paymentTypeRef" @createTransaction="$emit('createTransaction', store, form.transaction)" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loadingTransaction" :total="form.transaction.total.replace(/,/g, '')" />

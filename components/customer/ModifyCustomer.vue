@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Register Customer" fullscreen @opened="focusInput()">
+    <el-dialog v-model="popup" :title="`${type} Customer`" @opened="focusInput()">
       
       <el-form id="form" ref="formRef" :model="form" :rules="rules" label-width="auto" label-position="top" @submit.prevent>
         <el-form-item label="Name" prop="name">
@@ -44,14 +44,15 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button :loading="loading" native-type="submit" @click="validateForm">Register Customer</el-button>
+          <el-button :loading="loading" native-type="submit" @click="validateForm">{{type}} Customer</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
 
     <!-- Customer Btn -->
-    <el-button @click="openPopup(true)" type="success">Create Customer</el-button>
+    <el-button v-if="type === 'Create'" @click="openPopup(true)" type="success">Create Customer</el-button>
+    <!-- <el-button v-else @click="openPopup(true)" type="warning">Edit Customer</el-button> -->
     <!-- Customer Btn -->
   </div>
 </template>
@@ -65,8 +66,22 @@ const popup = ref(false)
 const loading = ref(false)
 const formRef = ref()
 //Component
-const props = defineProps({ storeId: { required: true } })
-const emits = defineEmits(['addCustomer'])
+const props = defineProps({
+  type: { default: 'Create' },
+  id: { default: 0 },
+  storeId: { default: 0, required: true },
+  name: { default: '' },
+  email: { default: '' },
+  phone: { default: '' },
+  company: { default: '' },
+  //Address
+  address: { default: '' },
+  city: { default: '' },
+  zipcode: { default: '' },
+  state: { default: '' },
+  country: { default: '' }
+})
+const emits = defineEmits(['addCustomer', 'editCustomer'])
 
 const form = reactive({
   name: '',
@@ -85,7 +100,7 @@ const rules = reactive({
   name: [{
     required: true,
     message: `Please enter the customer's name`,
-    trigger: 'blur'
+    trigger: 'change'
   }],
   email: [{
     type: 'email',
@@ -108,12 +123,28 @@ const focusInput = () => {
 //Prompt
 function openPopup(active) {
   popup.value = active
+
+  if(active && props.type === 'Edit') {
+    const { name, email, phone, company, address, city, zipcode, state, country } = props
+
+    form.name = name
+    form.email = email
+    form.phone = phone
+    form.company = company
+    form.address = address
+    form.city = city
+    form.zipcode = zipcode
+    form.state = state
+    form.country = country
+  }
 }
 
 function validateForm() {
   formRef.value.validate((valid) => {
-    if (valid)
+    if (props.type === 'Create' && valid)
       createCustomer()
+    else if (props.type === 'Edit' && valid)
+      editCustomer()
   })
 }
 
@@ -151,6 +182,45 @@ async function createCustomer() {
 
   //emit value to parent component, close popup
   emits('addCustomer', response.customer)
+  popup.value = false
+}
+
+async function editCustomer() {
+  //Setup data
+  const { name, email, phone, company, address, city, zipcode, state, country } = form
+  const { id } = props
+
+  //Make request to create transaction
+  loading.value = true
+  const response = await useFetchApi(`/api/protected/customer/edit`, {
+    method: "POST",
+    body: {
+      id: id,
+      store_id: props.storeId,
+      name: name,
+      email: email,
+      phone: phone,
+      company: company,
+      address: address,
+      city: city,
+      zipcode: zipcode,
+      state: state,
+      country: country
+    }
+  })
+  loading.value = false
+
+  //Display error
+  if (response.statusCode) {
+    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    return
+  }
+
+  //show success message
+  notify({ title: 'Success', text: response.message, type: 'success'})
+
+  //emit value to parent component, close popup
+  emits('editCustomer', response.customer)
   popup.value = false
 }
 
