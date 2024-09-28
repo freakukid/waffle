@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Delete Column" fullscreen>
+    <el-dialog v-model="popup" title="Delete Column">
       <p style="text-align: center; color: #ff4545; font-size: 24px;">
         <b>Deleting this column will delete the following data:</b>
       </p>

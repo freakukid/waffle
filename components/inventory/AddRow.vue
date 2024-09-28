@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Add Item" fullscreen>
+    <el-dialog v-model="popup" title="Add Item">
       <el-form :model="form.value" label-position="top" @submit.prevent="addRow()">
         <el-form-item v-for="column in props.inventory.columns" :key="column" :label="column">
           <el-input v-model="form.value[column]" autocomplete="off" />

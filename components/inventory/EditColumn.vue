@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Edit Column" fullscreen>
+    <el-dialog v-model="popup" title="Edit Column">
       <el-form :model="form.value" label-position="top" @submit.prevent="editColumn()">
         <el-form-item v-for="(column, index) in props.inventory.columns" :key="column" :label="`Column ${index+1}`">
           <el-input v-model="form.value[column]" :value="form.value[column]" autocomplete="off" />

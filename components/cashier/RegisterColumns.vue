@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Register Columns" fullscreen :show-close="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''">
+    <el-dialog v-model="popup" title="Register Columns" :show-close="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''" :close-on-click-modal="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''">
       <p>In order to get the cashier working you would need to register columns in your inventory.</p>
       <el-form :model="form" @submit.prevent="registerColumns()">
         <el-form-item>

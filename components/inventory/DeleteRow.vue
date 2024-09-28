@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Delete Item" fullscreen>
+    <el-dialog v-model="popup" title="Delete Item">
       <p style="text-align: center; color: #ff4545; font-size: 24px;">
         <b>Are you sure you want to delete the following row?</b>
       </p>

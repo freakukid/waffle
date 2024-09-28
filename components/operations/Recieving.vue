@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Recieve Item" fullscreen>
+    <el-dialog v-model="popup" title="Recieve Item">
       <label>Item Recieved:</label>
       <el-select
         v-model="search"

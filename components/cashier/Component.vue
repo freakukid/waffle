@@ -4,7 +4,6 @@
       
       <!-- SELECT -->
       <div class="flex gap-2">
-
         <el-select v-if="isLayaway" class="max-w-52" :model-value="customer" value-key="name" filterable remote reserve-keyword clearable placeholder="Search Customer" :remote-method="filterCustomer" @change="$emit('update:customer', $event)">
           <template #footer>
             <el-button @click="createCustomerRef.openPopup(true)" type="success" size="small">Create Customer</el-button>
@@ -124,9 +123,7 @@ const form = reactive({
   transaction: {query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: ''},
 })
 const initialTransaction = { query: '', items: {}, subtotal: '0.00', taxTotal: '0.00', total: '0.00', savings: '0.00', payment: 'cash', card: '', check: '', cash: '' }
-const $resetTransactionState = () => {
-  form.transaction = JSON.parse(JSON.stringify(initialTransaction))
-}
+const $resetTransactionState = () => { form.transaction = JSON.parse(JSON.stringify(initialTransaction)) }
 
 //Element Reference
 const registerColumnsRef = ref(null)

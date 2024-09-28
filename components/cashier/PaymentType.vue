@@ -57,10 +57,10 @@ const options = [
 
 const props = defineProps({
   payment: { default: 'cash', required: true },
-  cash: { default: '', required: true},
+  cash: { default: '', required: true },
   card: { default: '', required: true },
-  check: { default: '', required: true},
-  loading: { default: false, required: true},
+  check: { default: '', required: true },
+  loading: { default: false, required: true },
   total: { default: '0.00', required: true },
 })
 

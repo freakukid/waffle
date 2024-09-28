@@ -84,7 +84,6 @@ export default defineEventHandler(async (event) => {
   }
 
   //Create transaction
-  items.forEach(item => { delete item.key })
   const layaway = await prisma.layaway.create({
     data: {
       items: items,

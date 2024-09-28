@@ -40,6 +40,18 @@ export default defineEventHandler(async (event) => {
     }
   })
 
+  const transactions = await prisma.transaction.deleteMany({
+    where: {
+      store_id: store_id
+    }
+  })
+
+  const layaways = await prisma.layaway.deleteMany({
+    where: {
+      store_id: store_id
+    }
+  })
+
   setResponseStatus(event, 201)
   
   return {

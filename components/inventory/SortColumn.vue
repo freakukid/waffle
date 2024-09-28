@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Sort Columns" fullscreen>
+    <el-dialog v-model="popup" title="Sort Columns">
       <el-tree :data="form.value" draggable :allow-drop="allowDrop" />
       <template #footer>
         <div class="dialog-footer">
