@@ -37,7 +37,6 @@ const filterCustomers = (query) => {
   }
 }
 
-
 //Mount
 onBeforeMount(async () => {
   await fetchCustomers()

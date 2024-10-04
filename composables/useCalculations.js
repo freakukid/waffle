@@ -20,10 +20,13 @@ export default () => {
 
       if(discount > 0) {
         const discountSubtotalPrice = itemSubtotal.minus(itemSubtotal.times(discount))
+        const newPrice = price.minus(price.times(discount))
         discountSubtotal = discountSubtotal.plus(discountSubtotalPrice)
-        item['new_price'] = price.minus(price.times(discount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        item['new_price'] = newPrice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        item['subtotal'] = newPrice.times(qty).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         totalPrice = totalPrice.plus(discountSubtotalPrice)
       } else {
+        item['subtotal'] = itemSubtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         discountSubtotal = discountSubtotal.plus(itemSubtotal)
         totalPrice = totalPrice.plus(itemSubtotal)
       }

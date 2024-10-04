@@ -51,20 +51,30 @@ model Settings {
 // A Store has multiple transactions (one to many)
 // A Store has multiple logs (one to many)
 model Store {
-  id              Int         @id @default(autoincrement())
-  name            String
-  code            String      @unique
-  boss_id         Int      
-  boss            Boss        @relation(fields: [boss_id], references: [id])
-  inventory       Inventory?
-  workers         Worker[]
-  transactions    Transaction[]
-  layaways        Layaway[]
-  logs            Log[]
-  customers       Customer[]
-  tax             Float       @default(0)
-  header          Json?
-  footer          Json?
+  id                Int         @id @default(autoincrement())
+  name              String
+  code              String      @unique
+  boss_id           Int      
+  boss              Boss        @relation(fields: [boss_id], references: [id])
+  inventory         Inventory?
+  workers           Worker[]
+  transactions      Transaction[]
+  layaways          Layaway[]
+  logs              Log[]
+  customers         Customer[]
+  tax               Float       @default(0)
+  header            Json?
+  footer            Json?
+
+  phone             String?     @default("")
+  email             String?     @default("")
+  website           String?     @default("")
+  // Address fields
+  address           String?     @default("")
+  city              String?     @default("")
+  zipcode           String?     @default("")
+  state             String?     @default("")
+  country           String?     @default("")
 }
 
 // A Worker has one User (one to one)

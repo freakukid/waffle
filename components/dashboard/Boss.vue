@@ -1,38 +1,5 @@
 <template>
   <div>
-    <!-- Create -->
-    <el-dialog v-model="popup.createStore" title="Create Store" width="300" @opened="focusCreateInput">
-      <p style="color: red;">Warning: You will be logout and must sign in to refresh local data. This is necessary to make this application much faster & safe.</p>
-      <el-form :model="form" @submit.prevent="createStore()" :rules="rules">
-        <el-form-item label="Store name" prop="name">
-          <el-input v-model="form.name" ref="createRef" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="popup.createStore = false">Cancel</el-button>
-          <el-button type="success" @click="createStore()" :disabled="form.name.length < 2" :loading="loading.createStore">Create</el-button>
-        </div>
-      </template>
-    </el-dialog>
-    <!-- Create -->
-
-    <!-- Edit -->
-    <el-dialog v-model="popup.editStore" title="Edit Store" width="300" @opened="focusEditInput">
-      <el-form :model="form" @submit.prevent="editStore()" :rules="rules">
-        <el-form-item label="Store name" prop="name">
-          <el-input v-model="form.editName" ref="editRef" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="popup.editStore = false">Cancel</el-button>
-          <el-button type="warning" @click="editStore()" :disabled="form.editName.length < 2" :loading="loading.editStore">Edit</el-button>
-        </div>
-      </template>
-    </el-dialog>
-    <!-- Edit -->
-
     <!-- Delete -->
     <el-dialog v-model="popup.deleteStore" title="Delete Store" width="300">
       <p style="text-align: center;">
@@ -53,7 +20,7 @@
 
     <h1>Stores</h1>
 
-    <div id="store-wrapper">
+    <div v-if="stores.length" id="store-wrapper">
       <!-- STORES -->
       <el-card v-for="store in stores" :key="store.id" class="store" body-style="height: calc(100% - 105px);">
         <template #header>
@@ -66,7 +33,7 @@
           <div>
             <label>Actions:</label>
             <div>
-              <el-button type="warning" plain @click="popup.editStore = true, form.editName = '', form.editId = store.id">
+              <el-button type="warning" plain @click="openEditStore(store)">
                 Edit
               </el-button>
 
@@ -87,12 +54,23 @@
         </div>
       </el-card>
       <!-- STORES -->
-      <el-button v-if="!loading.startedLoading" id="create-btn" type="primary" @click="popup.createStore = true, form.name = ''">
-        <div class="btn-body">
-          <Icon name="mdi:store-plus" />
-          <b>Create Store</b>
-        </div>
-      </el-button>
+
+      <StoreModifyStore type="Create" @addStore="addStore" />
+      <StoreModifyStore
+        ref="editStoreRef"
+        type="Edit"
+        :id="form.store?.id"
+        :name="form.store?.name"
+        :email="form.store?.email"
+        :phone="form.store?.phone"
+        :website="form.store?.website"
+        :address="form.store?.address"
+        :city="form.store?.city"
+        :zipcode="form.store?.zipcode"
+        :state="form.store?.state"
+        :country="form.store?.country"
+        @editStore="editStore"
+      />
     </div>
   </div>
 </template>
@@ -100,27 +78,17 @@
 <script setup>
 //Import
 import { ref } from '#imports'
-const { signOut } = useAuth()
 const { notify } = useNotification()
 const pinia = useStore()
 
 //General
-const loading = reactive({ startedLoading: true, createStore: false, editStore: false, deleteStore: false })
-const popup = reactive({ createStore: false, editStore: false, deleteStore: false })
+const loading = reactive({ startedLoading: true, deleteStore: false })
+const popup = reactive({ deleteStore: false })
 const stores = ref([])
 const storeId = computed(pinia.getStore)
 
-//Create Input
-const createRef = ref()
-const focusCreateInput = () => {
-  createRef.value?.focus()
-}
-
-//Edit Input
-const editRef = ref()
-const focusEditInput = () => {
-  editRef.value?.focus()
-}
+//Reference
+const editStoreRef = ref(null)
 
 //Component Props
 const props = defineProps({
@@ -132,16 +100,9 @@ const props = defineProps({
 
 //Form
 const form = reactive({
-  name: '',
-  editId: 0,
-  editName: '',
   deleteName: '',
-  deleteId: 0
-})
-
-//Form Rules
-const rules = ref({
-  name: [{ min: 2, message: 'Length should be 2 or more', trigger: 'blur' }],
+  deleteId: 0,
+  store: {}
 })
 
 //Mount
@@ -152,6 +113,12 @@ onBeforeMount(async () => {
 //Mount
 
 //Methods
+async function openEditStore(store) {
+  form.store = store
+  await nextTick()
+  editStoreRef.value.openPopup(true)
+}
+
 function setStore(id, name) {
   pinia.setStore(id)
   notify({ title: 'Success', text: 'Enter store: ' + name, type: 'success'})
@@ -169,65 +136,14 @@ async function updateStores() {
   // console.log(JSON.stringify(stores.value))
 }
 
-async function createStore() {
-  if(form.name.length < 2) {
-    return
-  }
-
-  loading.createStore = true
-  
-  const response = await useFetchApi(`/api/protected/store/create`, {
-    method: "POST",
-    body: {
-      store_name: form.name,
-    }
-  })
-
-  loading.createStore = false
-
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
-  }
-
-  popup.createStore = false
-  notify({ title: 'Success', text: response.message, type: 'success'})
-
-  stores.value.push(response.store)
-
-  //Sign out user to reset data
-  pinia.exitStore()
-  signOut({ callbackUrl: '/login' })
+function addStore(store) {
+  stores.value.push(store)
 }
 
-async function editStore() {
-  if(form.editName.length < 2) {
-    return
-  }
-
-  loading.editStore = true
-
-  const response = await useFetchApi(`/api/protected/store/edit`, {
-    method: "POST",
-    body: {
-      id: form.editId,
-      store_name: form.editName,
-    }
-  })
-
-  loading.editStore = false
-  
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
-  }
-
-  popup.editStore = false
-  notify({ title: 'Success', text: response.message, type: 'success'})
-
-  const index = stores.value.findIndex(item => item.id === response.store.id)
+function editStore(store) {
+  const index = stores.value.findIndex(item => item.id === store.id)
   if (index !== -1)
-    stores.value[index] = response.store
+    stores.value[index] = store
 }
 
 async function deleteStore() {
