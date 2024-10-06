@@ -1,6 +1,6 @@
 <template>
-  <div id="test-page" class="flex items-center justify-center flex-col">
-    <div ref="content" class="flex flex-col bg-white text-black w-[840px] h-[1180px]" style="font-family: 'Calibri', sans-serif;">
+  <div id="pdf-component" class="flex items-center justify-center flex-col fixed left-[-1000px]">
+    <div v-if="store && layaway" ref="content" class="flex flex-col bg-white text-black w-[840px]" style="font-family: 'Calibri', sans-serif;">
       <!-- HEADER -->
       <header class="flex items-center bg-gray-900 h-32 text-white px-6">
         <div class="text-left leading-tight w-1/3">
@@ -66,7 +66,7 @@
             <template #default="scope">
               <div><b>{{scope.row.name}}</b></div>
               <div v-if="scope.row.discount > 0">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea) | Discount ${scope.row.discount}%`}}</div>
-              <div v-else-if="scope.row.qty > 0">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea)`}}</div>
+              <div v-else-if="scope.row.qty > 1">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea)`}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="subtotal" label="Price" align="right" />
@@ -116,6 +116,10 @@
         <div class="mt-4">
           <b>Notes:</b>
 
+          <div v-for="note in additionalNotes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
+            <p v-if="note.text.trim() !== ''">{{note.text}}</p>
+          </div>
+
           <p v-for="note in store.invoice_notes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
             {{note.text}}
           </p>
@@ -124,23 +128,52 @@
       </div>
       <!-- CONTENT -->
     </div>
-    <el-button class="mt-6" type="success" @click="generatePDF">Generate PDF</el-button>
   </div>
+
+  <PdfSendEmail ref="sendEmailRef" :loading="loading" @sendEmailPDF="sendEmailPDF" />
+  <PdfAdditionalNotes ref="additionalNotesRef" :type="type" :loading="loading" @generatePDF="generatePDF" />
 </template>
 
 <script setup>
-import { ref } from 'vue'
+//Import
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+const { notify } = useNotification()
 const { formatPhoneNumber } = useFormatter()
 
-const content = ref(null)
-const layaway = {"id":10,"timestamp":"2024-10-02T23:15:54.855Z","status":"pending","store_id":9,"user_id":1,"customer_id":15,"name":"Yugi Motto","items":[{"key":"0","qty":2,"cost":"177.94","name":"10.00-16 Carlisle Triple Rib LR:D/8","price":"293.00","discount":0,"subtotal":"586.00"},{"key":"1","qty":2,"cost":"104.00","name":"10-16.5 LT Samson Premium Skid Steer           LR: E/10","price":"190.40","discount":20,"new_price":"152.32","subtotal":"304.64"},{"key":"2","qty":2,"cost":"304.64","name":"11-22.5 Advanta AV9000 Close Shoulder LR:G/14","price":"507.16","discount":30,"new_price":"355.01","subtotal":"710.02"},{"key":"5","qty":1,"cost":"269.40","name":"11-24.5 Fortune FAR602 LR:H/16 AP","price":"505.00","discount":50,"new_price":"252.50","subtotal":"252.50"},{"key":"6","qty":3,"cost":"284.39","name":"11-24.5 Fortune FDH106 LR:H/16 CS","price":"490.00","discount":0,"subtotal":"1,470.00"}],"tax":"1.50","payment":"","cash":0,"card":"","check":"","user":{"name":"Yugi Motto"},"customer":{"id":15,"store_id":9,"name":"John Smith","company":"Company Name","phone":"6021234567","email":"test@gmail.com","address":"Address Avenue Rd.","city":"City","zipcode":"85345","state":"Az","country":"US"},"date":"October 02, 4:15 PM","subtotal":"3,323.16","tax_total":"49.85","savings":"632.96","total":"3,373.01","profit":"1,027.43","change":0}
-const store = {"id":9,"name":"Jesse's Tire Shop","code":"CiUset","boss_id":1,"tax":1.5,"header":[{"size":1,"text":"","align":"left"}],"footer":[{"size":1,"text":"","align":"left"}],"invoice_notes":[{"bold":false,"text":"Customer may make payments toward the total amount owed on the layaway item at any time before the final due date; however, failure to complete payments by the specified deadline may result in forfeiture of all payments made and the cancellation of the layaway agreement."},{"bold":true,"text":"Please ensure that all payments are made by the due date to avoid late fees and to maintain your layaway agreement in good standing."}],"phone":"(623) 330-0041","email":"jessiestires@gmail.com","website":"jessiestires.com","address":"6502 N 27th Ave","city":"Phoenix","zipcode":"85017","state":"AZ","country":"US"}
+//Data
+const store = ref(null)
+const layaway = ref(null)
+const type = ref('view') //view, download, email
+const pdfBlob = ref(null)
+const loading = ref(false)
+const additionalNotes = ref([])
 
-const generatePDF = async () => {
+//Reference
+const content = ref(null)
+const sendEmailRef = ref(null)
+const additionalNotesRef = ref(null)
+
+function openNotesPopup(action, storeData, layawayData) {
   //Setup data
+  store.value = storeData
+  layaway.value = layawayData
+  type.value = action
+  //Open Popup
+  additionalNotesRef.value.openPopup(true, action, layawayData.customer.email)
+}
+
+//Generate pdf
+async function generatePDF(notes, email = '') {
+  //Setup data
+  loading.value = true
   await document.fonts.ready
+  additionalNotes.value = notes
+
+  //Delay before taking an img of the component
+  await new Promise(resolve => setTimeout(resolve, 500))
+
+  //Setup pdf data
   const canvas = await html2canvas(content.value)
   const imgData = canvas.toDataURL('image/png')
   const pdf = new jsPDF()
@@ -152,30 +185,112 @@ const generatePDF = async () => {
 
   // Add image to the PDF
   pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-  heightLeft -= pageHeight;
+  heightLeft -= pageHeight
 
   // Check if we need to add another page
   while (heightLeft >= 0) {
-    position = heightLeft - imgHeight;
-    pdf.addPage();
+    position = heightLeft - imgHeight
+    pdf.addPage()
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-    heightLeft -= pageHeight;
+    heightLeft -= pageHeight
   }
 
   // Create a Blob from the PDF output
-  const pdfOutput = pdf.output('blob')
+  pdfBlob.value = pdf.output('blob')
 
+  //View pdf only
+  if(type.value === 'view')
+    viewPDF()
+  else if(type.value === 'download')
+    downloadPDF()
+  else if(type.value === 'email')
+    await sendEmailPDF(email)
+  
+  loading.value = false
+  additionalNotesRef.value.openPopup(false)
+}
+
+//Views pdf
+function viewPDF() {
   // Create a URL for the Blob and open it in a new tab
-  const url = URL.createObjectURL(pdfOutput)
+  const url = URL.createObjectURL(pdfBlob.value)
   window.open(url, '_blank')
 
   // Optional: Revoke the object URL after a timeout to avoid memory leaks
   setTimeout(() => URL.revokeObjectURL(url), 100)
+
+  store.value = null
+  layaway.value = null
 }
+
+//Download pdf
+function downloadPDF() {
+  // Create a link element
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(pdfBlob.value)
+
+  link.href = url
+  link.download = `Invoice-${layaway.value.id}.pdf` // Specify the filename for download
+
+  // Append the link to the body (not displayed)
+  document.body.appendChild(link)
+  
+  // Programmatically trigger a click event on the link to start the download
+  link.click()
+
+  // Remove the link from the document
+  document.body.removeChild(link)
+  
+  // Optional: Revoke the object URL after a timeout to avoid memory leaks
+  setTimeout(() => URL.revokeObjectURL(url), 100)
+
+  store.value = null
+  layaway.value = null
+}
+
+//Send email
+async function sendEmailPDF(email) {
+  // Create a FormData object
+  const formData = new FormData()
+  
+  // Append the Blob to the FormData
+  formData.append('pdf', pdfBlob.value, `Invoice-${layaway.value.id}.pdf`)
+  formData.append('store_id', store.value.id)
+  formData.append('store_name', store.value.name)
+  formData.append('invoice_id', layaway.value.id)
+  formData.append('email', email)
+
+  //Send request
+  loading.value = true
+  const response = await useFetchApi(`/api/protected/layaway/send-pdf-email`, {
+    method: "POST",
+    body: formData
+  })
+  loading.value = false
+
+  //Display error
+  if (response.statusCode) {
+    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    return
+  }
+
+  //show success message
+  notify({ title: 'Success', text: response.message, type: 'success'})
+
+  sendEmailRef.value.openPopup(false, '')
+  store.value = null
+  layaway.value = null
+}
+
+// Expose the methods to parent
+defineExpose({
+  generatePDF,
+  openNotesPopup,
+})
 </script>
 
 <style lang="scss">
-#test-page {
+#pdf-component {
   .el-table th.el-table__cell {
     background: #fbfbfb;
   }

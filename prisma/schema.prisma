@@ -56,15 +56,18 @@ model Store {
   code              String      @unique
   boss_id           Int      
   boss              Boss        @relation(fields: [boss_id], references: [id])
+
   inventory         Inventory?
   workers           Worker[]
   transactions      Transaction[]
   layaways          Layaway[]
   logs              Log[]
   customers         Customer[]
+
   tax               Float       @default(0)
   header            Json?
   footer            Json?
+  invoice_notes     Json?
 
   phone             String?     @default("")
   email             String?     @default("")

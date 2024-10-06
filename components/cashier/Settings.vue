@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="settings-wrapper">
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Settings" fullscreen>
+    <el-dialog v-model="popup" title="Settings">
       <el-form v-if="!loading.startedLoading" :model="form" label-position="top" @submit.prevent="changeSettings()">
         <el-form-item label="Reciept IP (ex. 192.168.1.xxx)" prop="receipt_ip">
           <el-input v-model="form.receipt_ip" />
@@ -12,11 +12,12 @@
         </el-form-item>
 
         <!-- HEADER -->
+        <div class="text-center mb-4"><b>RECIEPT SETTINGS</b></div>
         <div v-if="isBoss" id="receipt-wrapper">
           <div>
             <label>Receipt Header</label>
 
-            <div v-for="header in form.header" :key="header">
+            <div v-for="(header, h) in form.header" :key="header">
               <div class="input">
                 <div>
                   <label>Font Size</label>
@@ -35,6 +36,12 @@
                 <el-form-item label="Text" prop="text">
                   <el-input v-model="header.text" />
                 </el-form-item> 
+
+                <div v-if="h > 0">
+                  <el-button type="danger" circle @click="removeItem(form.header, h)">
+                    <Icon name="material-symbols:delete-rounded" />
+                  </el-button>
+                </div>
               </div>
             </div>
 
@@ -45,7 +52,7 @@
             <!-- FOOTER -->
             <div style="margin-top: 16px;"><label>Receipt Footer</label></div>
 
-            <div v-for="footer in form.footer" :key="footer">
+            <div v-for="(footer, f) in form.footer" :key="f">
               <div class="input">
                 <div>
                   <label>Font Size</label>
@@ -63,7 +70,13 @@
 
                 <el-form-item label="Text" prop="text">
                   <el-input v-model="footer.text" />
-                </el-form-item> 
+                </el-form-item>
+
+                <div v-if="f > 0">
+                  <el-button type="danger" circle @click="removeItem(form.footer, f)">
+                    <Icon name="material-symbols:delete-rounded" />
+                  </el-button>
+                </div>
               </div>
             </div>
             <div style="text-align: center;">
@@ -107,18 +120,53 @@
               <div class="price">0.00</div>
             </div>
             <br/>
+            <div class="table-line bold">
+              <div class="output-name">MASTERCARD:</div>
+              <div class="price">0.00</div>
+            </div>
+            <br/>
 
             <div v-for="footer in form.footer" :key="footer" class="line" 
             :class="{'align-left': footer.align === 'left', 'align-center': footer.align === 'center', 'align-right': footer.align === 'right',
                      'font-1': footer.size === 1, 'font-2': footer.size === 2, 'font-3': footer.size === 3}">{{footer.text}}</div>
           </div>
-        </div>
-      </el-form>
 
-      <!-- PRINT TEST RECEIPT -->
-      <div style="text-align: center; margin: 32px 0;">
-        <el-button type="success" @click="printReceipt()">Print Sample</el-button>
-      </div>
+          
+        </div>
+
+        <!-- PRINT TEST RECEIPT -->
+        <div style="text-align: center; margin: 32px 0;">
+          <el-button type="success" @click="printReceipt()">Print Sample</el-button>
+        </div>
+
+        <!-- INVOICE -->
+        <div v-if="isBoss">
+          <div class="text-center mb-4"><b>INVOICE NOTES</b></div>
+          <div v-for="(note, i) in form.invoice_notes" :key="i">
+            <div class="flex items-center justify-center gap-4">
+              <div>
+                <el-checkbox v-model="note.bold" label="Bold" />
+              </div>
+              <div class="w-80" :class="{ bold: note.bold }">
+                <el-form-item label="Text" prop="text">
+                  <el-input v-model="note.text" />
+                </el-form-item>
+              </div>
+              <div v-if="i > 0">
+                <el-button type="danger" circle @click="removeItem(form.invoice_notes, i)">
+                  <Icon name="material-symbols:delete-rounded" />
+                </el-button>
+              </div>
+              <div v-else class="w-6" />
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <el-button type="success" @click="addNote()">Add</el-button>
+        </div>
+        <!-- INVOICE -->
+      </el-form>
 
       <template #footer>
         <div class="dialog-footer">
@@ -147,22 +195,14 @@ const form = reactive({
   tax: 0,
   receipt_ip: '',
   header: [{text: '', align: 'left', size: 1}],
-  footer: [{text: '', align: 'left', size: 1}]
+  footer: [{text: '', align: 'left', size: 1}],
+  invoice_notes: [{text: '', bold: false}],
 })
 const items = ref([{name: 'Product Name', qty: 1, price: '100.00', discount: 0}, {name: 'Product Name', qty: 2, price: '50.00', discount: 0}, {name: 'Product Name', qty: 10, price: '25.00', discount: 10}])
 
 //Component Emits,Props
 const emits = defineEmits(['setStore'])
-const props = defineProps({
-  store: {
-    type: Object,
-    required: true
-  },
-  isBoss: {
-    type: Boolean,
-    required: true
-  }
-})
+const props = defineProps({ store: { required: true }, isBoss: { required: true } })
 
 //Mount
 onBeforeMount(async () => {
@@ -181,10 +221,20 @@ function openPopup() {
   if(props.store.footer)
     form.footer = props.store.footer
 
+  if(props.store.invoice_notes)
+    form.invoice_notes = props.store.invoice_notes
+
   popup.value = true
 }
 
-//Receipt
+function addNote() {
+  form.invoice_notes.push({text: '', bold: false})
+}
+
+function removeItem(array, i) {
+  array.splice(i, 1)
+}
+
 function addHeader() {
   form.header.push({text: '', align: 'left', size: 1})
 }
@@ -209,7 +259,8 @@ async function printReceipt() {
       tax: form.tax,
       receipt_ip: form.receipt_ip,
       header: form.header,
-      footer: form.footer
+      footer: form.footer,
+      invoice_notes: form.invoice_notes,
     }
   })
 
@@ -222,7 +273,7 @@ async function printReceipt() {
       tax: '0.00',
       subtotal: '0.00',
       tax_total: '0.00',
-      total: '0.00'
+      total: '0.00',
     }
   })
 
@@ -259,7 +310,8 @@ async function changeSettings() {
       tax: form.tax,
       receipt_ip: form.receipt_ip,
       header: form.header,
-      footer: form.footer
+      footer: form.footer,
+      invoice_notes: form.invoice_notes,
     }
   })
   loading.settings = false
@@ -280,95 +332,103 @@ async function changeSettings() {
 }
 </script>
 
-<style scoped lang="scss">
-.input {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  div {
-    margin-bottom: 2px;
-  }
-  label {
-    display: block;
-    padding-bottom: 12px;
-  }
-}
-
-#receipt-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 10px;
-  #receipt {
-    width: 360px;
-    height: fit-content;
-    padding-bottom: 40px;
-    background: white;
-    font-family: 'Lucida Console';
-    color: #000;
-
-    img {
+<style lang="scss">
+#settings-wrapper {
+  .input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    div {
+      margin-bottom: 2px;
+    }
+    label {
       display: block;
-      margin: 20px auto 0 auto;
-      max-width: 66%;
+      padding-bottom: 12px;
     }
+  }
 
-    .line {
-      width: 308px;
-      font-size: 12px;
-      margin: 0 auto;
+  .bold {
+    input {
+      font-weight: bold !important;
     }
+  }
 
-    .table-line {
-      display: flex;
-      justify-content: space-between;
-      width: 308px;
-      margin: 0 auto;
-      font-size: 12px;
+  #receipt-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 10px;
+    #receipt {
+      width: 360px;
+      height: fit-content;
+      padding-bottom: 40px;
+      background: white;
+      font-family: 'Lucida Console';
+      color: #000;
 
-      .product-name {
-        width: 200px;
-        word-break: break-all;
+      img {
+        display: block;
+        margin: 20px auto 0 auto;
+        max-width: 66%;
       }
-      .price {
+
+      .line {
+        width: 308px;
+        font-size: 12px;
+        margin: 0 auto;
+      }
+
+      .table-line {
+        display: flex;
+        justify-content: space-between;
+        width: 308px;
+        margin: 0 auto;
+        font-size: 12px;
+
+        .product-name {
+          width: 200px;
+          word-break: break-all;
+        }
+        .price {
+          text-align: right;
+          width: 90px;
+          word-break: break-all;
+        }
+        .output-name {
+          width: 175px;
+          text-align: right;
+        }
+      }
+
+      .bold {
+        font-weight: bold;
+      }
+
+      .font-1 {
+        width: 290px;
+        font-size: 10px;
+      }
+
+      .font-2 {
+        font-size: 12px;
+      }
+
+      .font-3 {
+        font-size: 18px;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+      .align-center {
+        text-align: center;
+      }
+      .align-right {
         text-align: right;
-        width: 90px;
-        word-break: break-all;
       }
-      .output-name {
-        width: 175px;
-        text-align: right;
-      }
-    }
-
-    .bold {
-      font-weight: bold;
-    }
-
-    .font-1 {
-      width: 290px;
-      font-size: 10px;
-    }
-
-    .font-2 {
-      font-size: 12px;
-    }
-
-    .font-3 {
-      font-size: 18px;
-    }
-
-    .align-left {
-      text-align: left;
-    }
-    .align-center {
-      text-align: center;
-    }
-    .align-right {
-      text-align: right;
     }
   }
 }

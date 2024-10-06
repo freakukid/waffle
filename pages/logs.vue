@@ -106,15 +106,3 @@ async function getLogs() {
   // console.log(JSON.stringify(logs.value))
 }
 </script>
-
-<style scoped>
-.one-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.center {
-  text-align: center;
-}
-</style>

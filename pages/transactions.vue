@@ -54,9 +54,9 @@
       <el-table-column prop="user.name" label="Customer">
         <template #default="scope">
           <div>
-            <div><b>Name:</b> {{scope.row.customer.name}}</div>
-            <div v-if="scope.row.customer.phone"><b>Phone:</b> {{formatPhoneNumber(scope.row.customer.phone)}}</div>
-            <div v-if="scope.row.customer.email"><b>Email:</b> {{scope.row.customer.email}}</div>
+            <div class="truncate"><b>Name:</b> {{scope.row.customer.name}}</div>
+            <div v-if="scope.row.customer.phone" class="truncate"><b>Phone:</b> {{formatPhoneNumber(scope.row.customer.phone)}}</div>
+            <div v-if="scope.row.customer.email" class="truncate"><b>Email:</b> {{scope.row.customer.email}}</div>
           </div>
         </template>
       </el-table-column>
@@ -104,6 +104,13 @@
               <el-button size="small" type="danger" class="w-full" @click="setStatus(scope.row, 'declined')">
                 Cancel Invoice
               </el-button>
+            </div>
+            <div>
+              <el-select placeholder="Invoice Menu">
+                <el-option label="View Invoice" value="" @click="pdfComponent.openNotesPopup('view', store, scope.row)" />
+                <el-option label="Download Invoice" value="" @click="pdfComponent.openNotesPopup('download', store, scope.row)" />
+                <el-option label="Email Invoice" value="" @click="pdfComponent.openNotesPopup('email', store, scope.row)" />
+              </el-select>
             </div>
           </div>
         </template>
@@ -182,6 +189,11 @@
       :total="form.layaway.total"
       @createTransaction="confirmPayment"
     />
+    <!-- Dialog -->
+
+    <!-- Pdf -->
+    <PdfComponent ref="pdfComponent" />
+    <!-- Pdf -->
   </div>
 </template>
 
@@ -199,8 +211,9 @@ const isBossAccount = computed(isBoss)
 const transactions = ref([])
 const layaway = ref([])
 const customers = ref([])
+const store = ref(null)
 const inventory = ref(null)
-const tab = ref('transaction')
+const tab = ref('layaway')
 const options = [
   { label: 'Transaction', value: 'transaction', icon: 'uil:transaction' },
   { label: 'Layaway', value: 'layaway', icon: 'hugeicons:invoice-03'},
@@ -211,6 +224,7 @@ const options = [
 const paymentTypeRef = ref(null)
 const editCustomerRef = ref(null)
 const deleteCustomerRef = ref(null)
+const pdfComponent = ref(null)
 
 //Form
 const loading = reactive({ loading: true, confirmPayment: false })
@@ -246,7 +260,7 @@ onBeforeMount(async () => {
   await getTransactions()
   await getLayaway()
   await getCustomers()
-  await getInventory()
+  await getStore()
   loading.loading = false
 })
 //Mount
@@ -282,11 +296,17 @@ async function getCustomers() {
   // console.log(JSON.stringify(customers.value))
 }
 
-async function getInventory() {
+//Gets the store the user is in
+async function getStore() {
   //Make Request
-  inventory.value = await useFetchApi(`/api/protected/inventory/${storeId.value}`)
+  store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
+  store.value.phone = formatPhoneNumber(store.value.phone)
+  //Set inventory
+  inventory.value = store.value.inventory
+  delete store.value.inventory
 
   //Test Data
+  // console.log(JSON.stringify(store.value))
   // console.log(JSON.stringify(inventory.value))
 }
 
@@ -451,9 +471,5 @@ function deleteCustomer(id) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.center {
-  text-align: center;
 }
 </style>

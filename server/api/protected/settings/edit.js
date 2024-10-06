@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const authUser = await getAuthUser(event)
   const user_id = authUser?.id
   const boss_id = authUser?.boss?.id
-  const { store_id, tax, receipt_ip, header, footer } = await readBody(event)
+  const { store_id, tax, receipt_ip, header, footer, invoice_notes } = await readBody(event)
 
   //Check if we have required fields
   if (!store_id)
@@ -26,7 +26,8 @@ export default defineEventHandler(async (event) => {
     data: {
       tax: tax,
       header: header,
-      footer: footer
+      footer: footer,
+      invoice_notes: invoice_notes
     },
     include: {
       inventory: true
