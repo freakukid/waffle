@@ -45,7 +45,8 @@ export default defineEventHandler(async (event) => {
       store: { connect: { id: store_id } },
       user: { connect: { id: user_id } },
       action: 'add_row',
-      after: item
+      after: item,
+      item_id: result[0].unique_key - 1
     }
   })
 

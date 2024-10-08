@@ -62,7 +62,8 @@ export default defineEventHandler(async (event) => {
       user: { connect: { id: user_id } },
       action: 'recieving',
       before: {cost: prev_cost},
-      after: {name: item[name_column], qty: qty, total_cost: parseFloat(total_cost).toFixed(2), cost: item[cost_column]}
+      after: {name: item[name_column], qty: qty, total_cost: parseFloat(total_cost).toFixed(2), cost: item[cost_column]},
+      item_id: parseInt(key),
     }
   })
 

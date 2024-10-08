@@ -39,7 +39,8 @@ export default defineEventHandler(async (event) => {
       store: { connect: { id: store_id } },
       user: { connect: { id: user_id } },
       action: 'delete_row',
-      before: item
+      before: item,
+      item_id: parseInt(key)
     }
   })
 

@@ -40,7 +40,8 @@ export default defineEventHandler(async (event) => {
       user: { connect: { id: user_id } },
       action: 'edit_row',
       before: {name: name_column ? prev_item[name_column]: '', item: prev_item},
-      after: {name: name_column ? item[name_column]: '', item: item}
+      after: {name: name_column ? item[name_column]: '', item: item},
+      item_id: parseInt(key)
     }
   })
 

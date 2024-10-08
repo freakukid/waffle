@@ -132,6 +132,7 @@ model Log {
   store           Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
   user_id         Int         
   user            User        @relation(fields: [user_id], references: [id])
+  item_id         Int         @default(-1)
   action          String      //Export; Add, Edit, Delete Item; Add, Edit, Delete Column;
   before          Json?        
   after           Json?
