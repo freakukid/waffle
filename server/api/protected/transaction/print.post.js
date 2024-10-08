@@ -8,7 +8,7 @@ import { cwd } from 'process'
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
-  const user_id = session?.user?.boss?.id
+  const user_id = session?.user?.id
   //Check if user is login
   if(!user_id)
     return { statusCode: 400, statusMessage: 'You must be login print a receipt.' }

@@ -94,7 +94,6 @@ const editStoreRef = ref(null)
 const props = defineProps({
   user: {
     type: Object,
-    required: true
   },
 })
 

@@ -13,7 +13,6 @@ import { Workbook } from 'exceljs'
 const props = defineProps({
   inventory: {
     type: Object,
-    required: true
   }
 })
 

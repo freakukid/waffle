@@ -18,7 +18,7 @@
         </div>
 
         <div class="text-right leading-tight w-1/3">
-          <div><b>Contact Information</b></div>
+          <div v-if="store.phone || store.website || store.email"><b>Contact Information</b></div>
           <div v-if="store.phone">{{store.phone}}</div>
           <div v-if="store.website">{{store.website}}</div>
           <div v-if="store.email">{{store.email}}</div>
@@ -113,11 +113,11 @@
         </div>
 
         <!-- NOTES -->
-        <div class="mt-4">
+        <div v-if="additionalNotes.length || store.invoice_notes" class="mt-4">
           <b>Notes:</b>
 
           <div v-for="note in additionalNotes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
-            <p v-if="note.text.trim() !== ''">{{note.text}}</p>
+            <p>{{note.text}}</p>
           </div>
 
           <p v-for="note in store.invoice_notes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
@@ -130,7 +130,6 @@
     </div>
   </div>
 
-  <PdfSendEmail ref="sendEmailRef" :loading="loading" @sendEmailPDF="sendEmailPDF" />
   <PdfAdditionalNotes ref="additionalNotesRef" :type="type" :loading="loading" @generatePDF="generatePDF" />
 </template>
 
@@ -151,7 +150,6 @@ const additionalNotes = ref([])
 
 //Reference
 const content = ref(null)
-const sendEmailRef = ref(null)
 const additionalNotesRef = ref(null)
 
 function openNotesPopup(action, storeData, layawayData) {
@@ -168,6 +166,10 @@ async function generatePDF(notes, email = '') {
   //Setup data
   loading.value = true
   await document.fonts.ready
+  
+  if(notes[0].text.trim() === '')
+    notes = notes.slice(1)
+
   additionalNotes.value = notes
 
   //Delay before taking an img of the component
@@ -277,7 +279,6 @@ async function sendEmailPDF(email) {
   //show success message
   notify({ title: 'Success', text: response.message, type: 'success'})
 
-  sendEmailRef.value.openPopup(false, '')
   store.value = null
   layaway.value = null
 }

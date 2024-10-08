@@ -244,13 +244,14 @@ function addUser(user) {
 //Setups data for element plus tree component
 function setupTreeData() {
   tree.value = []
+  checked.value = []
   let identifier = 1
+
   for (let i = 0; i < workers.value.length; i++) {
     let worker = workers.value[i]
     let workerTree = {id: identifier, label: worker.user.name, disabled: true, children: [], permission: false, index: i}
     expanded.value.push(identifier)
     identifier += 1
-
     for (let permission in worker.permission) {
       workerTree.children.push({id: identifier, label: permission.replace('_', ' '), value: permission, permission: true, worker_index: i})
       if(worker.permission[permission])
@@ -261,6 +262,7 @@ function setupTreeData() {
 
     tree.value.push(workerTree)
   }
+  
 }
 </script>
 

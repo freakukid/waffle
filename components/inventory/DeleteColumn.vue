@@ -36,15 +36,12 @@ const emits = defineEmits(['setInventory', 'resetFilteredColumns'])
 const props = defineProps({
   storeId: {
     type: Number,
-    required: true
   },
   inventory: {
     type: Object,
-    required: true
   },
   inventoryList: {
     type: Array,
-    required: true
   }
 })
 

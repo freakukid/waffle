@@ -213,7 +213,7 @@ const layaway = ref([])
 const customers = ref([])
 const store = ref(null)
 const inventory = ref(null)
-const tab = ref('layaway')
+const tab = ref('transaction')
 const options = [
   { label: 'Transaction', value: 'transaction', icon: 'uil:transaction' },
   { label: 'Layaway', value: 'layaway', icon: 'hugeicons:invoice-03'},

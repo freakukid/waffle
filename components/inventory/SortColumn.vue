@@ -30,11 +30,9 @@ const emits = defineEmits(['setInventory'])
 const props = defineProps({
   storeId: {
     type: Number,
-    required: true
   },
   inventory: {
     type: Object,
-    required: true
   }
 })
 

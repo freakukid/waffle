@@ -2,14 +2,20 @@
   <div>
     <!-- Popup -->
     <el-dialog v-model="popup" title="Delete Table">
-      <p style="text-align: center; color: #ff4545; font-size: 24px;">
-        <b>Are you sure you want to delete everything? <br> THIS CANNOT BE UNDONE.</b>
-      </p>
+      <p class="text-center">The following will be deleted:</p>
+      <ul class="list-disc w-44 my-4 mx-auto">
+        <li>Inventory</li>
+        <li>Transaction History</li>
+        <li>Lawaway Transactions</li>
+        <li>Inventory Logs</li>
+      </ul>
+
+      <p class="text-center text-red-400"><b>This cannot be undone!</b></p>
 
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="danger" @click="dropTable()">Delete</el-button>
+          <el-button :loading="loading.dropTable" type="danger" @click="dropTable()">Delete</el-button>
         </div>
       </template>
     </el-dialog>
@@ -33,7 +39,6 @@ const emits = defineEmits(['setInventory'])
 const props = defineProps({
   storeId: {
     type: Number,
-    required: true
   }
 })
 
