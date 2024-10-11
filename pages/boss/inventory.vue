@@ -222,8 +222,6 @@ async function getStore() {
 
 <style lang="scss" scoped>
 #wrapper {
-  width: 100vw;
-  height: calc(100vh - 40px);
   &.edit-mode .table-row {
     cursor: pointer;
     &:hover {
@@ -233,8 +231,9 @@ async function getStore() {
 }
 
 #container {
+  display: flex;
+  justify-content: center;
   height: 100%;
-  padding-left: 100px;
 }
 
 #toolbar {

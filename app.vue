@@ -1,11 +1,16 @@
 <template>
+  <Head>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  </Head>
+
   <NuxtNotifications position="top center" :pauseOnHover='true' />
 
   <div id="app">
-    <NavBar />
     <NuxtPage />
-    <SideBar v-if="storeId && status === 'authenticated'" />
+    
   </div>
+
+  <SideBar v-if="status === 'authenticated'" />
 </template>
 
 <script setup>
@@ -60,7 +65,7 @@ useHead({
 #app {
   background: #1c1c1c;
   color: #ffffff;
-  margin-top: 40px;
-  min-height: calc(100vh - 40px);
+  min-height: 100vh;
+  padding-left: 64px;
 }
 </style>

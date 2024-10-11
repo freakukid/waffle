@@ -268,7 +268,6 @@ function setupTreeData() {
 
 <style lang="scss" scoped>
 #wrapper {
-  width: 100vw;
   height: calc(100vh - 40px);
   h1 {
     padding: 16px 0;
