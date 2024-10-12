@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare && prisma generate"
   },
   "devDependencies": {
-    "@element-plus/nuxt": "^1.0.9",
+    "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.7.2",
@@ -20,7 +20,8 @@
     "nuxt3-notifications": "^1.2.2",
     "pinia": "^2.1.7",
     "prisma": "^5.15.0",
-    "sass": "^1.77.6"
+    "sass": "^1.77.6",
+    "source-map-loader": "^5.0.0"
   },
   "dependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",

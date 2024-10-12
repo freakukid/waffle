@@ -1,6 +1,7 @@
 <template>
   <Head>
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json" />
   </Head>
 
   <NuxtNotifications position="top center" :pauseOnHover='true' />

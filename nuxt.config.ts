@@ -2,11 +2,14 @@
 export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
+  compatibilityDate: '2024-10-11',
   css: [
     '@/assets/general.scss',
     '@/assets/tailwind.scss'
   ],
-  build:{ transpile: ["pinia-plugin-persistedstate"] },
+  build: { 
+    transpile: ["pinia-plugin-persistedstate"],
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@sidebase/nuxt-auth',
@@ -14,7 +17,7 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'nuxt3-notifications'
+    'nuxt3-notifications',
   ],
   runtimeConfig: {    
     // Cloudinary
