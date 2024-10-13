@@ -1,14 +1,8 @@
 <template>
-  <Head>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json" />
-  </Head>
-
   <NuxtNotifications position="top center" :pauseOnHover='true' />
 
   <div id="app">
     <NuxtPage />
-    
   </div>
 
   <SideBar v-if="status === 'authenticated'" />
@@ -23,6 +17,10 @@ useHead({
   htmlAttrs: {
     class: 'dark',
   },
+  link: [
+    { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
+    { rel: 'manifest', href: '/manifest.json' }
+  ]
 })
 </script>
 
