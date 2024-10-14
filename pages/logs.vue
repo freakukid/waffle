@@ -17,6 +17,7 @@
 const pinia = useStore()
 const { formatDate } = useFormatter()
 const { isBoss, getPermissions } = useChecks()
+const { handleGetRequest } = useHandleRequests()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -44,7 +45,7 @@ onBeforeMount(async () => {
 //Mount
 
 async function getLogs() {
-  logs.value = await useFetchApi(`/api/protected/log/${storeId.value}`)
+  logs.value = await handleGetRequest(`/api/protected/log/${storeId.value}`)
 
   for (const log of logs.value) {
     log.date = formatDate(log.timestamp)

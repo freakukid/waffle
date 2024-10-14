@@ -84,6 +84,7 @@
 const { notify } = useNotification()
 const { validateUsername, validateOptionalEmail } = useValidator()
 const { isBoss } = useChecks()
+const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()
 //Data
 const storeId = computed(pinia.getStore)
@@ -139,7 +140,8 @@ function deletePrompt(e, data) {
 
 //Get workers
 async function getWorkers() {
-  workers.value = await useFetchApi(`/api/protected/workers/${storeId.value}`)
+  workers.value = await handleGetRequest(`/api/protected/workers/${storeId.value}`)
+  
   setupTreeData()
 }
 

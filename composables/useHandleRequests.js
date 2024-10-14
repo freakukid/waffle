@@ -37,7 +37,20 @@ export default () => {
     }
   }
 
+  async function handleGetRequest(url) {
+    try {
+      return await useFetchApi(url)
+    } catch(error) {
+      const { signOut } = useAuth()
+      const pinia = useStore()
+      
+      pinia.exitStore()
+      signOut({ callbackUrl: '/login' })
+    }
+  }
+
   return {
     handleInventoryRequest,
+    handleGetRequest
   }
 }

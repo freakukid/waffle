@@ -8,6 +8,7 @@
 //Imports
 const { notify } = useNotification()
 const pinia = useStore()
+const { handleGetRequest } = useHandleRequests()
 
 //Ref
 const component = ref(null)
@@ -45,7 +46,7 @@ onBeforeMount(async () => {
 
 //Fetch customers
 async function fetchCustomers() {
-  customers.value = await useFetchApi(`/api/protected/customer/${storeId.value}`)
+  customers.value = await handleGetRequest(`/api/protected/customer/${storeId.value}`)
 }
 
 //Adds customers to the list

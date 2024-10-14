@@ -59,6 +59,7 @@
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { notify } = useNotification()
 const { isBoss } = useChecks()
+const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()
 
 //Data
@@ -162,7 +163,7 @@ function resetFilteredColumns(columns) {
 //Gets the store the user is in
 async function getStore() {
   //Make Request
-  store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
+  store.value = await handleGetRequest(`/api/protected/store/${storeId.value}`)
     
   //If we have inventory format add id (index) to data
   if(store.value.inventory)

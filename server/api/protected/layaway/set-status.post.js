@@ -127,8 +127,6 @@ export default defineEventHandler(async (event) => {
   })
 
   setResponseStatus(event, 201)
-
-  console.log(layaway)
   
   return {
     layaway: layaway,

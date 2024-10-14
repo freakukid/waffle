@@ -204,6 +204,7 @@ const { notify } = useNotification()
 const { formatDate, formatPhoneNumber } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
+const { handleGetRequest } = useHandleRequests()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -268,7 +269,7 @@ onBeforeMount(async () => {
 //Make Request
 async function getTransactions() {
   //Make Request
-  transactions.value = await useFetchApi(`/api/protected/transaction/${storeId.value}`)
+  transactions.value = await handleGetRequest(`/api/protected/transaction/${storeId.value}`)
 
   //Setup data
   doCalc(transactions.value)
@@ -279,8 +280,8 @@ async function getTransactions() {
 
 async function getLayaway() {
   //Make Request
-  layaway.value = await useFetchApi(`/api/protected/layaway/${storeId.value}`)
-
+  layaway.value = await handleGetRequest(`/api/protected/layaway/${storeId.value}`)
+  
   //Setup data
   doCalc(layaway.value)
 
@@ -290,8 +291,8 @@ async function getLayaway() {
 
 //Fetch customers
 async function getCustomers() {
-  customers.value = await useFetchApi(`/api/protected/customer/${storeId.value}`)
-
+  customers.value = await handleGetRequest(`/api/protected/customer/${storeId.value}`)
+  
   //Test Data
   // console.log(JSON.stringify(customers.value))
 }
@@ -299,7 +300,8 @@ async function getCustomers() {
 //Gets the store the user is in
 async function getStore() {
   //Make Request
-  store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
+  store.value = await handleGetRequest(`/api/protected/store/${storeId.value}`)
+  
   store.value.phone = formatPhoneNumber(store.value.phone)
   //Set inventory
   inventory.value = store.value.inventory

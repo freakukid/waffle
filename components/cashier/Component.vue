@@ -100,6 +100,7 @@ const { notify } = useNotification()
 const pinia = useStore()
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
+const { handleGetRequest } = useHandleRequests()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -197,7 +198,7 @@ function columnChecks() {
 
 //Gets the user store
 async function getStore() {
-  store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
+  store.value = await handleGetRequest(`/api/protected/store/${storeId.value}`)
 
   //Test data
   //console.log(JSON.stringify(store.value))

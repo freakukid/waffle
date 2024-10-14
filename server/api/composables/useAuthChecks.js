@@ -6,12 +6,11 @@ export default () => {
     return session.user
   }
 
-  async function isStoreOwner(user, store_id) {
+  function isStoreOwner(user, store_id) {
     if(user.is_boss) {
       const stores = user.boss.stores
-      const sessionStoreCheck = stores.some(store => store.id === parseInt(store_id))
-
-      return sessionStoreCheck
+      
+      return stores.some(store => store.id === parseInt(store_id))
     } else {
       return false
     }
