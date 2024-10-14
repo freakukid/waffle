@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   //Check if we have required fields
   if (!id)
     throw new Error(`Required: id.`)
-  
+
   //Check if this user has access rights to this store
   if(!isStoreOwner(authUser, id) && !isStoreWorker(authUser, id))
     throw new Error(`You do not have access rights to retrieve this store.`)

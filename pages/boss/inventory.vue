@@ -163,7 +163,7 @@ function resetFilteredColumns(columns) {
 async function getStore() {
   //Make Request
   store.value = await useFetchApi(`/api/protected/store/${storeId.value}`)
-  
+    
   //If we have inventory format add id (index) to data
   if(store.value.inventory)
     inventory.value = formatInventory()

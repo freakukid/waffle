@@ -176,7 +176,7 @@ async function createStore() {
   emits('addStore', response.store)
   popup.value = false
   pinia.exitStore()
-  signOut({ callbackUrl: '/login' })
+  // signOut({ callbackUrl: '/login' })
 }
 
 async function editStore() {

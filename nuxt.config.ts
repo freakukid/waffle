@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     },
     globalAppMiddleware: {
       isEnabled: true
-    },
+    }
   },
   elementPlus: {
     importStyle: 'scss',
