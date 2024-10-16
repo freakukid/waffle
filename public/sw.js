@@ -51,7 +51,7 @@ workbox.routing.registerRoute(
 // Cache all JSON files with Stale While Revalidate
 workbox.routing.registerRoute(
   ({ request }) => request.destination === 'document' && request.url.endsWith('.json'),
-  new workbox.expiration.StaleWhileRevalidate({
+  new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'json',
   })
 );
