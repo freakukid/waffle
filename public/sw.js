@@ -10,8 +10,8 @@ workbox.routing.registerRoute(
     const isCachedResource =
       request.destination === 'document' || // HTML documents
       request.destination === 'script' ||   // JS files
-      request.destination === 'style' ||    // CSS files
-      request.destination === 'manifest'    //Manifest
+      request.destination === 'style'    // CSS files
+      // request.destination === 'manifest'    //Manifest
 
     return isCachedResource
   },
@@ -50,7 +50,7 @@ workbox.routing.registerRoute(
 
 // Cache all JSON files with Stale While Revalidate
 workbox.routing.registerRoute(
-  ({ request }) => request.destination === 'document' && request.url.endsWith('.json'),
+  ({ request }) => request.destination === 'manifest' || request.url.endsWith('.json'),
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'json',
   })
