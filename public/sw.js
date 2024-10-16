@@ -26,6 +26,7 @@ workbox.routing.registerRoute(
     cacheName: 'image',
     plugins: [
       new workbox.expiration.Plugin({
+        maxEntries: 1000,
         maxAgeSeconds: 1 * 24 * 60 * 60, // Cache for 1 Day (in seconds)
       }),
     ],
@@ -39,6 +40,7 @@ workbox.routing.registerRoute(
     cacheName: 'font',
     plugins: [
       new workbox.expiration.Plugin({
+        maxEntries: 1000,
         maxAgeSeconds: 30 * 24 * 60 * 60, // Cache for 30 Days
       }),
     ],
