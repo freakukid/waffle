@@ -38,4 +38,7 @@ export default defineNuxtConfig({
     importStyle: 'scss',
     themes: ['dark'],
   },
+  // plugins: [
+  //   { src: '~/plugins/register-service-worker.client.js', mode: 'client' }
+  // ],
 })
