@@ -1,6 +1,6 @@
 export default defineNuxtPlugin(() => {
-  console.log('serviceWorker' in navigator)
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+    console.log("hello")
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
       .then(registration => {
