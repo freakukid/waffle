@@ -2,7 +2,9 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox
 
 workbox.routing.registerRoute(
   ({ request }) => {
-    const url = new URL(request.url);
+    const url = new URL(request.url)
+    if(request.destination === 'fetch')
+        console.log(url)
     const isHtmlCssJs =
       request.destination === 'document' ||
       request.destination === 'script' ||
