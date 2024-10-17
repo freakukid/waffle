@@ -61,3 +61,22 @@ workbox.routing.registerRoute(
     ],
   }) 
 )
+
+const API_URL = 'https://legitski.com/api/protected/store/stores'
+workbox.routing.registerRoute(
+  ({ url }) => url.href === API_URL,
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'api',
+    plugins: [
+      {
+        cacheWillUpdate: async ({ request, response }) => {
+          // Check if response is okay, if not return undefined to not cache it
+          if (!response || response.status !== 200) {
+            return null
+          }
+          return response // return the response to cache it
+        },
+      },
+    ],
+  })
+)
