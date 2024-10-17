@@ -53,5 +53,11 @@ workbox.routing.registerRoute(
   ({ request }) => request.destination === 'manifest' || request.url.endsWith('.json'),
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'json',
-  })
-);
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 1000,
+        maxAgeSeconds: 1 * 24 * 60 * 60, // Cache for 1 Day (in seconds)
+      }),
+    ],
+  }) 
+)
