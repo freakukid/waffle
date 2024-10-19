@@ -23,6 +23,13 @@ workbox.routing.registerRoute(
   },
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'static',
+    plugins: [
+      // Expiration plugin to limit cache size and freshness
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 100,  // Limit the cache to 50 files
+        maxAgeSeconds: 30 * 24 * 60 * 60, // Cache files for 30 days
+      }),
+    ],
   })
 )
 
