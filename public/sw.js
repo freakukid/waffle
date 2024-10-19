@@ -106,91 +106,91 @@ workbox.routing.registerRoute(
 )
 
 //Cache POST Request
-const postAPIs = [
-  //Inventory
-  'https://legitski.com/api/protected/inventory/recieving',
-]
+// const postAPIs = [
+//   //Inventory
+//   'https://legitski.com/api/protected/inventory/recieving',
+// ]
 
-workbox.routing.registerRoute(
-  ({ request }) => request.method === 'POST' && matchesApi(postAPIs, request.url),
-  async (args) => {
-    try {
-      // Attempt to send the POST request
-      const response = await fetch(args.request)
+// workbox.routing.registerRoute(
+//   ({ request }) => request.method === 'POST' && matchesApi(postAPIs, request.url),
+//   async (args) => {
+//     try {
+//       // Attempt to send the POST request
+//       const response = await fetch(args.request)
 
-      // If the response is not ok (e.g., the user is offline), save the request
-      if (!response.ok) {
-        // Construct and save request data for offline use
-        await saveFailedPostRequest(args.request)
-        return new Response('Network error. Your data will be resent when online.', {
-          status: 503 // Service Unavailable
-        })
-      }
+//       // If the response is not ok (e.g., the user is offline), save the request
+//       if (!response.ok) {
+//         // Construct and save request data for offline use
+//         await saveFailedPostRequest(args.request)
+//         return new Response('Network error. Your data will be resent when online.', {
+//           status: 503 // Service Unavailable
+//         })
+//       }
 
-      // If the request is successful, we return nothing (or you can return a placeholder if needed)
-      return // Do nothing on successful response
-    } catch (error) {
-      console.error('Error fetching POST request:', error);
-      // Save the request data for offline use
-      await saveFailedPostRequest(args.request)
-      return new Response('Network error. Your data will be resent when online.', {
-        status: 503 // Service Unavailable
-      })
-    }
-  }
-)
+//       // If the request is successful, we return nothing (or you can return a placeholder if needed)
+//       return // Do nothing on successful response
+//     } catch (error) {
+//       console.error('Error fetching POST request:', error);
+//       // Save the request data for offline use
+//       await saveFailedPostRequest(args.request)
+//       return new Response('Network error. Your data will be resent when online.', {
+//         status: 503 // Service Unavailable
+//       })
+//     }
+//   }
+// )
 
-// Function to save failed POST requests
-async function saveFailedPostRequest(request) {
-  const requestBody = await request.clone().text(); // Clone and read the body
-  const requestData = {
-    url: request.url,
-    method: request.method,
-    body: requestBody,
-    headers: Object.fromEntries(request.headers.entries()),
-    timestamp: Date.now()  // Add a timestamp as a unique identifier
-  }
+// // Function to save failed POST requests
+// async function saveFailedPostRequest(request) {
+//   const requestBody = await request.clone().text(); // Clone and read the body
+//   const requestData = {
+//     url: request.url,
+//     method: request.method,
+//     body: requestBody,
+//     headers: Object.fromEntries(request.headers.entries()),
+//     timestamp: Date.now()  // Add a timestamp as a unique identifier
+//   }
 
-  // Save request to localStorage
-  const failedRequests = JSON.parse(localStorage.getItem('failed_requests')) || []
-  failedRequests.push(requestData)
-  localStorage.setItem('failed_requests', JSON.stringify(failedRequests))
-}
+//   // Save request to localStorage
+//   const failedRequests = JSON.parse(localStorage.getItem('failed_requests')) || []
+//   failedRequests.push(requestData)
+//   localStorage.setItem('failed_requests', JSON.stringify(failedRequests))
+// }
 
-// Function to resend failed requests from localStorage
-async function resendFailedRequests() {
-  const failedRequests = JSON.parse(localStorage.getItem('failed_requests')) || []
+// // Function to resend failed requests from localStorage
+// async function resendFailedRequests() {
+//   const failedRequests = JSON.parse(localStorage.getItem('failed_requests')) || []
 
-  if (failedRequests.length === 0) return // No failed requests
+//   if (failedRequests.length === 0) return // No failed requests
 
-  for (const reqData of failedRequests) {
-    const { url, method, headers, body } = reqData
+//   for (const reqData of failedRequests) {
+//     const { url, method, headers, body } = reqData
 
-    try {
-      const requestInit = {
-        method,
-        headers: new Headers(headers),
-        body,
-      }
+//     try {
+//       const requestInit = {
+//         method,
+//         headers: new Headers(headers),
+//         body,
+//       }
 
-      const response = await fetch(url, requestInit)
+//       const response = await fetch(url, requestInit)
       
-      // Check for success response
-      if (response.ok) {
-        console.log(`Resent successfully: ${url}`)
+//       // Check for success response
+//       if (response.ok) {
+//         console.log(`Resent successfully: ${url}`)
         
-        // Remove the sent request from localStorage
-        const remainingRequests = failedRequests.filter(req =>  req.timestamp !== reqData.timestamp)
-        localStorage.setItem('failed_requests', JSON.stringify(remainingRequests))
-      }
-    } catch (error) {
-      console.error(`Failed to resend: ${url}`, error)
-      // Keep the request in localStorage for future retries
-    }
-  }
-}
+//         // Remove the sent request from localStorage
+//         const remainingRequests = failedRequests.filter(req =>  req.timestamp !== reqData.timestamp)
+//         localStorage.setItem('failed_requests', JSON.stringify(remainingRequests))
+//       }
+//     } catch (error) {
+//       console.error(`Failed to resend: ${url}`, error)
+//       // Keep the request in localStorage for future retries
+//     }
+//   }
+// }
 
-self.addEventListener('online', () => {
-  console.log('Back online. Trying to resend failed requests...')
-  resendFailedRequests()
-})
+// self.addEventListener('online', () => {
+//   console.log('Back online. Trying to resend failed requests...')
+//   resendFailedRequests()
+// })
