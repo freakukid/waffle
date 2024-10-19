@@ -22,6 +22,22 @@ useHead({
     { rel: 'manifest', href: '/manifest.json' }
   ]
 })
+
+async function checkPing() {
+  try {
+    await useFetchApi('/api/ping')
+    pinia.setOnlineStatus(true)
+  } catch(error) {
+    pinia.setOnlineStatus(false)
+    console.log('Offline')
+  }
+}
+
+//Mount
+onBeforeMount(async () => {
+  setInterval(checkPing, 10000)
+})
+//Mount
 </script>
 
 <style lang="scss">

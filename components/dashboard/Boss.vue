@@ -12,7 +12,11 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup.deleteStore = false">Cancel</el-button>
-          <el-button type="danger" @click="deleteStore()" :loading="loading.deleteStore">Delete</el-button>
+          
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button type="danger" disabled>Delete</el-button>
+          </el-tooltip>
+          <el-button v-else type="danger" @click="deleteStore()" :loading="loading.deleteStore">Delete</el-button>
         </div>
       </template>
     </el-dialog>
@@ -33,11 +37,15 @@
           <div>
             <label>Actions:</label>
             <div>
-              <el-button type="warning" plain @click="openEditStore(store)">
-                Edit
-              </el-button>
+              <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+                <el-button type="warning" plain disabled>Edit</el-button>
+              </el-tooltip>
+              <el-button v-else type="warning" plain @click="openEditStore(store)">Edit</el-button>
 
-              <el-button v-if="stores.length > 1" type="danger" plain @click="popup.deleteStore = true, form.deleteName = store.name, form.deleteId = store.id">
+              <el-tooltip v-if="!pinia.getOnlineStatus() && stores.length > 1" content="Feature only available online." placement="top">
+                <el-button type="danger" plain disabled>Delete</el-button>
+              </el-tooltip>
+              <el-button v-else-if="stores.length > 1" type="danger" plain @click="popup.deleteStore = true, form.deleteName = store.name, form.deleteId = store.id">
                 Delete
               </el-button>
             </div>

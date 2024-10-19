@@ -13,7 +13,11 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="danger" @click="deleteRow()" :loading="loading.deleteRow">Delete</el-button>
+
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button disabled type="danger">Delete</el-button>
+          </el-tooltip>
+          <el-button v-else type="danger" @click="deleteRow()" :loading="loading.deleteRow">Delete</el-button>
         </div>
       </template>
     </el-dialog>
@@ -23,6 +27,7 @@
 
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
+const pinia = useStore()
 
 const loading = reactive({ deleteRow: false })
 const popup = ref(false)

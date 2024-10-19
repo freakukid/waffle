@@ -13,7 +13,7 @@
           :data="tree"
           :default-expanded-keys="expanded"
           :default-checked-keys="checked"
-          show-checkbox
+          :show-checkbox="pinia.getOnlineStatus()"
           node-key="id"
           @check-change="handleCheckChange"
         >
@@ -22,13 +22,14 @@
               <span>{{ node.label }}</span>
 
               <span v-if="!data.permission">
-                <el-button type="warning" size="small" plain @click="editPrompt($event, data)">
-                  Edit
-                </el-button>
-
-                <el-button type="danger" size="small" plain @click="deletePrompt($event, data)">
-                  Delete
-                </el-button>
+                <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-button type="warning" size="small" plain disabled>Edit</el-button>
+                </el-tooltip>
+                <el-button v-else type="warning" size="small" plain @click="editPrompt($event, data)">Edit</el-button>
+                <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-button type="danger" size="small" plain disabled>Delete</el-button>
+                </el-tooltip>
+                <el-button v-else type="danger" size="small" plain @click="deletePrompt($event, data)">Delete</el-button>
               </span>
             </span>
           </template>
@@ -45,7 +46,10 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup.deleteUser = false">Cancel</el-button>
-          <el-button type="danger" @click="deleteUser()" :loading="loading.deleteUser">Delete</el-button>
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button type="danger" disabled>Delete</el-button>
+          </el-tooltip>
+          <el-button v-else type="danger" @click="deleteUser()" :loading="loading.deleteUser">Delete</el-button>
         </div>
       </template>
     </el-dialog>
@@ -54,8 +58,8 @@
       <el-form :model="form.edit.model" label-position="top" @submit.prevent="editUser()">
         <el-form-item label="Username" prop="username"
         :rules="[{required: true, message: 'Username is required', trigger: 'blur'},
-        { min: 3, max: 15, message: 'Username must be between 3 and 15 characters', trigger: 'blur' },
-        { validator: validateUsername, trigger: 'change' }]"
+          { min: 3, max: 15, message: 'Username must be between 3 and 15 characters', trigger: 'blur' },
+          { validator: validateUsername, trigger: 'change' }]"
         >
           <el-input v-model="form.edit.model.username" :value="form.edit.model.username" autocomplete="off" />
         </el-form-item>
@@ -71,7 +75,10 @@
 
         <div class="dialog-footer">
           <el-button @click="popup.editUser = false">Cancel</el-button>
-          <el-button type="warning" @click="editUser()" :loading="loading.editUser" native-type="submit">Edit</el-button>
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button type="warning" disabled>Edit</el-button>
+          </el-tooltip>
+          <el-button v-else type="warning" @click="editUser()" :loading="loading.editUser" native-type="submit">Edit</el-button>
         </div>
       </el-form>
     </el-dialog>
@@ -210,6 +217,11 @@ async function deleteUser() {
 
 //Edit permissions
 async function handleCheckChange(data, checked) {
+  if(!pinia.getOnlineStatus()) {
+    notify({ title: 'Error', text: 'Feature only available online.', type: 'error'})
+    return
+  }
+
   if(data.permission) {
     //Setup data
     const currentWorker = workers.value[data.worker_index]

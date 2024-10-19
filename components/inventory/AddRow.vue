@@ -17,7 +17,10 @@
     <!-- Popup -->
     
     <!-- Add Btn -->
-    <el-button @click="openPopup()" type="success">Add Item</el-button>
+    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+      <el-button disabled type="success">Add Item</el-button>
+    </el-tooltip>
+    <el-button v-else @click="openPopup()" type="success">Add Item</el-button>
     <!-- Add Btn -->
   </div>
 </template>
@@ -25,6 +28,7 @@
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
 const { formatNameColumn, formatPriceColumn, formatQuantityColumn, formatDiscountColumn, formatCostColumn, validateValues } = useFormatter()
+const pinia = useStore()
 
 const loading = reactive({ addRow: false })
 const popup = ref(false)

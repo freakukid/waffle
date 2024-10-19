@@ -4,6 +4,7 @@ import { useAuth } from '#imports'
 export const useStore = defineStore('store', {
   state: () => ({
     darkMode: true,
+    isOnline: true,
     store: 0,
     filteredColumns: {},
     printReceipt: true
@@ -49,6 +50,12 @@ export const useStore = defineStore('store', {
     },
     togglePrintReceipt() {
       this.printReceipt = !this.printReceipt
+    },
+    getOnlineStatus() {
+      return this.isOnline
+    },
+    setOnlineStatus(isOnline) {
+      this.isOnline = isOnline
     }
   },
   persist: {

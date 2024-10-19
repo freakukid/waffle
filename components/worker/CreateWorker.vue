@@ -28,14 +28,20 @@
 
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="success" @click="createUser()" :loading="loading.createUser" native-type="submit">Create</el-button>
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button disabled type="success">Create</el-button>
+          </el-tooltip>
+          <el-button v-else type="success" @click="createUser()" :loading="loading.createUser" native-type="submit">Create</el-button>
         </div>
       </el-form>
     </el-dialog>
     <!-- Popup -->
     
     <!-- Add Btn -->
-    <el-button @click="openPopup()" type="success">Create Worker</el-button>
+    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+      <el-button disabled type="success">Create Worker</el-button>
+    </el-tooltip>
+    <el-button v-else @click="openPopup()" type="success">Create Worker</el-button>
     <!-- Add Btn -->
   </div>
 </template>

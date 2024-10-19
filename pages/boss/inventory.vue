@@ -24,8 +24,16 @@
           <InventoryDeleteColumn ref="deleteColRef" :storeId="storeId" :inventory="store.inventory" :inventoryList="inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
           <div id="toolbar">
             <InventoryAddRow :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
-            <el-button @click="toggleEditMode()" type="warning">Edit Mode</el-button>
-            <el-button @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
+
+            <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+              <el-button disabled type="warning">Edit Mode</el-button>
+            </el-tooltip>
+            <el-button v-else @click="toggleEditMode()" type="warning">Edit Mode</el-button>
+
+            <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+              <el-button disabled type="danger" style="margin-left: 0">Delete Mode</el-button>
+            </el-tooltip>
+            <el-button v-else @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
             <InventoryAddColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
             <InventoryEditColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
             <InventorySortColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
@@ -240,6 +248,7 @@ async function getStore() {
 #toolbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   background: #090909;
   padding: 16px;

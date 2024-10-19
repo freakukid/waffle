@@ -37,7 +37,15 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="popup = false">Cancel</el-button>
-        <el-button type="success" :loading="loading" @click="generatePDF">Send Invoice</el-button>
+
+        <el-tooltip v-if="!pinia.getOnlineStatus() && type === 'email'" content="Feature only available online." placement="top">
+          <el-button type="success" disabled>Send Invoice</el-button>
+        </el-tooltip>
+        <el-button v-else type="success" :loading="loading" @click="generatePDF">
+          <span v-if="type === 'email'">Send Invoice</span>
+          <span v-else-if="type === 'download'">Download Invoice</span>
+          <span v-else>View Invoice</span>
+        </el-button>
       </div>
     </template>
   </el-dialog>
@@ -45,6 +53,9 @@
 </template>
 
 <script setup>
+//Import
+const pinia = useStore()
+
 const popup = ref(false)
 const formRef = ref(null)
 const form = reactive({

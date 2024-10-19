@@ -10,14 +10,20 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="warning" @click="editColumn()" :loading="loading.editColumn">Edit</el-button>
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button disabled type="warning">Edit</el-button>
+          </el-tooltip>
+          <el-button v-else type="warning" @click="editColumn()" :loading="loading.editColumn">Edit</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
     
     <!-- Edit Btn -->
-    <el-button @click="openPopup()" type="warning">Edit Column</el-button>
+    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+      <el-button disabled type="warning">Edit Column</el-button>
+    </el-tooltip>
+    <el-button v-else @click="openPopup()" type="warning">Edit Column</el-button>
     <!-- Edit Btn -->
   </div>
 </template>

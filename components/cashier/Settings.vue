@@ -171,14 +171,21 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="warning" @click="changeSettings()" :loading="loading.settings" native-type="submit">Submit</el-button>
+
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button type="success" disabled>Save</el-button>
+          </el-tooltip>
+          <el-button v-else type="success" @click="changeSettings()" :loading="loading.settings" native-type="submit">Save</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
     
     <!-- Settings Btn -->
-    <el-button @click="openPopup()" type="success">Settings</el-button>
+    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+      <el-button type="success" disabled>Settings</el-button>
+    </el-tooltip>
+    <el-button v-else @click="openPopup()" type="success">Settings</el-button>
     <!-- Settings Btn -->
   </div>
 </template>
@@ -186,6 +193,7 @@
 <script setup>
 //Import
 const { notify } = useNotification()
+const pinia = useStore()
 //Data
 const loading = reactive({ startedLoading: true, settings: false })
 const popup = ref(false)

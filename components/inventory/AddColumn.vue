@@ -10,14 +10,21 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="success" @click="addColumn()" :loading="loading.addColumn">Add Column</el-button>
+
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button disabled type="success">Add Column</el-button>
+          </el-tooltip>
+          <el-button v-else type="success" @click="addColumn()" :loading="loading.addColumn">Add Column</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
     
     <!-- Add Btn -->
-    <el-button @click="openPopup()" type="success">Add Column</el-button>
+    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+      <el-button disabled type="success">Add Column</el-button>
+    </el-tooltip>
+    <el-button v-else @click="openPopup()" type="success">Add Column</el-button>
     <!-- Add Btn -->
   </div>
 </template>
@@ -25,6 +32,8 @@
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
 const { notify } = useNotification()
+const pinia = useStore()
+
 const loading = reactive({ addColumn: false })
 const popup = ref(false)
 const form = reactive({

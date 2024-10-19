@@ -44,14 +44,26 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button :loading="loading" native-type="submit" @click="validateForm">{{type}} Store</el-button>
+          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-button disabled>{{type}} Store</el-button>
+          </el-tooltip>
+          <el-button v-else :loading="loading" native-type="submit" @click="validateForm">{{type}} Store</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
 
     <!-- Button -->
-    <el-button v-if="type === 'Create'" id="create-btn" type="primary" @click="openPopup(true)">
+    <el-tooltip v-if="!pinia.getOnlineStatus() && type === 'Create'" content="Feature only available online." placement="top">
+      <el-button id="create-btn" class="offline" type="primary" disabled>
+        <div class="btn-body">
+          <Icon name="mdi:store-plus" />
+          <b>Create Store</b>
+        </div>
+      </el-button>
+    </el-tooltip>
+
+    <el-button v-else-if="type === 'Create'" id="create-btn" type="primary" @click="openPopup(true)">
       <div class="btn-body">
         <Icon name="mdi:store-plus" />
         <b>Create Store</b>
@@ -235,6 +247,10 @@ defineExpose({
   &:hover {
     border-color: #54ff00;
     color: #54ff00;
+  }
+  &.offline {
+    border-color: #797979;
+    color: #797979;
   }
   .btn-body {
     display: flex;
