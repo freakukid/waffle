@@ -44,26 +44,4 @@ export default defineNuxtConfig({
   plugins: [
     { src: '~/plugins/register-service-worker.client.js', mode: 'client' }
   ],
-  nitro: {
-    inlineDynamicImports: true,
-    esbuild: {
-      options: {
-        minify: true,
-        treeShaking: true
-      }
-    }
-  },
-  vite: {
-    build: {
-      cssCodeSplit: false,
-      rollupOptions: {
-        output: {
-          manualChunks: undefined,
-          chunkFileNames: 'js/[name]-[hash].js',
-          entryFileNames: 'js/[name]-[hash].js',
-          assetFileNames: '[ext]/[name]-[hash][extname]'
-        }
-      }
-    }
-  }
 })
