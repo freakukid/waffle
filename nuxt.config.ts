@@ -10,6 +10,9 @@ export default defineNuxtConfig({
   build: { 
     transpile: ["pinia-plugin-persistedstate"],
   },
+  // webpack: {
+  //   extractCSS: true, // Extract CSS into a single file
+  // },
   modules: [
     '@nuxtjs/tailwindcss',
     '@sidebase/nuxt-auth',
@@ -41,4 +44,26 @@ export default defineNuxtConfig({
   plugins: [
     { src: '~/plugins/register-service-worker.client.js', mode: 'client' }
   ],
+  nitro: {
+    inlineDynamicImports: true,
+    esbuild: {
+      options: {
+        minify: true,
+        treeShaking: true
+      }
+    }
+  },
+  vite: {
+    build: {
+      cssCodeSplit: false,
+      rollupOptions: {
+        output: {
+          manualChunks: undefined,
+          chunkFileNames: 'js/[name]-[hash].js',
+          entryFileNames: 'js/[name]-[hash].js',
+          assetFileNames: '[ext]/[name]-[hash][extname]'
+        }
+      }
+    }
+  }
 })
