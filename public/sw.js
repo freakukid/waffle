@@ -26,7 +26,7 @@ workbox.routing.registerRoute(
     plugins: [
       // Expiration plugin to limit cache size and freshness
       new workbox.expiration.ExpirationPlugin({
-        maxEntries: 100,  // Limit the cache to 50 files
+        maxEntries: 250,  // Limit the cache to 50 files
         maxAgeSeconds: 30 * 24 * 60 * 60, // Cache files for 30 days
       }),
     ],
@@ -37,7 +37,7 @@ workbox.routing.registerRoute(
 workbox.routing.registerRoute(
   ({ request }) => request.destination === 'image',
   new workbox.strategies.CacheFirst({
-    cacheName: 'images',
+    cacheName: 'image',
     plugins: [
       new workbox.expiration.ExpirationPlugin({
         maxEntries: 1000,
