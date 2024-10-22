@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-3xl pt-16 text-center">Offline Page</h1>
+    <h1 class="text-3xl pt-16 text-center">Offline Queue</h1>
 
     <div v-if="requests.length">
       <!-- LOGS -->
