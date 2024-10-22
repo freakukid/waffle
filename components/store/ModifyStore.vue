@@ -44,7 +44,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button disabled>{{type}} Store</el-button>
           </el-tooltip>
           <el-button v-else :loading="loading" native-type="submit" @click="validateForm">{{type}} Store</el-button>
@@ -54,7 +54,7 @@
     <!-- Popup -->
 
     <!-- Button -->
-    <el-tooltip v-if="!pinia.getOnlineStatus() && type === 'Create'" content="Feature only available online." placement="top">
+    <el-tooltip v-if="!offlineStore.getOnlineStatus() && type === 'Create'" content="Feature only available online." placement="top">
       <el-button id="create-btn" class="offline" type="primary" disabled>
         <div class="btn-body">
           <Icon name="mdi:store-plus" />
@@ -79,6 +79,7 @@ const { validateEmail } = useValidator()
 const { notify } = useNotification()
 const { signOut } = useAuth()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 //Data
 const popup = ref(false)
 const loading = ref(false)

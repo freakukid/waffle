@@ -10,7 +10,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button disabled type="warning">Edit</el-button>
           </el-tooltip>
           <el-button v-else type="warning" @click="editRow()" :loading="loading.editRow">Edit</el-button>
@@ -25,7 +25,7 @@
 const { handleInventoryRequest } = useHandleRequests()
 const { formatNameColumn, formatPriceColumn, formatQuantityColumn, formatDiscountColumn, formatCostColumn, validateValues } = useFormatter()
 const { notify } = useNotification()
-const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 const loading = reactive({ editRow: false })
 const popup = ref(false)

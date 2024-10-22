@@ -16,7 +16,7 @@
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
 
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button disabled type="danger">Drop Table</el-button>
           </el-tooltip>
           <el-button v-else :loading="loading.dropTable" type="danger" @click="dropTable()">Drop Table</el-button>
@@ -26,7 +26,7 @@
     <!-- Popup -->
     
     <!-- Drop Table Btn -->
-    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button disabled type="danger">Drop Table</el-button>
     </el-tooltip>
     <el-button v-else @click="openPopup" type="danger">Drop Table</el-button>
@@ -36,7 +36,7 @@
 
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
-const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 const loading = reactive({ dropTable: false })
 const popup = ref(false)

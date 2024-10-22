@@ -23,14 +23,14 @@
             <InventoryAddRow v-if="permissions.add_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
 
             <div>
-              <el-tooltip v-if="!pinia.getOnlineStatus() && permissions.edit_item" content="Feature only available online." placement="top">
+              <el-tooltip v-if="!offlineStore.getOnlineStatus() && permissions.edit_item" content="Feature only available online." placement="top">
                 <el-button disabled type="warning">Edit Mode</el-button>
               </el-tooltip>
               <el-button v-else-if="permissions.edit_item" @click="toggleEditMode()" type="warning">Edit Mode</el-button>
             </div>
 
             <div>
-              <el-tooltip v-if="!pinia.getOnlineStatus() && permissions.delete_item" content="Feature only available online." placement="top">
+              <el-tooltip v-if="!offlineStore.getOnlineStatus() && permissions.delete_item" content="Feature only available online." placement="top">
                 <el-button disabled type="danger" style="margin-left: 0">Delete Mode</el-button>
               </el-tooltip>
               <el-button v-else-if="permissions.delete_item" @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
@@ -63,6 +63,7 @@
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { notify } = useNotification()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 const { isBoss, getPermissions } = useChecks()
 
 //Data

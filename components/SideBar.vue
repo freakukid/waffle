@@ -48,6 +48,12 @@
             <template #title>Transactions</template>
           </el-menu-item>
         </NuxtLink>
+        <NuxtLink v-if="offlineRequests.length" to="/offline">
+          <el-menu-item class="sidebar-item" index="8">
+            <Icon name="oui:offline" class="text-red-500" />
+            <template #title>Offline</template>
+          </el-menu-item>
+        </NuxtLink>
         <NuxtLink v-if="store.id !== storeId && isBossAccount" to="/dashboard" @click="exitStore()">
           <el-menu-item class="sidebar-item" index="8">
             <Icon name="tabler:door-exit" class="text-red-500" />
@@ -68,12 +74,14 @@
 //Imports
 const { notify } = useNotification()
 const store = useStore()
+const offlineStore = useOfflineStore()
 const { isBoss, getPermissions } = useChecks()
 const { signOut } = useAuth()
 const route = useRoute()
 
 //Data
 const storeId = computed(() => store.store)
+const offlineRequests = computed(offlineStore.getRequests)
 const isBossAccount = computed(isBoss)
 const permissions = ref({make_transactions: true, view_log: true})
 

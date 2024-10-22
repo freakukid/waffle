@@ -14,7 +14,7 @@
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
 
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button disabled type="danger">Delete</el-button>
           </el-tooltip>
           <el-button v-else type="danger" @click="deleteColumn()" :loading="loading.deleteColumn">Delete</el-button>
@@ -28,6 +28,7 @@
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 const loading = reactive({ deleteColumn: false })
 const popup = ref(false)

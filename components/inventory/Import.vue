@@ -6,7 +6,7 @@
 
     <!-- Import Btn -->
     <div class="mt-32">
-      <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+      <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
         <el-button disabled type="primary">Import Inventory by Excel File</el-button>
       </el-tooltip>
       <el-button v-else @click="fileInput.click()" type="primary">Import Inventory by Excel File</el-button>
@@ -19,7 +19,7 @@
 import { Workbook } from 'exceljs'
 const { validateValues } = useFormatter()
 const { handleInventoryRequest } = useHandleRequests()
-const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 const fileInput = ref()
 const loading = reactive({ import: false })

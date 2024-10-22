@@ -38,7 +38,7 @@
       <div class="dialog-footer">
         <el-button @click="popup = false">Cancel</el-button>
 
-        <el-tooltip v-if="!pinia.getOnlineStatus() && type === 'email'" content="Feature only available online." placement="top">
+        <el-tooltip v-if="!offlineStore.getOnlineStatus() && type === 'email'" content="Feature only available online." placement="top">
           <el-button type="success" disabled>Send Invoice</el-button>
         </el-tooltip>
         <el-button v-else type="success" :loading="loading" @click="generatePDF">
@@ -54,7 +54,7 @@
 
 <script setup>
 //Import
-const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 const popup = ref(false)
 const formRef = ref(null)

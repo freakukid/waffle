@@ -28,7 +28,7 @@
 
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button disabled type="success">Create</el-button>
           </el-tooltip>
           <el-button v-else type="success" @click="createUser()" :loading="loading.createUser" native-type="submit">Create</el-button>
@@ -38,7 +38,7 @@
     <!-- Popup -->
     
     <!-- Add Btn -->
-    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button disabled type="success">Create Worker</el-button>
     </el-tooltip>
     <el-button v-else @click="openPopup()" type="success">Create Worker</el-button>
@@ -51,6 +51,7 @@
 const { validateUsername, validateOptionalEmail } = useValidator()
 const { notify } = useNotification()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 //Data
 const storeId = computed(pinia.getStore)

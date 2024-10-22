@@ -62,14 +62,14 @@
   </div>
 </template>
 
-//Need user to select item
-//Either per unit cost or total cost
-
-
 <script setup>
+//Import
 const { handleInventoryRequest } = useHandleRequests()
 const { notify } = useNotification()
-const { calcTotalCost } = useCalculations()
+const { calcTotalCost, calcAvgCostPerItem } = useCalculations()
+const offlineStore = useOfflineStore()
+
+//Data
 const loading = reactive({ recieve: false, search: false })
 const popup = ref(false)
 const search = ref('')
@@ -85,12 +85,8 @@ const form = reactive({
 //Component Emits,Props
 const emits = defineEmits(['setInventory'])
 const props = defineProps({
-  storeId: {
-    type: Number,
-  },
-  inventory: {
-    type: Object,
-  }
+  storeId: { type: Number },
+  inventory: { type: Object }
 })
 
 //Filters inventory depending on search query
@@ -132,7 +128,8 @@ function addItem(key) {
 
 //Request
 async function recieveItem() {
-  const { quantity_column, cost_column } = props.inventory
+  let inventory = null
+  const { name_column, quantity_column, cost_column } = props.inventory
   let { key, qty, costPerItem, totalCost } = form
   const prevCost = props.inventory.stock[key][cost_column]
 
@@ -158,10 +155,29 @@ async function recieveItem() {
 
   //Make inventory request
   loading.recieve = true
-  let inventory = await handleInventoryRequest({
-    path: 'recieving',
-    data: { store_id: props.storeId, key: key, qty: qty, total_cost: totalCost, prev_cost: prevCost, quantity_column: quantity_column, cost_column: cost_column },
-  })
+  const postData = { store_id: props.storeId, key: key, qty: qty, total_cost: totalCost, prev_cost: prevCost, quantity_column: quantity_column, cost_column: cost_column }
+  const isUserOnline = await offlineStore.tryPingingServer()
+
+  if(isUserOnline) {
+    inventory = await handleInventoryRequest({ path: 'recieving', data: postData })
+  } else {
+    //Setup fake data to render
+    const { data } = useAuth()
+    const item = props.inventory.stock[key]
+    const newQty = item[quantity_column] + qty
+    const newCost = parseFloat(calcAvgCostPerItem(item[quantity_column], item[cost_column], newQty, totalCost)).toFixed(2)
+    const fakeLogData = {
+      timestamp: new Date(),
+      user: { name: data.value.user.name },
+      action: 'recieving',
+      before: { cost: prevCost },
+      after: { name: item[name_column], qty: qty, total_cost: parseFloat(totalCost).toFixed(2), cost: newCost },
+      item_id: key
+    }
+
+    offlineStore.addPostRequest('inventory', 'recieving', postData, { log: fakeLogData, qty: qty, cost: newCost })
+    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online!`, type: 'success'})
+  }
 
   //Emit to parent component
   if(inventory)

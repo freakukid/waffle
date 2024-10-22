@@ -25,12 +25,12 @@
           <div id="toolbar">
             <InventoryAddRow :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
 
-            <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
               <el-button disabled type="warning">Edit Mode</el-button>
             </el-tooltip>
             <el-button v-else @click="toggleEditMode()" type="warning">Edit Mode</el-button>
 
-            <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+            <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
               <el-button disabled type="danger" style="margin-left: 0">Delete Mode</el-button>
             </el-tooltip>
             <el-button v-else @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
@@ -65,10 +65,12 @@
 <script setup>
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
+const { $eventBus } = useNuxtApp()
 const { notify } = useNotification()
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -113,6 +115,16 @@ onBeforeMount(async () => {
     
   await getStore()
   loading.startedLoading = false
+})
+
+// Set up the event listener when the component mounts
+onMounted(() => {
+  $eventBus.on('setInventory', setInventory)
+})
+
+// Clean up the event listener when the component is unmounted
+onBeforeUnmount(() => {
+  $eventBus.off('setInventory', setInventory)
 })
 //Mount
 

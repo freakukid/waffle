@@ -13,7 +13,7 @@
         <div class="dialog-footer">
           <el-button @click="popup.deleteStore = false">Cancel</el-button>
           
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button type="danger" disabled>Delete</el-button>
           </el-tooltip>
           <el-button v-else type="danger" @click="deleteStore()" :loading="loading.deleteStore">Delete</el-button>
@@ -37,12 +37,12 @@
           <div>
             <label>Actions:</label>
             <div>
-              <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+              <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
                 <el-button type="warning" plain disabled>Edit</el-button>
               </el-tooltip>
               <el-button v-else type="warning" plain @click="openEditStore(store)">Edit</el-button>
 
-              <el-tooltip v-if="!pinia.getOnlineStatus() && stores.length > 1" content="Feature only available online." placement="top">
+              <el-tooltip v-if="!offlineStore.getOnlineStatus() && stores.length > 1" content="Feature only available online." placement="top">
                 <el-button type="danger" plain disabled>Delete</el-button>
               </el-tooltip>
               <el-button v-else-if="stores.length > 1" type="danger" plain @click="popup.deleteStore = true, form.deleteName = store.name, form.deleteId = store.id">
@@ -88,6 +88,7 @@
 import { ref } from '#imports'
 const { notify } = useNotification()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 //General
 const loading = reactive({ startedLoading: true, deleteStore: false })

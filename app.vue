@@ -10,7 +10,7 @@
 
 <script setup>
 const { status } = useAuth()
-const pinia = useStore()
+const offlineStore = useOfflineStore()
 const storeId = computed(() => pinia.store)
 
 useHead({
@@ -24,13 +24,7 @@ useHead({
 })
 
 async function checkPing() {
-  try {
-    await useFetchApi('/api/ping')
-    pinia.setOnlineStatus(true)
-  } catch(error) {
-    pinia.setOnlineStatus(false)
-    console.log('Offline')
-  }
+  offlineStore.tryPingingServer()
 }
 
 //Mount

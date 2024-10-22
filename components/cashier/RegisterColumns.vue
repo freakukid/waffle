@@ -69,7 +69,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button v-if="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''" @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button type="success" disabled>Register Columns</el-button>
           </el-tooltip>
           <el-button v-else type="success" @click="registerColumns()" :loading="loading.registerColumns" :disabled="form.name === '' || form.price === ''">Register Columns</el-button>
@@ -79,7 +79,7 @@
     <!-- Popup -->
     
     <!-- Register Btn -->
-    <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button type="success" disabled>Column Settings</el-button>
     </el-tooltip>
     <el-button v-else @click="openPopup()" type="success">Column Settings</el-button>
@@ -91,7 +91,7 @@
 const { notify } = useNotification()
 const { handleInventoryRequest } = useHandleRequests()
 const { formatNameColumn, formatPriceColumn, formatQuantityColumn, formatDiscountColumn, formatCostColumn } = useFormatter()
-const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 const loading = reactive({ registerColumn: false })
 const popup = ref(false)

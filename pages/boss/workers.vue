@@ -13,7 +13,7 @@
           :data="tree"
           :default-expanded-keys="expanded"
           :default-checked-keys="checked"
-          :show-checkbox="pinia.getOnlineStatus()"
+          :show-checkbox="offlineStore.getOnlineStatus()"
           node-key="id"
           @check-change="handleCheckChange"
         >
@@ -22,11 +22,11 @@
               <span>{{ node.label }}</span>
 
               <span v-if="!data.permission">
-                <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
                   <el-button type="warning" size="small" plain disabled>Edit</el-button>
                 </el-tooltip>
                 <el-button v-else type="warning" size="small" plain @click="editPrompt($event, data)">Edit</el-button>
-                <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
                   <el-button type="danger" size="small" plain disabled>Delete</el-button>
                 </el-tooltip>
                 <el-button v-else type="danger" size="small" plain @click="deletePrompt($event, data)">Delete</el-button>
@@ -46,7 +46,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup.deleteUser = false">Cancel</el-button>
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button type="danger" disabled>Delete</el-button>
           </el-tooltip>
           <el-button v-else type="danger" @click="deleteUser()" :loading="loading.deleteUser">Delete</el-button>
@@ -75,7 +75,7 @@
 
         <div class="dialog-footer">
           <el-button @click="popup.editUser = false">Cancel</el-button>
-          <el-tooltip v-if="!pinia.getOnlineStatus()" content="Feature only available online." placement="top">
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
             <el-button type="warning" disabled>Edit</el-button>
           </el-tooltip>
           <el-button v-else type="warning" @click="editUser()" :loading="loading.editUser" native-type="submit">Edit</el-button>
@@ -93,6 +93,7 @@ const { validateUsername, validateOptionalEmail } = useValidator()
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
 //Data
 const storeId = computed(pinia.getStore)
 const isBossAccount = computed(isBoss)
@@ -217,7 +218,7 @@ async function deleteUser() {
 
 //Edit permissions
 async function handleCheckChange(data, checked) {
-  if(!pinia.getOnlineStatus()) {
+  if(!offlineStore.getOnlineStatus()) {
     notify({ title: 'Error', text: 'Feature only available online.', type: 'error'})
     return
   }
