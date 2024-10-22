@@ -48,7 +48,7 @@
             <template #title>Transactions</template>
           </el-menu-item>
         </NuxtLink>
-        <NuxtLink v-if="offlineRequests.length" to="/offline">
+        <NuxtLink to="/offline">
           <el-menu-item class="sidebar-item" index="8">
             <Icon name="oui:offline" class="text-red-500" />
             <template #title>Offline</template>
