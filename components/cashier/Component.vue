@@ -96,8 +96,9 @@
 
 <script setup>
 //Imports
-const { notify } = useNotification()
 const pinia = useStore()
+const { $eventBus } = useNuxtApp()
+const { notify } = useNotification()
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
@@ -182,6 +183,16 @@ onBeforeMount(async () => {
 
   await nextTick()
   columnChecks()
+})
+
+// Set up the event listener when the component mounts
+onMounted(() => {
+  $eventBus.on('setInventory', setInventory)
+})
+
+// Clean up the event listener when the component is unmounted
+onBeforeUnmount(() => {
+  $eventBus.off('setInventory', setInventory)
 })
 //Mount//
 

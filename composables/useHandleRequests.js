@@ -1,6 +1,18 @@
 export default () => {
   const { notify } = useNotification()
 
+  async function handleGetRequest(url) {
+    try {
+      return await useFetchApi(url)
+    } catch(error) {
+      const { signOut } = useAuth()
+      const pinia = useStore()
+      
+      pinia.exitStore()
+      signOut({ callbackUrl: '/login' })
+    }
+  }
+
   async function handleInventoryRequest(payload) {
     let { path, data } = payload
 
@@ -37,20 +49,40 @@ export default () => {
     }
   }
 
-  async function handleGetRequest(url) {
-    try {
-      return await useFetchApi(url)
-    } catch(error) {
-      const { signOut } = useAuth()
-      const pinia = useStore()
-      
-      pinia.exitStore()
-      signOut({ callbackUrl: '/login' })
+  async function handleTransactionRequest(postData) {
+    const response = await useFetchApi(`/api/protected/transaction/create`, { method: "POST", body: postData })
+
+    //Display error
+    if (response.statusCode) {
+      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      return false
     }
+
+    //show success message
+    notify({ title: 'Success', text: response.message, type: 'success'})
+
+    return response
+  }
+
+  async function handleLayawayRequest(postData) {
+    const response = await useFetchApi(`/api/protected/layaway/create`, { method: "POST", body: postData }) 
+    
+    //Display error
+    if (response.statusCode) {
+      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      return
+    }
+  
+    //show success message
+    notify({ title: 'Success', text: response.message, type: 'success'})
+
+    return response
   }
 
   return {
     handleInventoryRequest,
+    handleTransactionRequest,
+    handleLayawayRequest,
     handleGetRequest
   }
 }

@@ -37,10 +37,12 @@ export const useOfflineStore = defineStore('offline', {
       this.requests.push({category: category, type: type, data: postData, ...fakeData})
     },
     async sendRequests() {
-      const { handleInventoryRequest } = useHandleRequests()
+      const { handleInventoryRequest, handleTransactionRequest, handleLayawayRequest } = useHandleRequests()
       const { $eventBus } = useNuxtApp()
       const failedRequests = []
       let inventory = null
+      let anyTransactions = false
+      let anyLayaways = false
 
       //Loop through and finally make the requests
       for (let i = 0; i < this.requests.length; i++) {
@@ -55,9 +57,25 @@ export const useOfflineStore = defineStore('offline', {
             failedRequests.push(this.requests[i])
           }
         } else if(category === 'transaction') {
+          const transactionRequest = await handleTransactionRequest(data)
 
+          //If failed request put it back
+          if(transactionRequest) {
+            anyTransactions = true
+            inventory = transactionRequest.inventory
+          } else {
+            failedRequests.push(this.requests[i])
+          }
         } else if(category === 'layaway') {
+          const layawayRequest = await handleLayawayRequest(data)
 
+          //If failed request put it back
+          if(layawayRequest) {
+            anyLayaways = true
+            inventory = layawayRequest.inventory
+          } else {
+            failedRequests.push(this.requests[i])
+          }
         }
 
       }
@@ -65,6 +83,14 @@ export const useOfflineStore = defineStore('offline', {
       //Emit events
       if(inventory) {
         $eventBus.emit('setInventory', inventory)
+      }
+
+      if(anyTransactions) {
+        $eventBus.emit('fetchTransactions')
+      }
+
+      if(anyLayaways) {
+        $eventBus.emit('fetchLayaways')
       }
 
       //Set requests

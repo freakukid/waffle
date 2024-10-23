@@ -13,8 +13,9 @@
     <el-table-column label="Price">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item" class="text-center">
-          <div v-if="item.discount == 0">{{item.price}}</div>
-          <div v-else>{{item.new_price}}</div>
+          <div v-if="item.discount === 0">{{item.price}}</div>
+          <div v-else-if="item.discount > 0 && item.new_price">{{item.new_price}}</div>
+          <div v-else>{{calcDiscountedItemPrice(item.price, item.discount)}}</div>
         </div>
       </template>
     </el-table-column>
@@ -29,4 +30,6 @@
   </el-table-column>
 </template>
 
-<script setup></script>
+<script setup>
+const { calcDiscountedItemPrice } = useCalculations()
+</script>

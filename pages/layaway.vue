@@ -6,9 +6,11 @@
 
 <script setup>
 //Imports
-const { notify } = useNotification()
 const pinia = useStore()
-const { handleGetRequest } = useHandleRequests()
+const offlineStore = useOfflineStore()
+const { notify } = useNotification()
+const { formatDate } = useFormatter()
+const { handleGetRequest, handleLayawayRequest } = useHandleRequests()
 
 //Ref
 const component = ref(null)
@@ -59,7 +61,7 @@ async function createLayaway(store, form) {
   //Setup Data
   const { id, tax, inventory } = store
   const { name_column, price_column, quantity_column, discount_column, cost_column } = inventory
-  const { items } = form
+  const { items, total } = form
   const transactionItems = Object.values(items).map(item => ({
     name: item[name_column],
     key: item.__key,
@@ -73,32 +75,35 @@ async function createLayaway(store, form) {
   if(transactionItems.length === 0 || !customer.value.id)
     return
 
-  //Make request to create transaction
+  //Make request to create layaway
   loading.value = true
-  const response = await useFetchApi(`/api/protected/layaway/create`, {
-    method: "POST",
-    body: {
-      store_id: id,
-      customer_id: customer.value.id,
-      tax: tax,
-      items: transactionItems,
-      quantity_column: quantity_column,
-    }
-  }) 
-  
-  //Display error
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
-  }
+  let response = null
+  const postData = { store_id: id, customer_id: customer.value.id, tax: tax, items: transactionItems, quantity_column: quantity_column }
+  const isUserOnline = await offlineStore.tryPingingServer()
 
-  //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  if(isUserOnline) {
+    response = await handleLayawayRequest(postData)
+  } else {
+    //Setup fake data to render
+    const { data } = useAuth()
+    const fakeLayaway = {
+      date: formatDate(new Date()),
+      name: data.value.user.name,
+      customer: customer.value,
+      items: transactionItems,
+      tax: tax,
+      total: total,
+      status: 'pending',
+    }
+    offlineStore.addPostRequest('layaway', 'create', postData, { layaway: fakeLayaway })
+    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+  }
 
   //Reset transaction, set inventory data, close popup
   loading.value = false
   component.value.$resetTransactionState()
-  component.value.setInventory(response.inventory)
+  if(response)
+    component.value.setInventory(response.inventory)
 
   //Test data
   // console.log(JSON.stringify(response.layaway))

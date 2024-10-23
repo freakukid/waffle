@@ -9,15 +9,7 @@
     <el-table v-if="tab === 'transaction'" :data="transactions" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" label="Date" />
-      <el-table-column prop="user.name" label="Cashier">
-        <template #default="scope">
-          <div>
-            <span v-if="scope.row.user?.name">{{scope.row.user.name}}</span>
-            <span v-else>{{scope.row.name}}</span>
-          </div>
-        </template>
-      </el-table-column>
-
+      <el-table-column prop="name" label="Cashier" />
       <TransactionTable />
 
       <el-table-column label="Payment">
@@ -51,7 +43,8 @@
     <el-table v-if="tab === 'layaway'" :data="layaway" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" label="Date" />
-      <el-table-column prop="user.name" label="Customer">
+
+      <el-table-column prop="customer.name" label="Customer">
         <template #default="scope">
           <div>
             <div class="truncate"><b>Name:</b> {{scope.row.customer.name}}</div>
@@ -61,14 +54,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="user.name" label="Cashier">
-        <template #default="scope">
-          <div>
-            <span v-if="scope.row.user?.name">{{scope.row.user.name}}</span>
-            <span v-else>{{scope.row.name}}</span>
-          </div>
-        </template>
-      </el-table-column>
+      <el-table-column prop="name" label="Cashier" />
 
       <TransactionTable />
 
@@ -200,6 +186,7 @@
 <script setup>
 //Imports
 const pinia = useStore()
+const { $eventBus } = useNuxtApp()
 const { notify } = useNotification()
 const { formatDate, formatPhoneNumber } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
@@ -263,6 +250,18 @@ onBeforeMount(async () => {
   await getCustomers()
   await getStore()
   loading.loading = false
+})
+
+// Set up the event listener when the component mounts
+onMounted(() => {
+  $eventBus.on('fetchTransactions', getTransactions)
+  $eventBus.on('fetchLayaways', getLayaway)
+})
+
+// Clean up the event listener when the component is unmounted
+onBeforeUnmount(() => {
+  $eventBus.off('fetchTransactions', getTransactions)
+  $eventBus.off('fetchLayaways', getLayaway)
 })
 //Mount
 

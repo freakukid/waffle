@@ -6,9 +6,12 @@
 
 <script setup>
 //Import
-const { notify } = useNotification()
 const pinia = useStore()
+const offlineStore = useOfflineStore()
+const { notify } = useNotification()
 const { calcChange } = useCalculations()
+const { formatDate } = useFormatter()
+const { handleTransactionRequest } = useHandleRequests()
 
 //Ref
 const component = ref(null)
@@ -22,7 +25,7 @@ async function createTransaction(store, form) {
   //Setup Data
   const { id, tax, inventory } = store
   const { name_column, price_column, quantity_column, discount_column, cost_column } = inventory
-  const { payment, cash, card, check, items } = form
+  const { payment, cash, card, check, items, total, subtotal, taxTotal, savings } = form
   const transactionItems = Object.values(items).map(item => ({
     name: item[name_column],
     key: item.__key,
@@ -38,32 +41,31 @@ async function createTransaction(store, form) {
 
   //Make request to create transaction
   loading.value = true
-  const response = await useFetchApi(`/api/protected/transaction/create`, {
-    method: "POST",
-    body: {
-      store_id: id,
-      tax: tax,
+  let response = null
+  const postData = { store_id: id, tax: tax, items: transactionItems, quantity_column: quantity_column, payment: payment, cash: cash, card: card, check: check }
+  const isUserOnline = await offlineStore.tryPingingServer()
+  if(isUserOnline) {
+    response = await handleTransactionRequest(postData)
+  } else {
+    //Setup fake data to render
+    const { data } = useAuth()
+    const fakeTransaction = {
+      date: formatDate(new Date()),
       items: transactionItems,
-      quantity_column: quantity_column,
+      tax: tax,
+      name: data.value.user.name,
       payment: payment,
-      cash: cash,
+      cash: cash ? parseFloat(cash) : 0,
       card: card,
-      check: check
+      check: check,
+      total: total,
     }
-  }) 
-  
-  //Display error
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
+    offlineStore.addPostRequest('transaction', 'create', postData, { transaction: fakeTransaction })
+    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
   }
 
-  //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
-
   //Print Reciept
-  if(printReceiptAfterTransaction.value) {
-    const { subtotal, total, taxTotal, savings } = form
+  if(isUserOnline && printReceiptAfterTransaction.value) {
     const change = payment === 'cash' ? calcChange(cash, total.replace(/,/g, '')) : 0
     await printReceipt(id, transactionItems, tax.toFixed(2), subtotal, taxTotal, savings, total, payment, cash, card, change)
   }
@@ -71,8 +73,9 @@ async function createTransaction(store, form) {
   //Reset transaction, set inventory data, close popup
   loading.value = false
   component.value.$resetTransactionState()
-  component.value.setInventory(response.inventory)
   component.value.openPaymentPopup(false)
+  if(response)
+    component.value.setInventory(response.inventory)
 
   //Test data
   // console.log(JSON.stringify(response.transaction))

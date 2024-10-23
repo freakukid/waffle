@@ -176,7 +176,7 @@ async function recieveItem() {
     }
 
     offlineStore.addPostRequest('inventory', 'recieving', postData, { log: fakeLogData, qty: qty, cost: newCost })
-    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online!`, type: 'success'})
+    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
   }
 
   //Emit to parent component

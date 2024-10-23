@@ -61,6 +61,7 @@
 <script setup>
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
+const { $eventBus } = useNuxtApp()
 const { notify } = useNotification()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
@@ -112,12 +113,23 @@ onBeforeMount(async () => {
   await getStore()
   loading.startedLoading = false
 })
+
+// Set up the event listener when the component mounts
+onMounted(() => {
+  $eventBus.on('setInventory', setInventory)
+})
+
+// Clean up the event listener when the component is unmounted
+onBeforeUnmount(() => {
+  $eventBus.off('setInventory', setInventory)
+})
 //Mount
 
 //Sets a inventory value for components to set
 function setInventory(data) {
   store.value.inventory = data
   inventory.value = formatInventory()
+  alert()
 }
 
 //Handles Row Clicks for Edit/Delete Mode

@@ -76,15 +76,21 @@ export default () => {
 
   function calcAvgCostPerItem(prevQty, prevCost, newQty, additionalCost) {
     const prevTotalCost = new Decimal(prevQty).times(new Decimal(prevCost))
-    console.log(prevTotalCost)
     const total = new Decimal(additionalCost).plus(prevTotalCost)
-    console.log(total)
     const costPerItem = total.dividedBy(new Decimal(newQty))
+
     return costPerItem
   }
 
   function calcChange(cash, total) {
     return new Decimal(cash).minus(new Decimal(total))
+  }
+
+  function calcDiscountedItemPrice(price, discount) {
+    const formatPrice = new Decimal(price)
+    const floatDiscount = new Decimal(discount).div(100)
+
+    return formatPrice.minus(formatPrice.times(floatDiscount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
   return {
@@ -94,6 +100,7 @@ export default () => {
     calcTotal,
     calcTotalCost,
     calcAvgCostPerItem,
-    calcChange
+    calcChange,
+    calcDiscountedItemPrice
   }
 }
