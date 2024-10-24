@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   //Setup data
   const authUser = await getAuthUser(event)
   const user_id = authUser?.id
-  const { store_id, key, qty, total_cost, prev_cost, cost_column, quantity_column } = await readBody(event)
+  const { store_id, key, qty, total_cost, prev_cost, cost_column, quantity_column, timestamp } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
 
   //Check if we have required fields
@@ -60,6 +60,7 @@ export default defineEventHandler(async (event) => {
     data: {
       store: { connect: { id: store_id } },
       user: { connect: { id: user_id } },
+      timestamp: timestamp ? timestamp : new Date(),
       action: 'recieving',
       before: {cost: prev_cost},
       after: {name: item[name_column], qty: qty, total_cost: parseFloat(total_cost).toFixed(2), cost: item[cost_column]},

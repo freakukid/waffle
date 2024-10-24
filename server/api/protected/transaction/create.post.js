@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const authUser = await getAuthUser(event)
   const user_id = authUser?.id
   const name = authUser?.name
-  const { store_id, tax, items, quantity_column, payment, cash, card, check } = await readBody(event)
+  const { store_id, tax, items, quantity_column, payment, cash, card, check, timestamp } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
   
   //Check if we have required fields
@@ -86,6 +86,7 @@ export default defineEventHandler(async (event) => {
   //Create transaction
   const transaction = await prisma.transaction.create({
     data: {
+      timestamp: timestamp ? timestamp : new Date(),
       items: items,
       tax: tax,
       name: name,

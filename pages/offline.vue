@@ -84,34 +84,18 @@
             </template>
           </el-table-column>
 
-          <!-- <el-table-column label="Operations">
+          <el-table-column label="Operations">
             <template #default="scope">
               <div class="flex flex-col justify-center gap-3">
-                <div v-if="scope.row.status !== 'paid'">
-                  <el-button size="small" type="success" class="w-full" @click="openPaymentPrompt(scope.row)">
-                    Confirm Payment
-                  </el-button>
-                </div>
-                <div v-if="scope.row.status !== 'pending'">
-                  <el-button size="small" type="warning" class="w-full" @click="setStatus(scope.row, 'pending')">
-                    Set Pending
-                  </el-button>
-                </div>
-                <div v-if="scope.row.status !== 'declined'">
-                  <el-button size="small" type="danger" class="w-full" @click="setStatus(scope.row, 'declined')">
-                    Cancel Invoice
-                  </el-button>
-                </div>
                 <div>
                   <el-select placeholder="Invoice Menu">
                     <el-option label="View Invoice" value="" @click="pdfComponent.openNotesPopup('view', store, scope.row)" />
                     <el-option label="Download Invoice" value="" @click="pdfComponent.openNotesPopup('download', store, scope.row)" />
-                    <el-option label="Email Invoice" value="" @click="pdfComponent.openNotesPopup('email', store, scope.row)" />
                   </el-select>
                 </div>
               </div>
             </template>
-          </el-table-column> -->
+          </el-table-column>
         </el-table>
       </div>
       <!-- LAYAWAYS -->
@@ -120,6 +104,10 @@
     <div v-else>
       <h1 class="my-8 text-center">Nothing in queue!</h1>
     </div>
+
+    <!-- Pdf -->
+    <PdfComponent ref="pdfComponent" />
+    <!-- Pdf -->
   </div>
 </template>
 

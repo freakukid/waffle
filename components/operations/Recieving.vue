@@ -132,6 +132,7 @@ async function recieveItem() {
   const { name_column, quantity_column, cost_column } = props.inventory
   let { key, qty, costPerItem, totalCost } = form
   const prevCost = props.inventory.stock[key][cost_column]
+  const prevQty = props.inventory.stock[key][quantity_column]
 
   //Checks
   if(!key) {
@@ -149,13 +150,18 @@ async function recieveItem() {
     return
   }
 
+  if(prevQty < 0) {
+    notify({ title: 'Warning', text: 'The Quantity of this item is less than 0. Please edit this number into a non negative number on the inventory page.', type: 'warn'})
+    return
+  }
+
   //Calculate total cost
   if(costPerItem)
     totalCost = calcTotalCost(qty, costPerItem)
 
   //Make inventory request
   loading.recieve = true
-  const postData = { store_id: props.storeId, key: key, qty: qty, total_cost: totalCost, prev_cost: prevCost, quantity_column: quantity_column, cost_column: cost_column }
+  const postData = { store_id: props.storeId, key: key, qty: qty, total_cost: totalCost, prev_cost: prevCost, quantity_column: quantity_column, cost_column: cost_column, timestamp: new Date() }
   const isUserOnline = await offlineStore.tryPingingServer()
 
   if(isUserOnline) {
@@ -167,7 +173,7 @@ async function recieveItem() {
     const newQty = item[quantity_column] + qty
     const newCost = parseFloat(calcAvgCostPerItem(item[quantity_column], item[cost_column], newQty, totalCost)).toFixed(2)
     const fakeLogData = {
-      timestamp: new Date(),
+      timestamp: postData.timestamp,
       user: { name: data.value.user.name },
       action: 'recieving',
       before: { cost: prevCost },

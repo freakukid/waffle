@@ -78,7 +78,7 @@ async function createLayaway(store, form) {
   //Make request to create layaway
   loading.value = true
   let response = null
-  const postData = { store_id: id, customer_id: customer.value.id, tax: tax, items: transactionItems, quantity_column: quantity_column }
+  const postData = { store_id: id, customer_id: customer.value.id, tax: tax, items: transactionItems, quantity_column: quantity_column, status: 'pending', timestamp: new Date() }
   const isUserOnline = await offlineStore.tryPingingServer()
 
   if(isUserOnline) {
@@ -87,7 +87,7 @@ async function createLayaway(store, form) {
     //Setup fake data to render
     const { data } = useAuth()
     const fakeLayaway = {
-      date: formatDate(new Date()),
+      date: formatDate(postData.timestamp),
       name: data.value.user.name,
       customer: customer.value,
       items: transactionItems,

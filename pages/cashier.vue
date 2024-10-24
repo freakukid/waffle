@@ -42,7 +42,7 @@ async function createTransaction(store, form) {
   //Make request to create transaction
   loading.value = true
   let response = null
-  const postData = { store_id: id, tax: tax, items: transactionItems, quantity_column: quantity_column, payment: payment, cash: cash, card: card, check: check }
+  const postData = { store_id: id, tax: tax, items: transactionItems, quantity_column: quantity_column, payment: payment, cash: cash, card: card, check: check, timestamp: new Date() }
   const isUserOnline = await offlineStore.tryPingingServer()
   if(isUserOnline) {
     response = await handleTransactionRequest(postData)
@@ -50,7 +50,7 @@ async function createTransaction(store, form) {
     //Setup fake data to render
     const { data } = useAuth()
     const fakeTransaction = {
-      date: formatDate(new Date()),
+      date: formatDate(postData.timestamp),
       items: transactionItems,
       tax: tax,
       name: data.value.user.name,
