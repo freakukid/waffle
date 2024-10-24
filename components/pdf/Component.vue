@@ -177,7 +177,7 @@ async function generatePDF(notes, email = '') {
   await new Promise(resolve => setTimeout(resolve, 500))
 
   //Setup pdf data
-  const canvas = await html2canvas(content.value, { useCORS: true })
+  const canvas = await html2canvas(content.value, { useCORS: true, allowTaint: true })
   const imgData = canvas.toDataURL('image/png')
   const pdf = new jsPDF()
   const imgWidth = 211
