@@ -14,7 +14,7 @@
         </div>
 
         <div class="w-1/3 flex items-center justify-center">
-          <img class="max-w-[260px] h-[76px]" :src="imageSrc" />
+          <img class="max-w-[260px] h-[76px]" :src="imageSrc" crossorigin="anonymous" />
         </div>
 
         <div class="text-right leading-tight w-1/3">
@@ -174,10 +174,10 @@ async function generatePDF(notes, email = '') {
   additionalNotes.value = notes
 
   //Delay before taking an img of the component
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  await new Promise(resolve => setTimeout(resolve, 500))
 
   //Setup pdf data
-  const canvas = await html2canvas(content.value)
+  const canvas = await html2canvas(content.value, { useCORS: true })
   const imgData = canvas.toDataURL('image/png')
   const pdf = new jsPDF()
   const imgWidth = 211
