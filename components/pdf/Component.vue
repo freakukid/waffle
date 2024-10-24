@@ -139,7 +139,7 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 const { notify } = useNotification()
 const { formatPhoneNumber } = useFormatter()
-const imageSrc = new URL('@/public/test.png', import.meta.url).href
+const imageSrc = `${window.location.origin}/test.png`
 
 //Data
 const store = ref(null)
