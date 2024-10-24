@@ -174,7 +174,7 @@ async function generatePDF(notes, email = '') {
   additionalNotes.value = notes
 
   //Delay before taking an img of the component
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise(resolve => setTimeout(resolve, 1000))
 
   //Setup pdf data
   const canvas = await html2canvas(content.value)
