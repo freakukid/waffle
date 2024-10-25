@@ -70,10 +70,25 @@ export default () => {
     //Display error
     if (response.statusCode) {
       notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-      return
+      return false
     }
   
     //show success message
+    notify({ title: 'Success', text: response.message, type: 'success'})
+
+    return response
+  }
+
+  async function handleCustomerRequest(postData) {
+    const response = await useFetchApi(`/api/protected/customer/create`, { method: "POST", body: postData })
+
+    //Display error
+    if (response.statusCode) {
+      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      return false
+    }
+
+    //Show success message
     notify({ title: 'Success', text: response.message, type: 'success'})
 
     return response
@@ -83,6 +98,7 @@ export default () => {
     handleInventoryRequest,
     handleTransactionRequest,
     handleLayawayRequest,
+    handleCustomerRequest,
     handleGetRequest
   }
 }

@@ -8,7 +8,7 @@
           <template #footer>
             <el-button @click="createCustomerRef.openPopup(true)" type="success" size="small">Create Customer</el-button>
           </template>
-          <el-option v-for="item in customers" :key="item.id" :label="item.name" :value="item">
+          <el-option v-for="item in customers" :key="item" :label="item.name" :value="item">
             <div class="relative">
               <div class="absolute -top-1 -left-3">
                 <el-tag size="small" type="success">Customer</el-tag>

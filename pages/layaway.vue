@@ -8,6 +8,7 @@
 //Imports
 const pinia = useStore()
 const offlineStore = useOfflineStore()
+const { $eventBus } = useNuxtApp()
 const { notify } = useNotification()
 const { formatDate } = useFormatter()
 const { handleGetRequest, handleLayawayRequest } = useHandleRequests()
@@ -18,17 +19,22 @@ const component = ref(null)
 //Data
 const loading = ref(false)
 const storeId = computed(pinia.getStore)
-const filteredCustomers = ref([])
 const customers = ref([])
 const customer = ref('')
+const customerRequests = computed(offlineStore.getCustomerRequests)
+const allCustomers = computed(() => {
+  const offlineCustomers = (customerRequests.value || []).map(item => item.customer)
+  return [...offlineCustomers, ...customers.value]
+})
+const filteredCustomers = ref([])
 
 //Filters customers by name and company
 const filterCustomers = (query) => {
   if (query) {
     const filtered = []
 
-    for (let i = 0; i < customers.value.length; i++) {
-      const customer = customers.value[i]
+    for (let i = 0; i < allCustomers.value.length; i++) {
+      const customer = allCustomers.value[i]
       const { name, company } = customer
       if (name.toLowerCase().includes(query.toLowerCase()) || company.toLowerCase().includes(query.toLowerCase()))
         filtered.push(customer)
@@ -36,13 +42,23 @@ const filterCustomers = (query) => {
     
     filteredCustomers.value = filtered
   } else {
-    filteredCustomers.value = customers.value
+    filteredCustomers.value = allCustomers.value
   }
 }
 
 //Mount
 onBeforeMount(async () => {
   await fetchCustomers()
+})
+
+// Set up the event listener when the component mounts
+onMounted(() => {
+  $eventBus.on('fetchCustomers', fetchCustomers)
+})
+
+// Clean up the event listener when the component is unmounted
+onBeforeUnmount(() => {
+  $eventBus.off('fetchCustomers', fetchCustomers)
 })
 //Mount
 
@@ -72,7 +88,7 @@ async function createLayaway(store, form) {
   }))
 
   //Exit function if no items in this transaction
-  if(transactionItems.length === 0 || !customer.value.id)
+  if(transactionItems.length === 0 || !customer.value.name)
     return
 
   //Make request to create layaway

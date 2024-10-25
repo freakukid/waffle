@@ -101,6 +101,36 @@
       <!-- LAYAWAYS -->
     </div>
 
+    <div v-else-if="customerRequests.length">
+      <!-- CUSTOMERS -->
+      <div v-if="customers.length" style="width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+        <h1 class="text-2xl mb-8">Pending New Customers</h1>
+        <el-table :data="customers" style="width: 100%; height: 100%;" table-layout="auto">
+          <el-table-column prop="name" label="Customer" />
+          <el-table-column prop="company" label="Company" />
+          <el-table-column label="Contact">
+            <template #default="scope">
+              <div v-if="scope.row.email">{{scope.row.email}}</div>
+              <div v-if="scope.row.phone">{{formatPhoneNumber(scope.row.phone)}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Address">
+            <template #default="scope">
+              <div v-if="scope.row.address">
+                <div>{{scope.row.address}}</div>
+                <div>
+                  <span v-if="scope.row.city">{{scope.row.city}},&nbsp;</span>
+                  <span v-if="scope.row.zipcode">{{scope.row.zipcode}}</span>
+                  <span v-if="scope.row.country"><span v-if="scope.row.zipcode">,&nbsp;</span>{{scope.row.country}}</span>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <!-- CUSTOMERS -->
+    </div>
+
     <div v-else>
       <h1 class="my-8 text-center">Nothing in queue!</h1>
     </div>
@@ -118,6 +148,7 @@ const offlineStore = useOfflineStore()
 const { formatPhoneNumber } = useFormatter()
 const { getLogDescription } = useHelpers()
 const requests = computed(offlineStore.getRequests)
+const customerRequests = computed(offlineStore.getCustomerRequests)
 
 //Data
 const logs = computed(() => {
@@ -130,6 +161,10 @@ const transactions = computed(() => {
 
 const layaways = computed(() => {
   return (requests.value || []).filter(item => item.category === 'layaway').map(item => item.layaway)
+})
+
+const customers = computed(() => {
+  return (customerRequests.value || []).map(item => item.customer)
 })
 
 //General

@@ -64,6 +64,10 @@ export default () => {
     return phoneNumber ? `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}` : ''
   }
 
+  function getRandomString(name) {
+    return `${Array.from({ length: 3 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + (Math.random() < 0.5 ? 65 : 97))).join('')}${name.substring(0, 3).replace(/[^a-zA-Z]/g, '').split('').sort(() => Math.random() < 0.5 ? -1 : 1).join('')}`
+  }
+
   return {
     formatDate,
     formatNameColumn,
@@ -73,5 +77,6 @@ export default () => {
     formatCostColumn,
     validateValues,
     formatPhoneNumber,
+    getRandomString
   }
 }

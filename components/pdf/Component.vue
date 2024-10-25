@@ -14,7 +14,7 @@
         </div>
 
         <div class="w-1/3 flex items-center justify-center">
-          <img class="max-w-[260px] h-[76px]" :src="imageSrc" crossorigin="anonymous" />
+          <img class="max-w-[260px] h-[76px]" src="@/public/test.png" crossorigin="anonymous" />
         </div>
 
         <div class="text-right leading-tight w-1/3">
@@ -139,7 +139,6 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 const { notify } = useNotification()
 const { formatPhoneNumber } = useFormatter()
-const imageSrc = `${window.location.origin}/test.png`
 
 //Data
 const store = ref(null)

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const { getAuthUser, isStoreOwner, isStoreWorker, getWorkerPermissions } = useAuthChecks()
   //Setup data
   const authUser = await getAuthUser(event)
-  const { store_id, name, email, phone, company, address, city, zipcode, state, country } = await readBody(event)
+  const { store_id, name, email, phone, company, address, city, zipcode, state, country, offline_id } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
 
   //Check if we have required fields
@@ -40,9 +40,12 @@ export default defineEventHandler(async (event) => {
   })
 
   setResponseStatus(event, 201)
+
   
-  return {
-    customer: customer,
-    message: "Customer Created!"
-  }
+  const response = { customer: customer, message: "Customer Created!" }
+
+  if(offline_id)
+    response.offline_id = offline_id
+  
+  return response
 })

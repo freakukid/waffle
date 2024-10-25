@@ -59,8 +59,11 @@
 
 <script setup>
 //Import
+const offlineStore = useOfflineStore()
 const { validateEmail } = useValidator()
 const { notify } = useNotification()
+const { handleCustomerRequest } = useHandleRequests()
+const { getRandomString } = useFormatter()
 //Data
 const popup = ref(false)
 const loading = ref(false)
@@ -152,36 +155,21 @@ async function createCustomer() {
   //Setup data
   const { name, email, phone, company, address, city, zipcode, state, country } = form
 
-  //Make request to create transaction
+  //Make request to create customer
   loading.value = true
-  const response = await useFetchApi(`/api/protected/customer/create`, {
-    method: "POST",
-    body: {
-      store_id: props.storeId,
-      name: name,
-      email: email,
-      phone: phone,
-      company: company,
-      address: address,
-      city: city,
-      zipcode: zipcode,
-      state: state,
-      country: country
-    }
-  })
+  const postData = { store_id: props.storeId, name: name, email: email, phone: phone, company: company, address: address, city: city, zipcode: zipcode, state: state, country: country }
+  const isUserOnline = await offlineStore.tryPingingServer()
+  if(isUserOnline) {
+    const response = await handleCustomerRequest(postData)
+    emits('addCustomer', response.customer)
+  } else {
+    postData.offline_id = getRandomString(postData.name)
+    offlineStore.addCustomerRequests(postData, { customer: postData })
+    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+  }
   loading.value = false
 
-  //Display error
-  if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
-    return
-  }
-
-  //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
-
   //emit value to parent component, close popup
-  emits('addCustomer', response.customer)
   popup.value = false
 }
 

@@ -256,12 +256,14 @@ onBeforeMount(async () => {
 onMounted(() => {
   $eventBus.on('fetchTransactions', getTransactions)
   $eventBus.on('fetchLayaways', getLayaway)
+  $eventBus.on('fetchCustomers', getCustomers)
 })
 
 // Clean up the event listener when the component is unmounted
 onBeforeUnmount(() => {
   $eventBus.off('fetchTransactions', getTransactions)
   $eventBus.off('fetchLayaways', getLayaway)
+  $eventBus.off('fetchCustomers', getCustomers)
 })
 //Mount
 
