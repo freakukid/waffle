@@ -30,7 +30,7 @@
     "cloudinary": "^2.4.0",
     "decimal.js": "^10.4.3",
     "exceljs": "^4.4.0",
-    "html2canvas": "^1.4.1",
+    "html-to-image": "^1.11.11",
     "jspdf": "^2.5.2",
     "mitt": "^3.0.1",
     "node-thermal-printer": "^4.4.3",

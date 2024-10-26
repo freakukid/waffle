@@ -136,7 +136,7 @@
 <script setup>
 //Import
 import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
+import { toPng } from 'html-to-image'
 const { notify } = useNotification()
 const { formatPhoneNumber } = useFormatter()
 
@@ -176,12 +176,12 @@ async function generatePDF(notes, email = '') {
   await new Promise(resolve => setTimeout(resolve, 500))
 
   //Setup pdf data
-  const canvas = await html2canvas(content.value, { useCORS: true, allowTaint: true })
-  const imgData = canvas.toDataURL('image/png')
+  const contentElement = content.value
+  const imgData = await toPng(contentElement, { bgcolor: '#FFFFFF' })
   const pdf = new jsPDF()
-  const imgWidth = 211
+  const imgWidth = 211 // A4 width in mm
   const pageHeight = pdf.internal.pageSize.height
-  const imgHeight = (canvas.height * imgWidth) / canvas.width
+  const imgHeight = (contentElement.offsetHeight * imgWidth) / contentElement.offsetWidth
   let heightLeft = imgHeight
   let position = 0
 

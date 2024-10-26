@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-//Fixed html2canvas shifting text bug
-@layer base {
-  img {
-    @apply inline-block;
-  }
-}
-
 @font-face {
   font-family: Karla;
   font-display: swap;

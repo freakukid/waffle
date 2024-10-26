@@ -131,7 +131,7 @@
 <script setup>
 import { ref } from 'vue'
 import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
+import { toPng } from 'html-to-image'
 const { formatPhoneNumber } = useFormatter()
 
 const content = ref(null)
@@ -139,27 +139,28 @@ const layaway = {"id":10,"timestamp":"2024-10-02T23:15:54.855Z","status":"pendin
 const store = {"id":9,"name":"Jesse's Tire Shop","code":"CiUset","boss_id":1,"tax":1.5,"header":[{"size":1,"text":"","align":"left"}],"footer":[{"size":1,"text":"","align":"left"}],"invoice_notes":[{"bold":false,"text":"Customer may make payments toward the total amount owed on the layaway item at any time before the final due date; however, failure to complete payments by the specified deadline may result in forfeiture of all payments made and the cancellation of the layaway agreement."},{"bold":true,"text":"Please ensure that all payments are made by the due date to avoid late fees and to maintain your layaway agreement in good standing."}],"phone":"(623) 330-0041","email":"jessiestires@gmail.com","website":"jessiestires.com","address":"6502 N 27th Ave","city":"Phoenix","zipcode":"85017","state":"AZ","country":"US"}
 
 const generatePDF = async () => {
-  //Setup data
-  await document.fonts.ready
-  const canvas = await html2canvas(content.value)
-  const imgData = canvas.toDataURL('image/png')
+  // Setup data
+  const contentElement = content.value
+
+  // Convert HTML to image
+  const imgData = await toPng(contentElement, { bgcolor: '#FFFFFF' })
   const pdf = new jsPDF()
-  const imgWidth = 211
+  const imgWidth = 211 // A4 width in mm
   const pageHeight = pdf.internal.pageSize.height
-  const imgHeight = (canvas.height * imgWidth) / canvas.width
+  const imgHeight = (contentElement.offsetHeight * imgWidth) / contentElement.offsetWidth
   let heightLeft = imgHeight
   let position = 0
 
   // Add image to the PDF
   pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-  heightLeft -= pageHeight;
+  heightLeft -= pageHeight
 
   // Check if we need to add another page
   while (heightLeft >= 0) {
-    position = heightLeft - imgHeight;
-    pdf.addPage();
+    position = heightLeft - imgHeight
+    pdf.addPage()
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-    heightLeft -= pageHeight;
+    heightLeft -= pageHeight
   }
 
   // Create a Blob from the PDF output
