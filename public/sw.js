@@ -1,5 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
+const CACHE_NAME = 'static-v1'
+
 // Ensure skipWaiting and clientsClaim are set
 workbox.core.skipWaiting()
 workbox.core.clientsClaim()
@@ -21,16 +23,17 @@ workbox.routing.registerRoute(
     const isCachedResource =
       request.destination === 'document' || // HTML documents
       request.destination === 'script' ||   // JS files
-      request.destination === 'style'       // CSS files
+      request.destination === 'style' ||    // CSS files
+      request.url.endsWith('.json')         // JSON files
 
     return isCachedResource
   },
   new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'static',
+    cacheName: CACHE_NAME,
     plugins: [
       // Expiration plugin to limit cache size and freshness
       new workbox.expiration.ExpirationPlugin({
-        maxEntries: 250,  // Limit the cache to 50 files
+        maxEntries: 250,  // Limit the cache to 250 files
         maxAgeSeconds: 30 * 24 * 60 * 60, // Cache files for 30 days
       }),
     ],
@@ -67,9 +70,9 @@ workbox.routing.registerRoute(
 
 // Cache all JSON files with Stale While Revalidate
 workbox.routing.registerRoute(
-  ({ request }) => request.destination === 'manifest' || request.url.endsWith('.json'),
+  ({ request }) => request.destination === 'manifest',
   new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'json',
+    cacheName: 'manifest',
     plugins: [
       new workbox.expiration.ExpirationPlugin({
         maxEntries: 1000,
