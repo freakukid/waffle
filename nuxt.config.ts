@@ -10,9 +10,9 @@ export default defineNuxtConfig({
   build: { 
     transpile: ["pinia-plugin-persistedstate"],
   },
-  webpack: {
-    extractCSS: true, // Extract CSS into a single file
-  },
+  // webpack: {
+  //   extractCSS: true, // Extract CSS into a single file
+  // },
   modules: [
     '@nuxtjs/tailwindcss',
     '@sidebase/nuxt-auth',

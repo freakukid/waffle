@@ -1,5 +1,9 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
+// Ensure skipWaiting and clientsClaim are set
+workbox.core.skipWaiting()
+workbox.core.clientsClaim()
+
 function matchesApi(apiList, url) {
   return apiList.some(api => {
     if (typeof api === 'string') {
