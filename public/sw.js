@@ -1,10 +1,31 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
-const CACHE_NAME = 'static-v2'
+const CACHE_NAME = 'static-v3'
 
-// Ensure skipWaiting and clientsClaim are set
-workbox.core.skipWaiting()
-workbox.core.clientsClaim()
+self.addEventListener('install', (event) => {
+  // Immediately take control, and skip waiting
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      // Cache files here if needed
+    })
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);  // Deletes old caches
+          }
+        })
+      );
+    })
+  );
+});
 
 function matchesApi(apiList, url) {
   return apiList.some(api => {
