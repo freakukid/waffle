@@ -1,6 +1,6 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
-const CACHE_NAME = 'static-v1'
+const CACHE_NAME = 'static-v2'
 
 // Ensure skipWaiting and clientsClaim are set
 workbox.core.skipWaiting()
@@ -69,18 +69,18 @@ workbox.routing.registerRoute(
 )
 
 // Cache all JSON files with Stale While Revalidate
-workbox.routing.registerRoute(
-  ({ request }) => request.destination === 'manifest',
-  new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'manifest',
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 1000,
-        maxAgeSeconds: 1 * 24 * 60 * 60, // Cache for 1 Day (in seconds)
-      }),
-    ],
-  }) 
-)
+// workbox.routing.registerRoute(
+//   ({ request }) => request.destination === 'manifest',
+//   new workbox.strategies.StaleWhileRevalidate({
+//     cacheName: 'manifest',
+//     plugins: [
+//       new workbox.expiration.ExpirationPlugin({
+//         maxEntries: 1000,
+//         maxAgeSeconds: 1 * 24 * 60 * 60, // Cache for 1 Day (in seconds)
+//       }),
+//     ],
+//   }) 
+// )
 
 // Cache GET Requests
 const getAPIs = [
