@@ -8,7 +8,7 @@ self.addEventListener('install', (event) => {
 })
 
 self.addEventListener('activate', (event) => {
-  const cachesToKeep = ['image', 'font', CACHE_NAME]
+  const cachesToKeep = ['image', 'font', 'api', CACHE_NAME]
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
