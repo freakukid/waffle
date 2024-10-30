@@ -117,7 +117,7 @@ const form = reactive({
 onBeforeMount(async () => {
   await updateStores()
   loading.startedLoading = false
-  console.log('testing')
+  console.log('testing very hard')
 })
 //Mount
 
