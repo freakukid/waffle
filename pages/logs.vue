@@ -51,6 +51,6 @@ async function getLogs() {
   logs.value = getLogDescription(logsArray)
   
   //Test data
-  console.log(JSON.stringify(logs.value))
+  // console.log(JSON.stringify(logs.value))
 }
 </script>

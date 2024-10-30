@@ -2,12 +2,14 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "main": "main.js",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare && prisma generate"
+    "postinstall": "nuxt prepare && prisma generate",
+    "start": "electron ."
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.10",
@@ -15,6 +17,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@sidebase/nuxt-auth": "^0.7.2",
     "@types/bcrypt": "^5.0.0",
+    "electron": "^33.0.2",
     "nuxt": "^3.5.1",
     "nuxt-icon": "^0.6.10",
     "nuxt3-notifications": "^1.2.2",
