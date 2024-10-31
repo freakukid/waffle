@@ -20,7 +20,6 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'nuxt3-notifications',
   ],
   runtimeConfig: {    
     // Cloudinary

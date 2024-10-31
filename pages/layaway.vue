@@ -9,7 +9,7 @@
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 const { $eventBus } = useNuxtApp()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { formatDate } = useFormatter()
 const { handleGetRequest, handleLayawayRequest } = useHandleRequests()
 
@@ -112,7 +112,7 @@ async function createLayaway(store, form) {
       status: 'pending',
     }
     offlineStore.addPostRequest('layaway', 'create', postData, { layaway: fakeLayaway })
-    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
   }
 
   //Reset transaction, set inventory data, close popup

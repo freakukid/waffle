@@ -1,6 +1,6 @@
-export default () => {
-  const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 
+export default () => {
   async function handleGetRequest(url) {
     try {
       return await useFetchApi(url)
@@ -26,24 +26,24 @@ export default () => {
 
       //Error case
       if (response.statusCode) {
-        notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+        ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
         return
       }
 
       // Success case
-      notify({ title: 'Success', text: response.message || 'Operation successful!', type: 'success'})
+      ElNotification({ title: 'Success', message: response.message || 'Operation successful!', type: 'success'})
       
       // Assuming you want to update the inventory in the store
       if (response.inventory) {
         return response.inventory
       } else {
-        notify({ title: 'Error', text: 'Inventory data is not present.', type: 'error'})
+        ElNotification({ title: 'Error', message: 'Inventory data is not present.', type: 'error'})
         return false
       }
         
     } catch (error) {
       // Handle any network errors or unexpected issues
-      notify({ title: 'Error', text: 'An unexpected error occurred. Please try again.', type: 'error'})
+      ElNotification({ title: 'Error', message: 'An unexpected error occurred. Please try again.', type: 'error'})
       console.error('API error:', error) // Log error for debugging
       return false
     }
@@ -54,12 +54,12 @@ export default () => {
 
     //Display error
     if (response.statusCode) {
-      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
       return false
     }
 
     //show success message
-    notify({ title: 'Success', text: response.message, type: 'success'})
+    ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
     return response
   }
@@ -69,12 +69,12 @@ export default () => {
     
     //Display error
     if (response.statusCode) {
-      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
       return false
     }
   
     //show success message
-    notify({ title: 'Success', text: response.message, type: 'success'})
+    ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
     return response
   }
@@ -84,12 +84,12 @@ export default () => {
 
     //Display error
     if (response.statusCode) {
-      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
       return false
     }
 
     //Show success message
-    notify({ title: 'Success', text: response.message, type: 'success'})
+    ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
     return response
   }

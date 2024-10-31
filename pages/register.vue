@@ -33,7 +33,7 @@
 <script setup>
 const { signIn } = useAuth()
 const route = useRoute()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { validateUsername, validateEmail } = useValidator()
 
 definePageMeta({
@@ -94,17 +94,17 @@ const register = async (formEl) => {
   })
 
   if (error.value) {
-    notify({ title: 'Error', text: error.value.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: error.value.statusMessage, type: 'error'})
     return
   }
 
-  notify({ title: 'Success', text: data.value.message, type: 'success'})
+  ElNotification({ title: 'Success', message: data.value.message, type: 'success'})
 
   //Login
   const response = await signIn('credentials', { redirect: false, username: username, password: form.password })
 
   if (response.error) {
-    notify({ title: 'Error', text: response.error, type: 'error'})
+    ElNotification({ title: 'Error', message: response.error, type: 'error'})
     return
   }
 

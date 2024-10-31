@@ -137,7 +137,7 @@
 //Import
 import jsPDF from 'jspdf'
 import { toPng } from 'html-to-image'
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { formatPhoneNumber } = useFormatter()
 
 //Data
@@ -272,12 +272,12 @@ async function sendEmailPDF(email) {
 
   //Display error
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 
   //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
   store.value = null
   layaway.value = null

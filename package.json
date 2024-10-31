@@ -17,7 +17,6 @@
     "@types/bcrypt": "^5.0.0",
     "nuxt": "^3.5.1",
     "nuxt-icon": "^0.6.10",
-    "nuxt3-notifications": "^1.2.2",
     "pinia": "^2.1.7",
     "prisma": "^5.15.0",
     "sass": "^1.77.6"

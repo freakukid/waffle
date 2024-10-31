@@ -88,7 +88,7 @@
 
 <script setup>
 //Imports
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { validateUsername, validateOptionalEmail } = useValidator()
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
@@ -176,12 +176,12 @@ async function editUser() {
 
   //Error case
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 
   // Success case
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
   //Update local data
   workers.value[form.edit.index].user = response.user
@@ -203,12 +203,12 @@ async function deleteUser() {
 
   //Error case
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 
   // Success case
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
   //Update local data
   workers.value.splice(form.delete.index, 1)
@@ -219,7 +219,7 @@ async function deleteUser() {
 //Edit permissions
 async function handleCheckChange(data, checked) {
   if(!offlineStore.getOnlineStatus()) {
-    notify({ title: 'Error', text: 'Feature only available online.', type: 'error'})
+    ElNotification({ title: 'Error', message: 'Feature only available online.', type: 'error'})
     return
   }
 
@@ -241,12 +241,12 @@ async function handleCheckChange(data, checked) {
 
     //Error case
     if (response.statusCode) {
-      notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
       return
     }
 
     // Success case
-    notify({ title: 'Success', text: response.message, type: 'success'})
+    ElNotification({ title: 'Success', message: response.message, type: 'success'})
   }
 }
 

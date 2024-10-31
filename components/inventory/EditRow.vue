@@ -24,7 +24,7 @@
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
 const { formatNameColumn, formatPriceColumn, formatQuantityColumn, formatDiscountColumn, formatCostColumn, validateValues } = useFormatter()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const offlineStore = useOfflineStore()
 
 const loading = reactive({ editRow: false })
@@ -68,7 +68,7 @@ async function editRow() {
   }
   //If no changes were found exit function
   if(!changedKeys.length) {
-    notify({ title: 'Warning', text: 'No changes were made.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'No changes were made.', type: 'warn'})
     return
   }
 

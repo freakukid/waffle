@@ -66,7 +66,7 @@
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { $eventBus } = useNuxtApp()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()
@@ -156,14 +156,14 @@ function handleRowClick(row) {
 function toggleEditMode() {
   toggle.edit = !toggle.edit
   toggle.delete = false
-  notify({ title: 'Success', text: 'Edit mode: ' + (toggle.edit ? 'ON' : 'OFF'), type: 'success'})
+  ElNotification({ title: 'Success', message: 'Edit mode: ' + (toggle.edit ? 'ON' : 'OFF'), type: 'success'})
 }
 
 //Toggles columns and rows to be selected for deletion
 function toggleDeleteMode() {
   toggle.delete = !toggle.delete
   toggle.edit = false
-  notify({ title: 'Success', text: 'Delete mode: ' + (toggle.delete ? 'ON' : 'OFF'), type: 'success'})
+  ElNotification({ title: 'Success', message: 'Delete mode: ' + (toggle.delete ? 'ON' : 'OFF'), type: 'success'})
 }
 
 //Formats dictionary inventory into an array of dictionaries

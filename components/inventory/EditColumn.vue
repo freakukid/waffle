@@ -30,7 +30,7 @@
 
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 
@@ -74,12 +74,12 @@ async function editColumn() {
 
   //Check if there is something to change
   if(Object.keys(map).length === 0) {
-    notify({ title: 'Warning', text: 'No changes were provided.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'No changes were provided.', type: 'warn'})
     return
   }
   //Check if all columns are unique
   if(!areValuesUnique(form.value)) {
-    notify({ title: 'Warning', text: 'All column names must be unique from one another.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'All column names must be unique from one another.', type: 'warn'})
     return
   }
 

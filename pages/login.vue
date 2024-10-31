@@ -20,7 +20,7 @@
 <script setup>
 //Import
 const { signIn, data } = useAuth()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const pinia = useStore()
 
 definePageMeta({
@@ -43,7 +43,7 @@ const login = async () => {
   
   //Show error if a failed request
   if (response.error) {
-    notify({ title: 'Error', text: response.error, type: 'error'})
+    ElNotification({ title: 'Error', message: response.error, type: 'error'})
     return
   }
 

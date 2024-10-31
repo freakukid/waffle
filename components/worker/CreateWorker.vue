@@ -49,7 +49,7 @@
 <script setup>
 //Imports
 const { validateUsername, validateOptionalEmail } = useValidator()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 
@@ -103,12 +103,12 @@ async function createUser() {
 
   //Error case
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 
   // Success case
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
   //Update local data
   if('user' in response) {
@@ -126,13 +126,13 @@ async function addColumn() {
 
   //Check if we at least have a string
   if(!columnName) {
-    notify({ title: 'Warning', text: 'No column name was provided.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'No column name was provided.', type: 'warn'})
     return
   }
 
   //Check if this column already exist
   if (props.inventory.columns.includes(columnName)) {
-    notify({ title: 'Warning', text: `Column '${columnName}' already exist.`, type: 'warn'})
+    ElNotification({ title: 'Warning', message: `Column '${columnName}' already exist.`, type: 'warn'})
     return
   }
 

@@ -76,7 +76,7 @@
 <script setup>
 //Import
 const { validateEmail } = useValidator()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { signOut } = useAuth()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
@@ -178,12 +178,12 @@ async function createStore() {
 
   //Display error
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 
   //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
   //emit value to parent component, close popup
   emits('addStore', response.store)
@@ -218,12 +218,12 @@ async function editStore() {
 
   //Display error
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 
   //show success message
-  notify({ title: 'Success', text: response.message, type: 'success'})
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
 
   //emit value to parent component, close popup
   emits('editStore', response.store)

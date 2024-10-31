@@ -65,7 +65,7 @@
 <script setup>
 //Import
 const { handleInventoryRequest } = useHandleRequests()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { calcTotalCost, calcAvgCostPerItem } = useCalculations()
 const offlineStore = useOfflineStore()
 
@@ -136,22 +136,22 @@ async function recieveItem() {
 
   //Checks
   if(!key) {
-    notify({ title: 'Warning', text: 'No item was selected.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'No item was selected.', type: 'warn'})
     return
   }
 
   if(!qty) {
-    notify({ title: 'Warning', text: 'Must have a quantity greater than 0.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'Must have a quantity greater than 0.', type: 'warn'})
     return
   }
 
   if(!costPerItem && !totalCost) {
-    notify({ title: 'Warning', text: 'Cost per item or Total cost is required.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'Cost per item or Total cost is required.', type: 'warn'})
     return
   }
 
   if(prevQty < 0) {
-    notify({ title: 'Warning', text: 'The Quantity of this item is less than 0. Please edit this number into a non negative number on the inventory page.', type: 'warn'})
+    ElNotification({ title: 'Warning', message: 'The Quantity of this item is less than 0. Please edit this number into a non negative number on the inventory page.', type: 'warn'})
     return
   }
 
@@ -182,7 +182,7 @@ async function recieveItem() {
     }
 
     offlineStore.addPostRequest('inventory', 'recieving', postData, { log: fakeLogData, qty: qty, cost: newCost })
-    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
   }
 
   //Emit to parent component

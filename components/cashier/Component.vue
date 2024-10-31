@@ -98,7 +98,7 @@
 //Imports
 const pinia = useStore()
 const { $eventBus } = useNuxtApp()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
@@ -220,7 +220,7 @@ async function getStore() {
 function addItemToTransaction(value) {
   if (value in form.transaction.items) {
     form.transaction.items[value].__qty += 1
-    notify({ title: 'Success', text: `Added another ${form.transaction.items[value][store.value.inventory.name_column]} to its quantity.`, type: 'success'})
+    ElNotification({ title: 'Success', message: `Added another ${form.transaction.items[value][store.value.inventory.name_column]} to its quantity.`, type: 'success'})
   } else {
     const item = { ...store.value.inventory.stock[value] }
     item.__qty = 1
@@ -237,7 +237,7 @@ function addItemToTransaction(value) {
 //Removes an item from the transaction
 function removeItemFromTransaction(key) {
   delete form.transaction.items[key]
-  notify({ title: 'Success', text: 'Item removed!', type: 'success'})
+  ElNotification({ title: 'Success', message: 'Item removed!', type: 'success'})
 
   calcTransactionTotal()
 }

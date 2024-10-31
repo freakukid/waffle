@@ -72,7 +72,7 @@
 
 <script setup>
 //Imports
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const store = useStore()
 const offlineStore = useOfflineStore()
 const { isBoss, getPermissions } = useChecks()
@@ -101,7 +101,7 @@ onBeforeMount(async () => {
 function exitStore(name) {
   if(isBossAccount.value) {
     store.exitStore()
-    notify({ title: 'Success', text: 'You exited a store', type: 'success'})
+    ElNotification({ title: 'Success', message: 'You exited a store', type: 'success' })
   }
 }
 

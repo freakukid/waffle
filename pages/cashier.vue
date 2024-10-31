@@ -8,7 +8,7 @@
 //Import
 const pinia = useStore()
 const offlineStore = useOfflineStore()
-const { notify } = useNotification()
+import { ElNotification } from 'element-plus'
 const { calcChange } = useCalculations()
 const { formatDate } = useFormatter()
 const { handleTransactionRequest } = useHandleRequests()
@@ -61,7 +61,7 @@ async function createTransaction(store, form) {
       total: total,
     }
     offlineStore.addPostRequest('transaction', 'create', postData, { transaction: fakeTransaction })
-    notify({ title: 'Offline Success', text: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
   }
 
   //Print Reciept
@@ -103,7 +103,7 @@ async function printReceipt(storeId, items, tax, subtotal, tax_total, savings, t
 
   //Display error
   if (response.statusCode) {
-    notify({ title: 'Error', text: response.statusMessage, type: 'error'})
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     return
   }
 }
