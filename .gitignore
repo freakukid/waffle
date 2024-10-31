@@ -24,4 +24,4 @@ logs
 !.env.example
 
 # Scripts
-update-cache-name.js
+# update-cache-name.js
