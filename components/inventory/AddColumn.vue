@@ -21,10 +21,10 @@
     <!-- Popup -->
     
     <!-- Add Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button disabled type="success">Add Column</el-button>
     </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Add Column</el-button>
+    <el-button v-else @click="openPopup()" type="success">Add Column</el-button> -->
     <!-- Add Btn -->
   </div>
 </template>
@@ -94,4 +94,9 @@ async function addColumn() {
   loading.addColumn = false
   popup.value = false
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>

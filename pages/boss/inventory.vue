@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div id="wrapper" :class="{'edit-mode': toggle.edit, 'delete-mode': toggle.delete}">
+  <div id="inventory-page">
+    <div id="wrapper">
       <div v-if="!loading.startedLoading" id="container">
         <div v-if="!inventory.length">
           <!-- IMPORT -->
@@ -19,41 +19,152 @@
           <!-- SEARCH -->
 
           <!-- TABLE ACTIONS -->
+          <OperationsRecieving ref="recievingRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryAddRow ref="addRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryEditRow ref="editRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryDeleteRow ref="deleteRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryAddColumn ref="addColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryEditColumn ref="editColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
           <InventoryDeleteColumn ref="deleteColRef" :storeId="storeId" :inventory="store.inventory" :inventoryList="inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
+          <InventorySortColumn ref="sortColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryExport ref="exportTableRef" :inventory="store.inventory" />
+          <InventoryDropTable ref="dropTableRef" :storeId="storeId" @setInventory="setInventory" />
+
           <div id="toolbar">
-            <InventoryAddRow :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+            <el-dropdown placement="bottom-start" trigger="click">
+              <span class="p-2 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
+                Menu
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Item
+                    </div>
+                  </el-tooltip>
 
-            <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-              <el-button disabled type="warning">Edit Mode</el-button>
-            </el-tooltip>
-            <el-button v-else @click="toggleEditMode()" type="warning">Edit Mode</el-button>
+                  <el-dropdown-item v-else @click="handleRowClick('add')">
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Item
+                  </el-dropdown-item>
 
-            <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-              <el-button disabled type="danger" style="margin-left: 0">Delete Mode</el-button>
-            </el-tooltip>
-            <el-button v-else @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
-            <InventoryAddColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
-            <InventoryEditColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
-            <InventorySortColumn :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
-            <InventoryDropTable :storeId="storeId" @setInventory="setInventory" />
-            <OperationsRecieving :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
-            <InventoryExport :inventory="store.inventory" />
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Column
+                    </div>
+                  </el-tooltip>
+
+                  <el-dropdown-item divided v-else @click="handleColumnClick('add', column)">
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Column
+                  </el-dropdown-item>
+
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> Edit Columns
+                    </div>
+                  </el-tooltip>
+
+                  <el-dropdown-item v-else @click="handleColumnClick('edit', column)">
+                    <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> Edit Columns
+                  </el-dropdown-item>
+
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> Sort Columns
+                    </div>
+                  </el-tooltip>
+
+                  <el-dropdown-item v-else @click="handleColumnClick('sort', column)">
+                    <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> Sort Columns
+                  </el-dropdown-item>
+
+                  <el-dropdown-item divided @click="exportTableRef.outputExcelFile()">
+                    <Icon class="mr-3 mt-[1px]" name="vscode-icons:file-type-excel" /> Export Table
+                  </el-dropdown-item>
+
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> Drop Table
+                    </div>
+                  </el-tooltip>
+                  <el-dropdown-item v-else @click="dropTableRef.openPopup()">
+                    <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> Drop Table
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </div>
           <!-- TABLE ACTIONS -->
 
           <!-- TABLE -->
-          <el-table 
-          v-if="inventory.length"
-          :data="filteredInventory" 
-          style="width: 100%; height: 100%;" 
-          table-layout="auto" 
-          row-class-name="table-row"
-          :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }"
-          @row-click="handleRowClick"
-          @header-click="handleColumnClick">
-            <el-table-column v-for="column in store.inventory.columns" :key="column" :prop="column" :label="column" :sortable="!toggle.delete" />
+          <el-table v-if="inventory.length" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }" border>
+            <el-table-column label="Operations" width="140">
+              <template #header>
+                <div class="flex items-center gap-1 w-full">
+                  <div class="text-center w-full">Operations</div>
+                </div>
+              </template>
+
+              <template #default="scope">
+                <div class="flex justify-center">
+                  <el-tooltip v-if="!store.inventory.name_column || !store.inventory.quantity_column || !store.inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
+                    <el-button disabled link>
+                      <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
+                    </el-button>
+                  </el-tooltip>
+                  <el-button v-else link @click="handleRowClick('recieving', scope.row)">
+                    <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
+                  </el-button>
+
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <el-button class="!ml-0" disabled link>
+                      <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
+                    </el-button>
+                  </el-tooltip>
+                  <el-button v-else class="!ml-0" link @click="handleRowClick('edit', scope.row)">
+                    <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
+                  </el-button>
+
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <el-button class="!ml-0" disabled link type="danger">
+                      <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
+                    </el-button>
+                  </el-tooltip>
+                  <el-button v-else class="!ml-0" link type="danger" @click="handleRowClick('delete', scope.row)">
+                    <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
+                  </el-button>
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column v-for="column in store.inventory.columns" :key="column" :prop="column" :label="column">
+              <template #header>
+                <div class="flex items-center gap-1 w-full">
+                  <div>{{column}}</div>
+
+                  <el-dropdown trigger="click">
+                    <span class="w-8 text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
+                      <Icon class="text-base" name="ic:baseline-keyboard-arrow-down" />
+                    </span>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> Sort Ascending</el-dropdown-item>
+                        <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> Sort Descending</el-dropdown-item>
+                        
+                        <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                          <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                            <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> Delete Column
+                          </div>
+                        </el-tooltip>
+
+                        <el-dropdown-item v-else @click="handleColumnClick('delete', column)">
+                          <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> Delete Column
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
+              </template>
+            </el-table-column>
           </el-table>
           <!-- TABLE -->
         </div>
@@ -78,15 +189,23 @@ const isBossAccount = computed(isBoss)
 const store = ref({})
 const inventory = ref([])
 const loading = reactive({startedLoading: true})
-const toggle = reactive({edit: false, delete: false})
 const form = reactive({
-  search: {query: '', checked: pinia.getFilteredColumns()}
+  search: {query: '', checked: pinia.getFilteredColumns()},
+  sort: { col: '', order: '' }
 })
 
 //Element Reference
+const tableRef = ref(null)
+const addRowRef = ref(null)
 const editRowRef = ref(null)
 const deleteRowRef = ref(null)
+const addColRef = ref(null)
+const editColRef = ref(null)
 const deleteColRef = ref(null)
+const sortColRef = ref(null)
+const recievingRowRef = ref(null)
+const exportTableRef = ref(null)
+const dropTableRef = ref(null)
 
 //Filters inventory depending on search query
 const filteredInventory = computed(() => {
@@ -128,6 +247,13 @@ onBeforeUnmount(() => {
 })
 //Mount
 
+function sortTable(col, order) {
+  // Use the sorted column method from the table instance
+  tableRef.value.sort(col, order)
+  form.sort.col = col
+  form.sort.order = order
+}
+
 //Sets a inventory value for components to set
 function setInventory(data) {
   store.value.inventory = data
@@ -135,35 +261,31 @@ function setInventory(data) {
 }
 
 //Handles Column Clicks for Delete Mode
-function handleColumnClick(col) { 
+function handleColumnClick(type, col) {
   //Accesses child's method through ref
-  if(toggle.delete) {
+  if(type === 'sort') {
+    sortColRef.value.openPopup()
+  } else if(type === 'add') {
+    addColRef.value.openPopup()
+  } else if(type === 'edit') {
+    editColRef.value.openPopup()
+  } else if(type === 'delete') {
     deleteColRef.value.openPopup(col)
   }
 }
 
 //Handles Row Clicks for Edit/Delete Mode
-function handleRowClick(row) {
+function handleRowClick(type, row) {
   //Accesses child's method through ref
-  if(toggle.edit && editRowRef.value) {
+  if(type === 'add') {
+    addRowRef.value.openPopup()
+  } else if(type === 'edit') {
     editRowRef.value.openPopup(row)
-  } else if(toggle.delete) {
+  } else if(type === 'delete') {
     deleteRowRef.value.openPopup(row)
+  } else if(type === 'recieving') {
+    recievingRowRef.value.openPopup(row)
   }
-}
-
-//Toggles rows to be selected for editting
-function toggleEditMode() {
-  toggle.edit = !toggle.edit
-  toggle.delete = false
-  ElNotification({ title: 'Success', message: 'Edit mode: ' + (toggle.edit ? 'ON' : 'OFF'), type: 'success'})
-}
-
-//Toggles columns and rows to be selected for deletion
-function toggleDeleteMode() {
-  toggle.delete = !toggle.delete
-  toggle.edit = false
-  ElNotification({ title: 'Success', message: 'Delete mode: ' + (toggle.delete ? 'ON' : 'OFF'), type: 'success'})
 }
 
 //Formats dictionary inventory into an array of dictionaries
@@ -189,68 +311,30 @@ async function getStore() {
   if(store.value.inventory)
     inventory.value = formatInventory()
 
+  //Keep track of the current sort
+  form.sort.col = store.value.inventory?.columns[0]
+  form.sort.order = 'ascending'
+
   //Get store value filtering
   const filtered = pinia.getFilteredColumns()
   if(!filtered.length && store.value.inventory?.columns.length)
     resetFilteredColumns(store.value.inventory.columns)
   
   //Test Data
-  // console.log(JSON.stringify(store.value))
+  console.log(JSON.stringify(store.value))
+  console.log(JSON.stringify(inventory.value))
 }
 </script>
 
 <style lang="scss">
-#wrapper {
-  &.edit-mode  {
-    .table-row {
-      cursor: pointer;
-      &:hover > td.el-table__cell {
-        background: #ffff0026 !important;
-      }
-    }
-    
-    div {
-      user-select: none;
-    }
-  }
-
-  &.delete-mode  {
-    .table-row {
-      cursor: pointer;
-      &:hover > td.el-table__cell {
-        background: #ff000040 !important;
-      }
-    }
-    thead {
-      th {
-        cursor: pointer;
-        &:hover {
-          background: #ff000040 !important;
-        }
-      }
-    }
-    div {
-      user-select: none;
-    }
-  }
-  .cell {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-  }
+.el-dropdown-menu__item:hover, .el-dropdown-menu__item:focus {
+  background-color: #2b2b2b !important;
+  color: #fff !important;
 }
+
 </style>
 
 <style lang="scss" scoped>
-#wrapper {
-  &.edit-mode .table-row {
-    cursor: pointer;
-    &:hover {
-      background: #ffff0026 !important;
-    }
-  }
-}
-
 #container {
   display: flex;
   justify-content: center;
@@ -263,7 +347,7 @@ async function getStore() {
   flex-wrap: wrap;
   gap: 8px;
   background: #090909;
-  padding: 16px;
+  padding: 8px 24px;
 }
 
 .table-template {

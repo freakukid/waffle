@@ -53,7 +53,7 @@ const props = defineProps({
 //Prompt
 function openPopup(col) {
   popup.value = true
-  form.name = col.label
+  form.name = col
 }
 
 //Request

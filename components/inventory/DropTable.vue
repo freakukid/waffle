@@ -1,12 +1,12 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Delete Table">
+    <el-dialog v-model="popup" title="Delete Table" width="300">
       <p class="text-center">The following will be deleted:</p>
       <ul class="list-disc w-44 my-4 mx-auto">
         <li>Inventory</li>
         <li>Transaction History</li>
-        <li>Lawaway Transactions</li>
+        <li>Layaway Transactions</li>
         <li>Inventory Logs</li>
       </ul>
 
@@ -26,10 +26,10 @@
     <!-- Popup -->
     
     <!-- Drop Table Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button disabled type="danger">Drop Table</el-button>
     </el-tooltip>
-    <el-button v-else @click="openPopup" type="danger">Drop Table</el-button>
+    <el-button v-else @click="openPopup" type="danger">Drop Table</el-button> -->
     <!-- Drop Table Btn -->
   </div>
 </template>
@@ -73,4 +73,9 @@ async function dropTable() {
   loading.dropTable = false
   popup.value = false
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>

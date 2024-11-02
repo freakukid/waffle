@@ -11,7 +11,8 @@ export const useOfflineStore = defineStore('offline', {
   actions: {
     async tryPingingServer() {
       try {
-        await useFetchApi('/api/ping')
+        const timestamp = new Date().getTime()
+        await useFetchApi(`/api/ping?timestamp=${timestamp}`)
         this.isOnline = true
         
         //If we have pending requests then send them to server while user is online
@@ -25,6 +26,7 @@ export const useOfflineStore = defineStore('offline', {
         }
       } catch(error) {
         this.isOnline = false
+        console.log('?')
       }
 
       // console.log(JSON.stringify(this.customerRequests))

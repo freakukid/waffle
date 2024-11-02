@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Export Btn -->
-    <el-button @click="outputExcelFile" type="primary">Export Inventory</el-button>
+    <!-- <el-button @click="outputExcelFile" type="primary">Export Inventory</el-button> -->
     <!-- Export Btn -->
   </div>
 </template>
@@ -41,4 +41,9 @@ async function outputExcelFile() {
   a.download = 'inventory.xlsx'
   a.click()
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  outputExcelFile
+})
 </script>

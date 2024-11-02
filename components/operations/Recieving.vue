@@ -1,31 +1,22 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Recieve Item">
-      <label>Item Recieved:</label>
-      <el-select
-        v-model="search"
-        filterable
-        remote
-        reserve-keyword
-        placeholder="Please enter a keyword"
-        :remote-method="filterInventory"
-        @change="addItem"
-      >
-        <el-option v-for="(item, key) in options" :key="key" :label="item[inventory?.name_column]" :value="key" />
-      </el-select>
-
+    <el-dialog v-model="popup" title="Item Recieved">
+      <label v-if="form.item[inventory.name_column]" class="block text-center text-base"><b>{{form.item[inventory.name_column]}}</b></label>
       <el-form :model="form" @submit.prevent="recieveItem()" style="margin-top: 16px;">
-        <label>Qty Recieved:</label>
-        <el-form-item prop="tax">
-          <el-input-number v-model="form.qty" />
-        </el-form-item>
 
-        <p>You can either submit cost per item or total cost of all items recieved</p>
+        <div class="text-center mb-2">Qty Recieved:</div>
+        <div class="flex items-center justify-center">
+          <el-form-item prop="tax">
+            <el-input-number v-model="form.qty" />
+          </el-form-item>
+        </div>
 
-        <div style="display:flex; align-items:center; gap: 10px;">
+        <p class="text-center mb-2">You can either submit cost per item or total cost of all items recieved.</p>
+
+        <div class="flex items-center justify-center gap-4">
           <div>
-            <label>Cost Per Item:</label>
+            <div class="text-center mb-2">Cost Per Item:</div>
             <el-form-item prop="tax">
               <el-input-number v-model="form.costPerItem" :precision="2" @change="form.totalCost = 0" />
             </el-form-item>
@@ -34,7 +25,7 @@
           <div>or</div>
 
           <div>
-            <label>Total Cost:</label>
+            <div class="text-center mb-2">Total Cost:</div>
             <el-form-item prop="tax">
               <el-input-number v-model="form.totalCost" :precision="2" @change="form.costPerItem = 0" />
             </el-form-item>
@@ -52,30 +43,31 @@
     <!-- Popup -->
     
     <!-- Receiving Btn -->
-    <el-tooltip v-if="!inventory.name_column || !inventory.quantity_column || !inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
+    <!-- <el-tooltip v-if="!inventory.name_column || !inventory.quantity_column || !inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
       <el-button disabled type="success">Recieving</el-button>
     </el-tooltip>
     <el-button v-else @click="openPopup()" type="success">
       <span>Recieving</span>
-    </el-button>
+    </el-button> -->
     <!-- Receiving Btn -->
   </div>
 </template>
 
 <script setup>
 //Import
-const { handleInventoryRequest } = useHandleRequests()
 import { ElNotification } from 'element-plus'
+const { handleInventoryRequest } = useHandleRequests()
 const { calcTotalCost, calcAvgCostPerItem } = useCalculations()
 const offlineStore = useOfflineStore()
 
 //Data
-const loading = reactive({ recieve: false, search: false })
+const loading = reactive({ recieve: false })
 const popup = ref(false)
 const search = ref('')
 const options = ref([])
 
 const form = reactive({
+  item: {},
   key: 0,
   qty: 0,
   costPerItem: 0,
@@ -86,32 +78,13 @@ const form = reactive({
 const emits = defineEmits(['setInventory'])
 const props = defineProps({
   storeId: { type: Number },
-  inventory: { type: Object }
+  inventory: { type: Object },
 })
 
-//Filters inventory depending on search query
-const filterInventory = (query) => {
-  loading.search = true
-  const { name_column, stock } = props.inventory
-  if (query) {
-    const filteredDictionary = {}
-
-    for (const key in stock) {
-      const data = stock[key]
-      if (data[name_column].toLowerCase().includes(query.toLowerCase()))
-        filteredDictionary[key] = data
-    }
-    
-    options.value = filteredDictionary
-  } else {
-    options.value = stock
-  }
-  loading.search = false
-}
-
 //Prompt
-function openPopup() {
-  form.key = 0
+function openPopup(item) {
+  form.item = item
+  form.key = item.__id
   form.qty = 0
   form.costPerItem = 0
   form.totalCost = 0
@@ -121,10 +94,6 @@ function openPopup() {
   popup.value = true
 }
 
-//Add item to form
-function addItem(key) {
-  form.key = key
-}
 
 //Request
 async function recieveItem() {
@@ -193,4 +162,9 @@ async function recieveItem() {
   loading.recieve = false
   popup.value = false
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>

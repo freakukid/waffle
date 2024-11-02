@@ -16,10 +16,10 @@
     <!-- Popup -->
     
     <!-- Sort Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button disabled type="warning">Sort Columns</el-button>
     </el-tooltip>
-    <el-button v-else @click="openPopup()" type="warning">Sort Columns</el-button>
+    <el-button v-else @click="openPopup()" type="warning">Sort Columns</el-button> -->
     <!-- Sort Btn -->
   </div>
 </template>
@@ -76,4 +76,9 @@ async function sortColumn() {
   loading.sortColumn = false
   popup.value = false
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>

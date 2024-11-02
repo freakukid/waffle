@@ -15,20 +15,12 @@
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Add Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button disabled type="success">Add Item</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Add Item</el-button>
-    <!-- Add Btn -->
   </div>
 </template>
 
 <script setup>
 const { handleInventoryRequest } = useHandleRequests()
 const { formatNameColumn, formatPriceColumn, formatQuantityColumn, formatDiscountColumn, formatCostColumn, validateValues } = useFormatter()
-const offlineStore = useOfflineStore()
 
 const loading = reactive({ addRow: false })
 const popup = ref(false)
@@ -87,4 +79,9 @@ async function addRow() {
   loading.addRow = false
   popup.value = false
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>
