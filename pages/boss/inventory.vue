@@ -7,17 +7,7 @@
           <InventoryImport :storeId="storeId" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
           <!-- IMPORT -->
         </div>
-        <div v-else style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px;">
-          <!-- SEARCH -->
-          <div id="search">
-            <el-input v-model="form.search.query" size="large" placeholder="Type to search" clearable />
-
-            <el-checkbox-group v-model="form.search.checked" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
-              <el-checkbox v-for="column in store.inventory.columns" :key="column" :label="column" :value="column">{{ column }}</el-checkbox>
-            </el-checkbox-group>
-          </div>
-          <!-- SEARCH -->
-
+        <div v-else style="height: calc(100vh - 215px); width: calc(100vw - 140px); padding-top: 32px;">
           <!-- TABLE ACTIONS -->
           <OperationsRecieving ref="recievingRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryAddRow ref="addRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
@@ -92,6 +82,28 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
+
+            <!-- SEARCH -->
+            <div class="max-w-sm mx-auto w-full">
+              <el-input v-model="form.search.query" size="large" placeholder="Search" clearable>
+                <template #suffix>
+                  <el-dropdown placement="bottom-end" trigger="click">
+                    <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
+                      <Icon class="text-lg" name="line-md:filter-filled" />
+                    </span>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <div class="text-base py-2 px-3"><label>Search by</label></div>
+                        <el-checkbox-group v-model="form.search.checked" class="flex flex-col" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
+                          <el-checkbox v-for="column in store.inventory.columns" :key="column" class="!mx-0 px-4 !h-10" :label="column" :value="column">{{ column }}</el-checkbox>
+                        </el-checkbox-group>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </template>
+              </el-input>
+            </div>
+            <!-- SEARCH -->
           </div>
           <!-- TABLE ACTIONS -->
 
@@ -321,8 +333,8 @@ async function getStore() {
     resetFilteredColumns(store.value.inventory.columns)
   
   //Test Data
-  console.log(JSON.stringify(store.value))
-  console.log(JSON.stringify(inventory.value))
+  // console.log(JSON.stringify(store.value))
+  // console.log(JSON.stringify(inventory.value))
 }
 </script>
 
@@ -331,7 +343,6 @@ async function getStore() {
   background-color: #2b2b2b !important;
   color: #fff !important;
 }
-
 </style>
 
 <style lang="scss" scoped>

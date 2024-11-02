@@ -1,55 +1,111 @@
 <template>
   <div>
-    <div id="wrapper" :class="{'edit-mode': toggle.edit, 'delete-mode': toggle.delete}">
+    <div id="wrapper">
       <div v-if="!loading.startedLoading" id="container">
+
         <div v-if="!inventory.length">
           Please wait until inventory set
         </div>
-        <div v-else style="height: calc(100vh - 215px);width: calc(100vw - 140px); padding-top: 32px;">
-          <!-- SEARCH -->
-          <div id="search">
-            <el-input v-model="form.search.query" size="large" placeholder="Type to search" clearable />
 
-            <el-checkbox-group v-model="form.search.checked" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
-              <el-checkbox v-for="column in store.inventory.columns" :key="column" :label="column" :value="column">{{ column }}</el-checkbox>
-            </el-checkbox-group>
-          </div>
-          <!-- SEARCH -->
-
+        <div v-else style="height: calc(100vh - 215px); width: calc(100vw - 140px); padding-top: 32px;">
           <!-- TABLE ACTIONS -->
-          <InventoryEditRow v-if="permissions.edit_item" ref="editRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
-          <InventoryDeleteRow v-if="permissions.delete_item" ref="deleteRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
-          <div id="toolbar">
-            <InventoryAddRow v-if="permissions.add_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryAddRow ref="addRowRef" v-if="permissions.add_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryEditRow ref="editRowRef" v-if="permissions.edit_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <InventoryDeleteRow ref="deleteRowRef" v-if="permissions.delete_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <OperationsRecieving ref="recievingRowRef" v-if="permissions.recieving" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          
+          <div v-if="permissions.add_item" id="toolbar">
+            <el-dropdown placement="bottom-start" trigger="click">
+              <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
+                Menu
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Item
+                    </div>
+                  </el-tooltip>
 
-            <div>
-              <el-tooltip v-if="!offlineStore.getOnlineStatus() && permissions.edit_item" content="Feature only available online." placement="top">
-                <el-button disabled type="warning">Edit Mode</el-button>
-              </el-tooltip>
-              <el-button v-else-if="permissions.edit_item" @click="toggleEditMode()" type="warning">Edit Mode</el-button>
-            </div>
+                  <el-dropdown-item v-else @click="handleRowClick('add')">
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Item
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
 
-            <div>
-              <el-tooltip v-if="!offlineStore.getOnlineStatus() && permissions.delete_item" content="Feature only available online." placement="top">
-                <el-button disabled type="danger" style="margin-left: 0">Delete Mode</el-button>
-              </el-tooltip>
-              <el-button v-else-if="permissions.delete_item" @click="toggleDeleteMode()" type="danger" style="margin-left: 0">Delete Mode</el-button>
+            <!-- SEARCH -->
+            <div class="max-w-sm mx-auto w-full">
+              <el-input v-model="form.search.query" size="large" placeholder="Search" clearable>
+                <template #suffix>
+                  <el-dropdown placement="bottom-end" trigger="click">
+                    <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
+                      <Icon class="text-lg" name="line-md:filter-filled" />
+                    </span>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <div class="text-base py-2 px-3"><label>Search by</label></div>
+                        <el-checkbox-group v-model="form.search.checked" class="flex flex-col" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
+                          <el-checkbox v-for="column in store.inventory.columns" :key="column" class="!mx-0 px-4 !h-10" :label="column" :value="column">{{ column }}</el-checkbox>
+                        </el-checkbox-group>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </template>
+              </el-input>
             </div>
-            
-            <OperationsRecieving v-if="permissions.recieving" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+            <!-- SEARCH -->
           </div>
           <!-- TABLE ACTIONS -->
 
           <!-- TABLE -->
-          <el-table 
-          :data="filteredInventory" 
-          style="width: 100%; height: 100%;" 
-          table-layout="auto" 
-          row-class-name="table-row"
-          :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }"
-          @row-click="handleRowClick"
-          >
-            <el-table-column v-for="column in store.inventory.columns" :key="column" :prop="column" :label="column" :sortable="!toggle.delete" />
+          <el-table :data="filteredInventory" ref="tableRef" class="w-full h-full" table-layout="auto" :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }" border>
+            <el-table-column v-if="permissions.recieving || permissions.edit_item || permissions.delete_item" label="Operations" width="140">
+              <template #header>
+                <div class="flex items-center gap-1 w-full">
+                  <div class="text-center w-full">Operations</div>
+                </div>
+              </template>
+
+              <template #default="scope">
+                <div class="flex justify-center">
+                  <div v-if="permissions.recieving">
+                    <el-tooltip v-if="!store.inventory.name_column || !store.inventory.quantity_column || !store.inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
+                      <el-button disabled link>
+                        <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
+                      </el-button>
+                    </el-tooltip>
+                    <el-button v-else link @click="handleRowClick('recieving', scope.row)">
+                      <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
+                    </el-button>
+                  </div>
+                  
+                  <div v-if="permissions.edit_item">
+                    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                      <el-button class="!ml-0" disabled link>
+                        <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
+                      </el-button>
+                    </el-tooltip>
+                    <el-button v-else class="!ml-0" link @click="handleRowClick('edit', scope.row)">
+                      <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
+                    </el-button>
+                  </div>
+
+                  <div v-if="permissions.delete_item">
+                    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                      <el-button class="!ml-0" disabled link type="danger">
+                        <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
+                      </el-button>
+                    </el-tooltip>
+                    <el-button v-else class="!ml-0" link type="danger" @click="handleRowClick('delete', scope.row)">
+                      <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
+                    </el-button>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column v-for="column in store.inventory.columns" :key="column" :prop="column" :label="column" sortable />
           </el-table>
           <!-- TABLE -->
         </div>
@@ -61,8 +117,8 @@
 <script setup>
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
-const { $eventBus } = useNuxtApp()
 import { ElNotification } from 'element-plus'
+const { $eventBus } = useNuxtApp()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 const { isBoss, getPermissions } = useChecks()
@@ -74,15 +130,16 @@ const permissions = ref(null)
 const store = ref({})
 const inventory = ref([])
 const loading = reactive({startedLoading: true})
-const toggle = reactive({edit: false, delete: false})
 const form = reactive({
   search: {query: '', checked: pinia.getFilteredColumns()}
 })
 
 //Element Reference
+const tableRef = ref(null)
+const addRowRef = ref(null)
 const editRowRef = ref(null)
 const deleteRowRef = ref(null)
-const deleteColRef = ref(null)
+const recievingRowRef = ref(null)
 
 //Filters inventory depending on search query
 const filteredInventory = computed(() => {
@@ -129,31 +186,20 @@ onBeforeUnmount(() => {
 function setInventory(data) {
   store.value.inventory = data
   inventory.value = formatInventory()
-  alert()
 }
 
 //Handles Row Clicks for Edit/Delete Mode
-function handleRowClick(row) {
+function handleRowClick(type, row) {
   //Accesses child's method through ref
-  if(toggle.edit && editRowRef.value) {
+  if(type === 'add') {
+    addRowRef.value.openPopup()
+  } else if(type === 'edit') {
     editRowRef.value.openPopup(row)
-  } else if(toggle.delete) {
+  } else if(type === 'delete') {
     deleteRowRef.value.openPopup(row)
+  } else if(type === 'recieving') {
+    recievingRowRef.value.openPopup(row)
   }
-}
-
-//Toggles rows to be selected for editting
-function toggleEditMode() {
-  toggle.edit = !toggle.edit
-  toggle.delete = false
-  ElNotification({ title: 'Success', message: 'Edit mode: ' + (toggle.edit ? 'ON' : 'OFF'), type: 'success'})
-}
-
-//Toggles columns and rows to be selected for deletion
-function toggleDeleteMode() {
-  toggle.delete = !toggle.delete
-  toggle.edit = false
-  ElNotification({ title: 'Success', message: 'Delete mode: ' + (toggle.delete ? 'ON' : 'OFF'), type: 'success'})
 }
 
 //Formats dictionary inventory into an array of dictionaries
@@ -184,65 +230,30 @@ async function getStore() {
   //Test data
   // console.log(JSON.stringify(store.value))
 }
+
 </script>
 
 <style lang="scss">
-#wrapper {
-  &.edit-mode  {
-    .table-row {
-      cursor: pointer;
-      &:hover > td.el-table__cell {
-        background: #ffff0026 !important;
-      }
-    }
-    
-    div {
-      user-select: none;
-    }
-  }
-
-  &.delete-mode  {
-    .table-row {
-      cursor: pointer;
-      &:hover > td.el-table__cell {
-        background: #ff000040 !important;
-      }
-    }
-    div {
-      user-select: none;
-    }
-  }
-  .cell {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-  }
+.el-dropdown-menu__item:hover, .el-dropdown-menu__item:focus {
+  background-color: #2b2b2b !important;
+  color: #fff !important;
 }
 </style>
 
 <style lang="scss" scoped>
-#wrapper {
-  width: 100vw;
-  height: calc(100vh - 40px);
-  &.edit-mode .table-row {
-    cursor: pointer;
-    &:hover {
-      background: #ffff0026 !important;
-    }
-  }
-}
-
 #container {
+  display: flex;
+  justify-content: center;
   height: 100%;
-  padding-left: 100px;
 }
 
 #toolbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   background: #090909;
-  padding: 16px;
+  padding: 8px 24px;
 }
 
 .table-template {
