@@ -58,7 +58,7 @@ const route = useRoute()
         sign out
       </button>
       <br>
-      <button @click="getSession({ required: false })">
+      <button @click="getSession({ required: true })">
         refresh session
       </button>
     </div>

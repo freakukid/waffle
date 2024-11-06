@@ -65,7 +65,7 @@ export default NuxtAuthHandler({
           token.is_boss = false
         }
       }
-
+      
       return token
     },
     async session({ session, token }) {
@@ -80,7 +80,7 @@ export default NuxtAuthHandler({
         session.user.worker = token.worker
         session.user.is_boss = false
       }
-      
+
       return session
     },
   },

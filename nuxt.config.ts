@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-i18n'
   ],
   runtimeConfig: {    
     // Cloudinary
@@ -43,4 +44,16 @@ export default defineNuxtConfig({
   plugins: [
     { src: '~/plugins/register-service-worker.client.js', mode: 'client' }
   ],
+  i18n: {
+    // Options
+    locales: [
+      { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' },
+      { code: 'es', name: 'Spanish', iso: 'es-ES', file: 'es.json' }
+    ],
+    defaultLocale: 'en',
+    langDir: 'locales/',
+    vueI18n: {
+      fallbackLocale: 'en',
+    }
+  }
 })
