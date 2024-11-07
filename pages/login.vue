@@ -42,17 +42,17 @@ const login = async () => {
     method: "POST",
     body: { username: form.username, password: form.password }
   })
-
-  await fetch()
   
   //Show error if a failed request
-  if (response.error) {
-    ElNotification({ title: 'Error', message: response.error, type: 'error'})
+  if (response.statusCode) {
+    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
     loading.value = false
     return
   } else {
     ElNotification({ title: 'Success', message: 'Login Successful', type: 'success'})
   }
+
+  await fetch()
 
   //Set store for workers
   const user = getAuthUser()
