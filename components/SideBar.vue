@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <el-menu-item class="sidebar-item" index="9" @click="logout()">
+    <el-menu-item class="sidebar-item" index="9" @click="logoutUser()">
       <Icon name="fe:logout" class="text-red-500" />
       <template #title>Logout</template>
     </el-menu-item>
@@ -76,7 +76,7 @@ import { ElNotification } from 'element-plus'
 const store = useStore()
 const offlineStore = useOfflineStore()
 const { isBoss, getPermissions } = useChecks()
-const { signOut } = useAuth()
+const { logout } = useAuth()
 const route = useRoute()
 
 //Data
@@ -105,9 +105,9 @@ function exitStore(name) {
   }
 }
 
-async function logout() {
+async function logoutUser() {
   store.exitStore()
-  await signOut({ callbackUrl: '/login' })
+  await logout()
 }
 </script>
 

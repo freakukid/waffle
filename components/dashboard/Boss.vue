@@ -87,6 +87,7 @@
 //Import
 import { ref } from '#imports'
 import { ElNotification } from 'element-plus'
+const { fetch } = useUserSession()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 
@@ -169,6 +170,7 @@ async function deleteStore() {
       id: deleteId,
     }
   })
+  await fetch()
   loading.deleteStore = false
 
   //Show error notification

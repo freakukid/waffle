@@ -5,6 +5,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Import
 const pinia = useStore()
 const offlineStore = useOfflineStore()
@@ -48,12 +52,13 @@ async function createTransaction(store, form) {
     response = await handleTransactionRequest(postData)
   } else {
     //Setup fake data to render
-    const { data } = useAuth()
+    const { getAuthUser } = useAuth()
+    const user = getAuthUser()
     const fakeTransaction = {
       date: formatDate(postData.timestamp),
       items: transactionItems,
       tax: tax,
-      name: data.value.user.name,
+      name: user.name,
       payment: payment,
       cash: cash ? parseFloat(cash) : 0,
       card: card,

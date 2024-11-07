@@ -142,6 +142,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Import
 const pinia = useStore()
 const offlineStore = useOfflineStore()

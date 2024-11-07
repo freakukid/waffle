@@ -2,7 +2,7 @@ import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
   //Imports
-  const { getAuthUser, isStoreOwner } = useAuthChecks()
+  const { getAuthUser, isStoreOwner, updateAuthUser } = useAuthChecks()
   //Setup data
   const authUser = await getAuthUser(event)
   const { id } = await readBody(event)
@@ -33,8 +33,9 @@ export default defineEventHandler(async (event) => {
     }
   })
 
+  await updateAuthUser(event, authUser.id)
+
   setResponseStatus(event, 201)
-  
   return {
     store_id: store.id,
     message: "Store deleted!"

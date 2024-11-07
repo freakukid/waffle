@@ -2,13 +2,18 @@
   <div>
     <h1>Dashboard</h1>
 
-    <DashboardBoss v-if="data.user.is_boss" :user="data.user" />
-    <DashboardWorker v-else :user="data.user" />
+    <DashboardBoss v-if="user.is_boss" :user="user" />
+    <DashboardWorker v-else :user="user" />
   </div>
 </template>
 
 <script setup>
-const { data } = useAuth()
+definePageMeta({
+  middleware: 'unauth'
+})
+
+const { getAuthUser } = useAuth()
+const user = getAuthUser()
 </script>
 
 <style lang="scss" scoped>

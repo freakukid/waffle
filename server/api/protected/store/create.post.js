@@ -2,7 +2,7 @@ import useAuthChecks from '../../composables/useAuthChecks'
 
 export default defineEventHandler(async (event) => {
   //Imports
-  const { getAuthUser } = useAuthChecks()
+  const { getAuthUser, updateAuthUser } = useAuthChecks()
   //Setup data
   const authUser = await getAuthUser(event)
   const boss_id = authUser?.boss?.id
@@ -40,8 +40,10 @@ export default defineEventHandler(async (event) => {
     }
   })
 
+  //Update session
+  await updateAuthUser(event, authUser.id)
+
   setResponseStatus(event, 201)
-  
   return {
     store: store,
     message: "Store created!"

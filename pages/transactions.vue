@@ -184,6 +184,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Imports
 const pinia = useStore()
 const { $eventBus } = useNuxtApp()

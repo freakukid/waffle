@@ -87,6 +87,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Imports
 import { ElNotification } from 'element-plus'
 const { validateUsername, validateOptionalEmail } = useValidator()

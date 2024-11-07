@@ -137,13 +137,14 @@ async function recieveItem() {
     inventory = await handleInventoryRequest({ path: 'recieving', data: postData })
   } else {
     //Setup fake data to render
-    const { data } = useAuth()
+    const { getAuthUser } = useAuth()
+    const user = getAuthUser()
     const item = props.inventory.stock[key]
     const newQty = item[quantity_column] + qty
     const newCost = parseFloat(calcAvgCostPerItem(item[quantity_column], item[cost_column], newQty, totalCost)).toFixed(2)
     const fakeLogData = {
       timestamp: postData.timestamp,
-      user: { name: data.value.user.name },
+      user: { name: user.name },
       action: 'recieving',
       before: { cost: prevCost },
       after: { name: item[name_column], qty: qty, total_cost: parseFloat(totalCost).toFixed(2), cost: newCost },

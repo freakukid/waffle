@@ -115,6 +115,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'

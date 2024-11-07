@@ -8,7 +8,7 @@
         <el-input v-model="form.password" type="password" autocomplete="off" autofocus />
       </el-form-item>
 
-      <el-button id="login" type="primary" native-type="submit" @click="login">Login</el-button>
+      <el-button id="login" type="primary" native-type="submit" @click="login" :loading="loading">Login</el-button>
 
       <div class="msg">
         Don't have an account?&nbsp;<el-link :underline="false" href="/register" type="primary">Register</el-link>
@@ -18,20 +18,18 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'auth'
+})
+
 //Import
-const { signIn, data } = useAuth()
+const { fetch } = useUserSession()
+const { getAuthUser } = useAuth()
 import { ElNotification } from 'element-plus'
 const pinia = useStore()
 
-definePageMeta({
-  layout: "auth",
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/dashboard',
-  }
-})
-
 //Form
+const loading = ref(false)
 const form = reactive({
   username: '',
   password: ''
@@ -39,16 +37,25 @@ const form = reactive({
 
 const login = async () => {
   //Make Request
-  const response = await signIn('credentials', { redirect: false, username: form.username, password: form.password })
+  loading.value = true
+  const response = await useFetchApi(`/api/auth/login`, {
+    method: "POST",
+    body: { username: form.username, password: form.password }
+  })
+
+  await fetch()
   
   //Show error if a failed request
   if (response.error) {
     ElNotification({ title: 'Error', message: response.error, type: 'error'})
+    loading.value = false
     return
+  } else {
+    ElNotification({ title: 'Success', message: 'Login Successful', type: 'success'})
   }
 
   //Set store for workers
-  const user = data?.value?.user
+  const user = getAuthUser()
   if(user && !user.is_boss)
     pinia.setStore(user.worker.store_id)
   

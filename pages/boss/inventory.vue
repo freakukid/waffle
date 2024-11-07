@@ -186,6 +186,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { $eventBus } = useNuxtApp()

@@ -5,11 +5,11 @@ export default () => {
     try {
       return await useFetchApi(url)
     } catch(error) {
-      const { signOut } = useAuth()
+      const { logout } = useAuth()
       const pinia = useStore()
       
       pinia.exitStore()
-      signOut({ callbackUrl: '/login' })
+      logout()
     }
   }
 

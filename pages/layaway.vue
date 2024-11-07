@@ -5,6 +5,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Imports
 const pinia = useStore()
 const offlineStore = useOfflineStore()
@@ -101,10 +105,11 @@ async function createLayaway(store, form) {
     response = await handleLayawayRequest(postData)
   } else {
     //Setup fake data to render
-    const { data } = useAuth()
+    const { getAuthUser } = useAuth()
+    const user = getAuthUser()
     const fakeLayaway = {
       date: formatDate(postData.timestamp),
-      name: data.value.user.name,
+      name: user.name,
       customer: customer.value,
       items: transactionItems,
       tax: tax,

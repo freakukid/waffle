@@ -77,7 +77,7 @@
 //Import
 const { validateEmail } = useValidator()
 import { ElNotification } from 'element-plus'
-const { signOut } = useAuth()
+const { fetch } = useUserSession()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 //Data
@@ -174,6 +174,7 @@ async function createStore() {
       country: country
     }
   })
+  await fetch()
   loading.value = false
 
   //Display error
@@ -189,7 +190,6 @@ async function createStore() {
   emits('addStore', response.store)
   popup.value = false
   pinia.exitStore()
-  // signOut({ callbackUrl: '/login' })
 }
 
 async function editStore() {

@@ -13,6 +13,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'unauth'
+})
+
 //Import
 const pinia = useStore()
 const { formatDate } = useFormatter()

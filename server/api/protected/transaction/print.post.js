@@ -1,4 +1,3 @@
-import { getServerSession } from '#auth'
 import { ThermalPrinter, PrinterTypes } from 'node-thermal-printer'
 import { Decimal } from 'decimal.js'
 import { join } from 'path'
@@ -7,7 +6,7 @@ import { cwd } from 'process'
 //https://github.com/Klemen1337/node-thermal-printer
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
+  const session = await getUserSession(event)
   const user_id = session?.user?.id
   //Check if user is login
   if(!user_id)

@@ -20,10 +20,6 @@
 
 <script setup>
 definePageMeta({
-  layout: "auth",
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/dashboard',
-  }
+  middleware: 'auth'
 })
 </script>

@@ -13,7 +13,6 @@
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.1",
-    "@sidebase/nuxt-auth": "^0.7.2",
     "@types/bcrypt": "^5.0.0",
     "nuxt": "^3.5.1",
     "nuxt-icon": "^0.6.10",
@@ -33,6 +32,7 @@
     "mitt": "^3.0.1",
     "node-thermal-printer": "^4.4.3",
     "nodemailer": "^6.9.15",
+    "nuxt-auth-utils": "^0.5.2",
     "nuxt-i18n": "^6.28.1"
   }
 }

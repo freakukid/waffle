@@ -3,11 +3,11 @@
     <NuxtPage />
   </div>
 
-  <SideBar v-if="status === 'authenticated'" />
+  <SideBar v-if="loggedIn" />
 </template>
 
 <script setup>
-const { status } = useAuth()
+const { loggedIn } = useUserSession()
 const offlineStore = useOfflineStore()
 const storeId = computed(() => pinia.store)
 

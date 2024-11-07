@@ -31,21 +31,18 @@
 </template>
 
 <script setup>
-const { signIn } = useAuth()
+definePageMeta({
+  middleware: 'auth'
+})
+
 const route = useRoute()
+const { fetch } = useUserSession()
 import { ElNotification } from 'element-plus'
 const { validateUsername, validateEmail } = useValidator()
 
-definePageMeta({
-  layout: "auth",
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/dashboard',
-  }
-})
-
 const hasStoreCode = route.query.code ? route.query.code : ''
 
+const loading = ref(false)
 const formRef = ref()
 const form = reactive({
   username: '',
@@ -80,8 +77,8 @@ const rules = reactive({
 
 const register = async (formEl) => {
   formEl.validate()
-
   const username = form.username.toLowerCase().trim()
+  loading.value = true
   const { data, error } = await useFetch(`/api/auth/register`, {
     method: "POST",
     body: {
@@ -101,13 +98,19 @@ const register = async (formEl) => {
   ElNotification({ title: 'Success', message: data.value.message, type: 'success'})
 
   //Login
-  const response = await signIn('credentials', { redirect: false, username: username, password: form.password })
+  const response = await useFetchApi(`/api/auth/login`, {
+    method: "POST",
+    body: { username: username, password: form.password }
+  })
 
   if (response.error) {
     ElNotification({ title: 'Error', message: response.error, type: 'error'})
     return
   }
 
+  //Go to dashboard page
+  await fetch()
+  loading.value = false
   await navigateTo('/dashboard')
 }
 </script>
