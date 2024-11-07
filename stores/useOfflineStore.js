@@ -26,7 +26,7 @@ export const useOfflineStore = defineStore('offline', {
         }
       } catch(error) {
         this.isOnline = false
-        console.log('?')
+        // console.log('?')
       }
 
       // console.log(JSON.stringify(this.customerRequests))
