@@ -51,8 +51,8 @@
     <!-- Popup -->
 
     <!-- Customer Btn -->
-    <el-button v-if="type === 'Create'" @click="openPopup(true)" type="success">Create Customer</el-button>
-    <!-- <el-button v-else @click="openPopup(true)" type="warning">Edit Customer</el-button> -->
+    <!-- <el-button v-if="type === 'Create'" @click="openPopup(true)" type="success">Create Customer</el-button>
+    <el-button v-else @click="openPopup(true)" type="warning">Edit Customer</el-button> -->
     <!-- Customer Btn -->
   </div>
 </template>

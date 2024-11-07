@@ -24,7 +24,7 @@
             <template #title>Logs</template>
           </el-menu-item>
         </NuxtLink>
-        <NuxtLink v-if="isBossAccount" to="/boss/workers">
+        <NuxtLink v-if="isBossAccount" to="/workers">
           <el-menu-item class="sidebar-item" index="4" :class="{active: route.name === 'boss-workers'}">
             <Icon name="gravity-ui:person-worker" />
             <template #title>Workers</template>

@@ -79,10 +79,10 @@
     <!-- Popup -->
     
     <!-- Register Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button type="success" disabled>Column Settings</el-button>
     </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Column Settings</el-button>
+    <el-button v-else @click="openPopup()" type="success">Column Settings</el-button> -->
     <!-- Register Btn -->
   </div>
 </template>

@@ -14,8 +14,8 @@
           <InventoryDeleteRow ref="deleteRowRef" v-if="permissions.delete_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <OperationsRecieving ref="recievingRowRef" v-if="permissions.recieving" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           
-          <div v-if="permissions.add_item" id="toolbar">
-            <el-dropdown placement="bottom-start" trigger="click">
+          <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
+            <el-dropdown v-if="permissions.add_item" placement="bottom-start" trigger="click">
               <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
                 Menu
               </span>
@@ -249,15 +249,6 @@ async function getStore() {
   display: flex;
   justify-content: center;
   height: 100%;
-}
-
-#toolbar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  background: #090909;
-  padding: 8px 24px;
 }
 
 .table-template {

@@ -182,10 +182,10 @@
     <!-- Popup -->
     
     <!-- Settings Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button type="success" disabled>Settings</el-button>
     </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Settings</el-button>
+    <el-button v-else @click="openPopup()" type="success">Settings</el-button> -->
     <!-- Settings Btn -->
   </div>
 </template>
@@ -338,6 +338,11 @@ async function changeSettings() {
   popup.value = false
   ElNotification({ title: 'Success', message: response.message, type: 'success'})
 }
+
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>
 
 <style lang="scss">

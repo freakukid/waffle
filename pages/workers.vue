@@ -1,13 +1,30 @@
 <template>
   <div v-if="!loading.startedLoading" id="worker-page">
     <div id="wrapper">
-      <h1>Worker Permissions</h1>
-
-      <div id="toolbar">
-        <WorkerCreateWorker @addUser="addUser" />
-      </div>
+      <WorkerCreateWorker ref="createWorkerRef" @addUser="addUser" />
 
       <div id="tree-wrapper">
+        <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6 mb-4 rounded-t-[6px]">
+          <el-dropdown placement="bottom-start" trigger="click">
+            <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
+              Menu
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> Create Worker
+                  </div>
+                </el-tooltip>
+
+                <el-dropdown-item v-else @click="createWorkerRef.openPopup()">
+                  <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> Create Worker
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+
         <el-tree
           v-if="!loading.startedLoading"
           :data="tree"
@@ -107,6 +124,9 @@ const loading = reactive({ startedLoading: true, editUser: false, deleteUser: fa
 const tree = ref([])
 const expanded = ref([])
 const checked = ref([])
+//Reference
+const createWorkerRef = ref(null)
+
 //Form
 const popup = reactive({editUser: false, deleteUser: false })
 const form = reactive({
@@ -292,12 +312,6 @@ function setupTreeData() {
     padding: 16px 0;
     text-align: center;
     margin: 0;
-  }
-  #toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 32px;
   }
   #tree-wrapper {
     margin: 16px auto 0 auto;

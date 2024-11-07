@@ -19,8 +19,9 @@
           <InventorySortColumn ref="sortColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryExport ref="exportTableRef" :inventory="store.inventory" />
           <InventoryDropTable ref="dropTableRef" :storeId="storeId" @setInventory="setInventory" />
+          <CashierRegisterColumns ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
 
-          <div id="toolbar">
+          <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
             <el-dropdown placement="bottom-start" trigger="click">
               <span class="p-2 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
                 Menu
@@ -65,6 +66,16 @@
 
                   <el-dropdown-item v-else @click="handleColumnClick('sort', column)">
                     <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> Sort Columns
+                  </el-dropdown-item>
+
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                    <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                      <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                    </div>
+                  </el-tooltip>
+
+                  <el-dropdown-item v-else :divided="isLayaway" @click="registerColumnsRef.openPopup()">
+                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
                   </el-dropdown-item>
 
                   <el-dropdown-item divided @click="exportTableRef.outputExcelFile()">
@@ -222,6 +233,7 @@ const sortColRef = ref(null)
 const recievingRowRef = ref(null)
 const exportTableRef = ref(null)
 const dropTableRef = ref(null)
+const registerColumnsRef = ref(null)
 
 //Filters inventory depending on search query
 const filteredInventory = computed(() => {

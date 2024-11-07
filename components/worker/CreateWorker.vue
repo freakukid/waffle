@@ -38,10 +38,10 @@
     <!-- Popup -->
     
     <!-- Add Btn -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
       <el-button disabled type="success">Create Worker</el-button>
     </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Create Worker</el-button>
+    <el-button v-else @click="openPopup()" type="success">Create Worker</el-button> -->
     <!-- Add Btn -->
   </div>
 </template>
@@ -120,35 +120,8 @@ async function createUser() {
   // setupTreeData()
 }
 
-
-async function addColumn() {
-  const columnName = form.name.trim()
-
-  //Check if we at least have a string
-  if(!columnName) {
-    ElNotification({ title: 'Warning', message: 'No column name was provided.', type: 'warn'})
-    return
-  }
-
-  //Check if this column already exist
-  if (props.inventory.columns.includes(columnName)) {
-    ElNotification({ title: 'Warning', message: `Column '${columnName}' already exist.`, type: 'warn'})
-    return
-  }
-
-  //Make inventory request
-  loading.addColumn = true
-  let inventory = await handleInventoryRequest({
-    path: 'add-column',
-    data: { store_id: props.storeId, column_name: columnName },
-  })
-
-  //Emit to parent component
-  if(inventory)
-    emits('setInventory', inventory)
-
-  //Loading complete, Close popup
-  loading.addColumn = false
-  popup.value = false
-}
+// Expose the openPopup method to parent
+defineExpose({
+  openPopup
+})
 </script>

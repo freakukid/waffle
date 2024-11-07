@@ -7,7 +7,6 @@ export default () => {
 
   //Gets workers permission
   async function getPermissions() {
-    alert()
     //Setup data
     const { getAuthUser } = useAuth()
     const user = getAuthUser()

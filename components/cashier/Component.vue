@@ -1,41 +1,65 @@
 <template>
   <div v-if="!loading.startedLoading">
     <div style="height: calc(100vh - 225px); width: calc(100vw - 140px); padding-top: 16px; margin: 0 32px 0 auto;">
-      
-      <!-- SELECT -->
-      <div class="flex gap-2">
-        <el-select v-if="isLayaway" class="max-w-52" :model-value="customer" value-key="name" filterable remote reserve-keyword clearable placeholder="Search Customer" :remote-method="filterCustomer" @change="$emit('update:customer', $event)">
-          <template #footer>
-            <el-button @click="createCustomerRef.openPopup(true)" type="success" size="small">Create Customer</el-button>
-          </template>
-          <el-option v-for="item in customers" :key="item" :label="item.name" :value="item">
-            <div class="relative">
-              <div class="absolute -top-1 -left-3">
-                <el-tag size="small" type="success">Customer</el-tag>
-              </div>
-              <div class="pt-4">{{item.name}}</div>
-            </div>
-            <div v-if="item.company" class="relative">
-              <div class="absolute -top-4 -left-3">
-                <el-tag size="small" type="success" class="position-absolute">Company</el-tag>
-              </div>
-              <div class="pt-1">{{item.company}}</div>
-            </div>
-          </el-option>
-        </el-select>
-
-        <el-select v-model="form.transaction.query" filterable remote placeholder="Search Product" :remote-method="filterInventory" @change="addItemToTransaction">
-          <el-option v-for="(item, key) in options" :key="key" :label="item[store.inventory?.name_column]" :value="key" />
-        </el-select>
-      </div>
-      <!-- SELECT -->
-
       <!-- TOOLBAR -->
-      <div id="toolbar">
-        <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
-        <CashierSettings :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
-        <CustomerModifyCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
+      <div class="flex items-center flex-nowrap gap-2 bg-[#090909] py-2 px-6 mb-2 rounded-t-[6px]">
+        <el-dropdown placement="bottom-start" trigger="click">
+          <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
+            Menu
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-if="isLayaway" @click="createCustomerRef.openPopup(true)">
+                <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> Create Customer
+              </el-dropdown-item>
+              
+              <div v-if="isBossAccount">
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                  </div>
+                </el-tooltip>
+
+                <el-dropdown-item v-else :divided="isLayaway" @click="registerColumnsRef.openPopup()">
+                  <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                </el-dropdown-item>
+              </div>
+              
+              <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
+                  <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> Cashier Settings
+                </div>
+              </el-tooltip>
+
+              <el-dropdown-item v-else @click="cashierSettingsRef.openPopup()">
+                <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> Cashier Settings
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
+        <!-- SELECT -->
+        <div class="w-full flex gap-2">
+          <el-select v-if="isLayaway" class="max-w-52" :model-value="customer" value-key="name" filterable remote reserve-keyword clearable placeholder="Search Customer" :remote-method="filterCustomer" @change="$emit('update:customer', $event)">
+            <el-option v-for="item in customers" :key="item" :label="item.name" :value="item">
+              <div class="relative">
+                <div class="absolute -top-1 -left-3">
+                  <el-tag size="small" type="success">Customer</el-tag>
+                </div>
+                <div class="pt-4">{{item.name}}</div>
+              </div>
+            </el-option>
+          </el-select>
+
+          <el-select v-model="form.transaction.query" filterable remote placeholder="Search Product" :remote-method="filterInventory" @change="addItemToTransaction">
+            <el-option v-for="(item, key) in options" :key="key" :label="item[store.inventory?.name_column]" :value="key" />
+          </el-select>
+        </div>
+        <!-- SELECT -->
       </div>
+      <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
+      <CashierSettings ref="cashierSettingsRef" :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
+      <CustomerModifyCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
       <CashierDisabled ref="disabledCashierRef" />
       <CashierPaymentType ref="paymentTypeRef" @createTransaction="$emit('createTransaction', store, form.transaction)" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loadingTransaction" :total="form.transaction.total.replace(/,/g, '')" />
       <!-- TOOLBAR -->
@@ -96,12 +120,13 @@
 
 <script setup>
 //Imports
-const pinia = useStore()
 const { $eventBus } = useNuxtApp()
 import { ElNotification } from 'element-plus'
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
+const pinia = useStore()
+const offlineStore = useOfflineStore()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -132,6 +157,7 @@ const registerColumnsRef = ref(null)
 const disabledCashierRef = ref(null)
 const paymentTypeRef = ref(null)
 const createCustomerRef = ref(null)
+const cashierSettingsRef = ref(null)
 
 //Filters inventory depending on search query
 const filterInventory = (query) => {
@@ -302,13 +328,6 @@ defineExpose({
   display: flex;
   align-items: center;
   gap: 32px;
-}
-
-#toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0;
 }
 
 .discount {
