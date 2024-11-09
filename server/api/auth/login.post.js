@@ -15,7 +15,13 @@ export default defineEventHandler(async (event) => {
           } 
         }
       },
-      worker: true
+      worker: true,
+      settings: {
+        select: {
+          ip: true,
+          language: true
+        }
+      }
     }
   })
 
@@ -34,7 +40,9 @@ export default defineEventHandler(async (event) => {
     id: user.id,
     name: user.name,
     username: user.username,
-    email: user.email
+    email: user.email,
+    ip: user.settings.ip,
+    language: user.settings.language
   }
 
   if(user.boss) {

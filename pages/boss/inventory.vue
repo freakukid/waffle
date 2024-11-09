@@ -74,7 +74,7 @@
                     </div>
                   </el-tooltip>
 
-                  <el-dropdown-item v-else :divided="isLayaway" @click="registerColumnsRef.openPopup()">
+                  <el-dropdown-item v-else @click="registerColumnsRef.openPopup()">
                     <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
                   </el-dropdown-item>
 
@@ -198,7 +198,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: 'unauth'
+  middleware: ['unauth', 'store-required']
 })
 
 //Imports
@@ -249,11 +249,6 @@ const filteredInventory = computed(() => {
 
 //Mount
 onBeforeMount(async () => {
-  if(!storeId.value) {
-    await navigateTo('/dashboard')
-    return
-  }
-
   //Only boss accounts have access to this page
   if(!isBossAccount.value) {
     await navigateTo('/worker/inventory')

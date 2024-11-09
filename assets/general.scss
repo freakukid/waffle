@@ -1,5 +1,10 @@
 // Font that we specify in nuxt.config.ts
 $family: "Poppins", sans-serif;
+$transition: all 200ms ease-in-out;
+$bg: #1c1c1c;
+$surface: #000000;
+$color: #ffffff;
+$success: #67c23a;
 
 html { 
   overflow-y: auto;
@@ -9,8 +14,21 @@ body {
   margin: 0;
 }
 
-$transition: all 200ms ease-in-out;
-$bg: #1c1c1c;
-$surface: #000000;
-$color: #ffffff;
-$success: #67c23a;
+body {
+  .el-dialog {
+    --el-dialog-margin-top: 5vh;
+    border-radius: 10px;
+    max-width: calc(100% - 64px);
+  }
+  .el-form-item__label {
+    color: #ffffff;
+  }
+  .el-input__wrapper, .el-select__wrapper {
+    height: 42px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  .el-input-number .el-input__wrapper {
+    border-radius: 4px;
+  }
+}

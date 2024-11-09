@@ -116,7 +116,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: 'unauth'
+  middleware: ['unauth', 'store-required']
 })
 
 //Imports

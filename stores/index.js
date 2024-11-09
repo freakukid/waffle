@@ -16,9 +16,7 @@ export const useStore = defineStore('store', {
         const { getAuthUser, logout } = useAuth()
         const user = getAuthUser()
         //If we are not a boss then get store id from auth data
-        if(user && user.is_boss) {
-          navigateTo('/dashboard')
-        } else if(user) {
+        if(user && !user.is_boss) {
           const storeId = user.worker.store_id
           if(!storeId)
             logout()

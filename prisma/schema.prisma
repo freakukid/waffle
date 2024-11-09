@@ -43,6 +43,7 @@ model Settings {
   user_id         Int         @unique
   user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
   ip              String      @default("")
+  language        String      @default("en")
 }
 
 // A Store has one Boss (one to one)
