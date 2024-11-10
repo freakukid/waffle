@@ -115,10 +115,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  middleware: ['unauth', 'store-required']
-})
-
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
@@ -161,11 +157,6 @@ const filteredInventory = computed(() => {
 onBeforeMount(async () => {
   if(!storeId.value) {
     await navigateTo('/dashboard')
-    return
-  }
-
-  if(isBossAccount.value) {
-    await navigateTo('/boss/inventory')
     return
   }
   

@@ -1,11 +1,11 @@
 <template>
   <div>
     <div id="wrapper">
-      <NuxtLink to="/worker/inventory">
+      <NuxtLink to="/inventory">
         <el-button class="btn" type="primary">
           <div class="btn-body">
             <Icon name="mingcute:inventory-line" />
-            <b>Go to Inventory</b>
+            <b>{{ $t(`text.go to inventory`) }}</b>
           </div>
         </el-button>
       </NuxtLink>

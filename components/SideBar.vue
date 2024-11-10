@@ -33,7 +33,7 @@
         </el-menu-item>
       </NuxtLink>
       <div v-if="storeId">
-        <NuxtLink :to="isBossAccount ? '/boss/inventory' : '/worker/inventory'">
+        <NuxtLink to="/inventory">
           <el-menu-item class="sidebar-item" index="2" :class="{active: route.name === 'boss-inventory' || route.name === 'worker-inventory'}">
             <Icon name="gravity-ui:boxes-3" />
             <template #title>Inventory</template>

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1>Dashboard</h1>
-
     <DashboardBoss v-if="user.is_boss" :user="user" />
     <DashboardWorker v-else :user="user" />
   </div>
@@ -9,7 +7,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: 'unauth'
+  middleware: ['unauth', 'language']
 })
 
 const { getAuthUser } = useAuth()

@@ -1,0 +1,20 @@
+{
+  "label": {
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "cancel": "Cancelar",
+    "name": "Nombre",
+    "email": "Email",
+    "website": "Sitio Web",
+    "phone number": "Número de Teléfono",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "zip code": "Código Postal",
+    "state": "Estado",
+    "country": "País"
+  },
+  "tippy": {
+    "feature only available online": "Característica solo disponible en línea"
+  }
+}

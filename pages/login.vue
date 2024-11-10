@@ -1,17 +1,17 @@
 <template>
   <div id="login-page">
     <el-form id="form" :model="form" label-width="auto" label-position="top" @submit.prevent>
-      <el-form-item label="Username" prop="username"  :rules="[{ required: true, message: 'Username is required' }]">
+      <el-form-item :label="$t('label.username')" prop="username"  :rules="[{ required: true, message: $t('error.username is required') }]">
         <el-input v-model="form.username" type="text" autocomplete="off" autofocus />
       </el-form-item>
-      <el-form-item label="Password" prop="password" :rules="[{ required: true, message: 'Password is required' }]">
+      <el-form-item :label="$t('label.password')" prop="password" :rules="[{ required: true, message: $t('error.password is required') }]">
         <el-input v-model="form.password" type="password" autocomplete="off" autofocus />
       </el-form-item>
 
-      <el-button id="login" type="primary" native-type="submit" @click="login" :loading="loading">Login</el-button>
+      <el-button id="login" type="primary" native-type="submit" @click="login" :loading="loading">{{ $t('btn.login') }}</el-button>
 
       <div class="msg">
-        Don't have an account?&nbsp;<el-link :underline="false" href="/register" type="primary">Register</el-link>
+        {{ $t("label.don't have an account?") }}&nbsp;<el-link :underline="false" href="/register" type="primary">{{ $t('label.register') }}</el-link>
       </div>
     </el-form>
   </div>
@@ -23,9 +23,10 @@ definePageMeta({
 })
 
 //Import
+import { ElNotification } from 'element-plus'
 const { fetch } = useUserSession()
 const { getAuthUser } = useAuth()
-import { ElNotification } from 'element-plus'
+const { $t, $switchLocale } = useNuxtApp()
 const pinia = useStore()
 
 //Form
@@ -45,11 +46,11 @@ const login = async () => {
   
   //Show error if a failed request
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    ElNotification({ title: $t('notification.error'), message: response.statusMessage, type: 'error'})
     loading.value = false
     return
   } else {
-    ElNotification({ title: 'Success', message: 'Login Successful', type: 'success'})
+    ElNotification({ title: $t('notification.success'), message: $t('notification.login successful'), type: 'success'})
   }
 
   await fetch()
@@ -58,6 +59,9 @@ const login = async () => {
   const user = getAuthUser()
   if(user && !user.is_boss)
     pinia.setStore(user.worker.store_id)
+
+  //Set language
+  $switchLocale(user.language ? user.language : 'en')
   
   //Go to dashboard page
   await navigateTo('/dashboard')

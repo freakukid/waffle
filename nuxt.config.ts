@@ -10,9 +10,6 @@ export default defineNuxtConfig({
   build: { 
     transpile: ["pinia-plugin-persistedstate"],
   },
-  // webpack: {
-  //   extractCSS: true, // Extract CSS into a single file
-  // },
   modules: [
     '@nuxtjs/tailwindcss',
     'nuxt-auth-utils',
@@ -20,22 +17,24 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    // 'nuxt-i18n'
+    'nuxt-i18n-micro',
   ],
+  i18n: {
+    locales: [
+      { code: 'en', iso: 'en-US', dir: 'ltr' },
+      { code: 'es', iso: 'es-ES', dir: 'ltr' },
+    ],
+    defaultLocale: 'en',
+    translationDir: 'locales',
+    autoDetectLanguage: true,
+    meta: true,
+  },
   runtimeConfig: {    
     // Cloudinary
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
     authOrigin: 'https://legitski.com',
-  },
-  auth: {
-    provider: {
-      type: 'authjs',
-    },
-    globalAppMiddleware: {
-      isEnabled: true
-    }
   },
   elementPlus: {
     importStyle: 'scss',
@@ -44,16 +43,4 @@ export default defineNuxtConfig({
   plugins: [
     { src: '~/plugins/register-service-worker.client.js', mode: 'client' }
   ],
-  // i18n: {
-  //   // Options
-  //   locales: [
-  //     { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' },
-  //     { code: 'es', name: 'Spanish', iso: 'es-ES', file: 'es.json' }
-  //   ],
-  //   defaultLocale: 'en',
-  //   langDir: 'locales/',
-  //   vueI18n: {
-  //     fallbackLocale: 'en',
-  //   }
-  // }
 })

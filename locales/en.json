@@ -1,0 +1,20 @@
+{
+  "label": {
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "name": "Name",
+    "email": "Email",
+    "website": "Website",
+    "phone number": "Phone Number",
+    "address": "Address",
+    "city": "City",
+    "zip code": "Zip Code",
+    "state": "State",
+    "country": "Country"
+  },
+  "tippy": {
+    "feature only available online": "Feature only available online."
+  }
+}

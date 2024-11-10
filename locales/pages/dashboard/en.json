@@ -1,0 +1,18 @@
+{
+  "label": {
+    "number of workers": "Number of workers",
+    "actions": "Actions"
+  },
+  "title": {
+    "create store": "Create Store",
+    "edit store": "Edit Store",
+    "delete store": "Delete Store",
+    "enter store": "Enter Store",
+    "exit store": "Exit Store"
+  },
+  "text": {
+    "are you sure you want to delete": "Are you sure you want to delete {name}?",
+    "this cannot be undone and all worker accounts will be deleted": "This cannot be undone and all worker accounts will be deleted.",
+    "go to inventory": "Go to Inventory"
+  }
+}

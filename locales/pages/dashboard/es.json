@@ -1,0 +1,18 @@
+{
+  "label": {
+    "number of workers": "Numero de trabajadores",
+    "actions": "Comportamiento"
+  },
+  "title": {
+    "create store": "Crear Tienda",
+    "edit store": "Editar Tienda",
+    "delete store": "Eliminar Tienda",
+    "enter store": "Entrar a la Tienda",
+    "exit store": "Salir de la Tienda"
+  },
+  "text": {
+    "are you sure you want to delete": "¿Estás seguro de que quieres eliminar {name}?",
+    "this cannot be undone and all worker accounts will be deleted": "Esto no se puede deshacer y se eliminarán todas las cuentas de los trabajadores.",
+    "go to inventory": "Ir al Inventario"
+  }
+}

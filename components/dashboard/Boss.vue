@@ -1,28 +1,25 @@
 <template>
   <div>
     <!-- Delete -->
-    <el-dialog v-model="popup.deleteStore" title="Delete Store" width="300">
+    <el-dialog v-model="popup.deleteStore" :title="$t(`title.delete store`)" width="300">
       <p style="text-align: center;">
-        Are you sure you want to delete <br /><br /> <b style="font-size: 20px">{{form.deleteName}}</b> <br/><br/>
-        This cannot be undone and all worker accounts will be <b style="color: red;">deleted</b>.
+        {{ $t('text.are you sure you want to delete', { name: form.deleteName }) }}<br/><br/>
       </p>
       <p>
-        
+        {{ $t("text.this cannot be undone and all worker accounts will be deleted") }}
       </p>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup.deleteStore = false">Cancel</el-button>
+          <el-button @click="popup.deleteStore = false">{{ $t("label.cancel") }}</el-button>
           
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button type="danger" disabled>Delete</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button type="danger" disabled>{{ $t("label.delete") }}</el-button>
           </el-tooltip>
-          <el-button v-else type="danger" @click="deleteStore()" :loading="loading.deleteStore">Delete</el-button>
+          <el-button v-else type="danger" @click="deleteStore()" :loading="loading.deleteStore">{{ $t("label.delete") }}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Delete -->
-
-    <h1>Stores</h1>
 
     <div v-if="stores.length" id="store-wrapper">
       <!-- STORES -->
@@ -33,40 +30,40 @@
           </div>
         </template>
         <div class="content">
-          <p>Number of Workers: {{store.workers.length}}</p>
+          <p>{{ $t("label.number of workers") }}: {{store.workers.length}}</p>
           <div>
-            <label>Actions:</label>
+            <label>{{ $t("label.actions") }}:</label>
             <div>
-              <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-                <el-button type="warning" plain disabled>Edit</el-button>
+              <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+                <el-button type="warning" plain disabled>{{ $t("label.edit") }}</el-button>
               </el-tooltip>
-              <el-button v-else type="warning" plain @click="openEditStore(store)">Edit</el-button>
+              <el-button v-else type="warning" plain @click="openEditStore(store)">{{$t("label.edit")}}</el-button>
 
-              <el-tooltip v-if="!offlineStore.getOnlineStatus() && stores.length > 1" content="Feature only available online." placement="top">
-                <el-button type="danger" plain disabled>Delete</el-button>
+              <el-tooltip v-if="!offlineStore.getOnlineStatus() && stores.length > 1" :content="$t(`tippy.feature only available online`)" placement="top">
+                <el-button type="danger" plain disabled>{{ $t("label.delete") }}</el-button>
               </el-tooltip>
               <el-button v-else-if="stores.length > 1" type="danger" plain @click="popup.deleteStore = true, form.deleteName = store.name, form.deleteId = store.id">
-                Delete
+                {{ $t("label.delete" )}}
               </el-button>
             </div>
           </div>
-          <nuxt-link v-if="store.id != storeId" to="/boss/inventory" @click="setStore(store.id, store.name)">
+          <nuxt-link v-if="store.id != storeId" to="/inventory" @click="setStore(store.id, store.name)">
             <el-button class="portal-btn" type="success">
-              Enter Store
+              {{ $t("title.enter store" )}}
             </el-button>
           </nuxt-link>
 
           <el-button v-else class="portal-btn" type="danger" @click="exitStore()">
-            Exit Store
+            {{ $t("title.exit store" )}}
           </el-button>
         </div>
       </el-card>
       <!-- STORES -->
 
-      <StoreModifyStore type="Create" @addStore="addStore" />
+      <StoreModifyStore type="create" @addStore="addStore" />
       <StoreModifyStore
         ref="editStoreRef"
-        type="Edit"
+        type="edit"
         :id="form.store?.id"
         :name="form.store?.name"
         :email="form.store?.email"

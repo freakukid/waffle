@@ -1,72 +1,72 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" :title="`${type} Store`" @opened="focusInput()">
+    <el-dialog v-model="popup" :title="$t(`title.${type} store`)" @opened="focusInput()">
       
       <el-form id="form" ref="formRef" :model="form" :rules="rules" label-width="auto" label-position="top" @submit.prevent>
-        <el-form-item label="Name" prop="name">
+        <el-form-item :label="$t(`label.name`)" prop="name">
           <el-input v-model="form.name" ref="nameRef" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Email" prop="email">
+        <el-form-item :label="$t(`label.email`)" prop="email">
           <el-input v-model="form.email" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Website" prop="website">
+        <el-form-item :label="$t(`label.website`)" prop="website">
           <el-input v-model="form.website" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Phone Number" prop="phone">
+        <el-form-item :label="$t(`label.phone number`)" prop="phone">
           <el-input v-model="form.phone" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Address" prop="address">
+        <el-form-item :label="$t(`label.address`)" prop="address">
           <el-input v-model="form.address" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="City" prop="city">
+        <el-form-item :label="$t(`label.city`)" prop="city">
           <el-input v-model="form.city" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Zip Code" prop="zipcode">
+        <el-form-item :label="$t(`label.zip code`)" prop="zipcode">
           <el-input v-model="form.zipcode" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="State" prop="state">
+        <el-form-item :label="$t(`label.state`)" prop="state">
           <el-input v-model="form.state" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Country" prop="country">
+        <el-form-item :label="$t(`label.country`)" prop="country">
           <el-input v-model="form.country" type="text" autocomplete="off" />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled>{{type}} Store</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled>{{$t(`label.${type}`)}}</el-button>
           </el-tooltip>
-          <el-button v-else :loading="loading" native-type="submit" @click="validateForm">{{type}} Store</el-button>
+          <el-button v-else :loading="loading" native-type="submit" @click="validateForm">{{$t(`label.${type}`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
 
     <!-- Button -->
-    <el-tooltip v-if="!offlineStore.getOnlineStatus() && type === 'Create'" content="Feature only available online." placement="top">
+    <el-tooltip v-if="!offlineStore.getOnlineStatus() && type === 'create'" :content="$t(`tippy.feature only available online`)" placement="top">
       <el-button id="create-btn" class="offline" type="primary" disabled>
         <div class="btn-body">
           <Icon name="mdi:store-plus" />
-          <b>Create Store</b>
+          <b>{{$t(`title.create store`)}}</b>
         </div>
       </el-button>
     </el-tooltip>
 
-    <el-button v-else-if="type === 'Create'" id="create-btn" type="primary" @click="openPopup(true)">
+    <el-button v-else-if="type === 'create'" id="create-btn" type="primary" @click="openPopup(true)">
       <div class="btn-body">
         <Icon name="mdi:store-plus" />
-        <b>Create Store</b>
+        <b>{{$t(`title.create store`)}}</b>
       </div>
     </el-button>
     <!-- Button -->
@@ -86,7 +86,7 @@ const loading = ref(false)
 const formRef = ref()
 //Component
 const props = defineProps({
-  type: { default: 'Create' },
+  type: { default: 'create' },
   id: { default: 0 },
   name: { default: '' },
   email: { default: '' },
@@ -130,7 +130,7 @@ const focusInput = () => {
 function openPopup(active) {
   popup.value = active
 
-  if(active && props.type === 'Edit') {
+  if(active && props.type === 'edit') {
     const { name, email, phone, website, address, city, zipcode, state, country } = props
 
     form.name = name
@@ -147,9 +147,9 @@ function openPopup(active) {
 
 function validateForm() {
   formRef.value.validate((valid) => {
-    if (props.type === 'Create' && valid)
+    if (props.type === 'create' && valid)
       createStore()
-    else if (props.type === 'Edit' && valid)
+    else if (props.type === 'edit' && valid)
       editStore()
   })
 }

@@ -49,7 +49,7 @@
           <div class="px-6 py-4">
             <div>
               <label class="block text-sm opacity-80 mb-2">Language</label>
-              <el-select v-model="form.language" placeholder="Language">
+              <el-select v-model="form.language" placeholder="Language" @change="saveUserSettings">
                 <el-option label="English" value="en" />
                 <el-option label="Spanish" value="es" />
               </el-select>
@@ -67,6 +67,8 @@ definePageMeta({
   middleware: 'unauth'
 })
 
+const { fetch } = useUserSession()
+const { $switchLocale } = useNuxtApp()
 const { getAuthUser } = useAuth()
 const { validateUsername, validateOptionalEmail } = useValidator()
 
@@ -77,13 +79,29 @@ const form = reactive({
   name: user.value.name,
   password: '',
   email: user.value.email,
-  language: user.value.language
+  language: user.value.language,
+  ip: user.value.ip
 })
 
 //Mount
 onBeforeMount(async () => {
   // console.log(JSON.stringify(user.value))
 })
+
+async function saveUserSettings() {
+  //Make request
+  const response = await useFetchApi(`/api/protected/settings/edit-user-settings`, {
+    method: "POST",
+    body: { language: form.language, ip: form.ip }
+  })
+  //Fetch updated auth data
+  await fetch()
+
+  //Switch language
+  $switchLocale(form.language)
+
+  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+}
 </script>
 
 <style lang="scss" scoped>

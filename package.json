@@ -33,6 +33,6 @@
     "node-thermal-printer": "^4.4.3",
     "nodemailer": "^6.9.15",
     "nuxt-auth-utils": "^0.5.2",
-    "nuxt-i18n": "^6.28.1"
+    "nuxt-i18n-micro": "^1.32.1"
   }
 }

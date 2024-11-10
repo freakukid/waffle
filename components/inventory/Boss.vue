@@ -197,10 +197,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  middleware: ['unauth', 'store-required']
-})
-
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { $eventBus } = useNuxtApp()
@@ -248,13 +244,7 @@ const filteredInventory = computed(() => {
 })
 
 //Mount
-onBeforeMount(async () => {
-  //Only boss accounts have access to this page
-  if(!isBossAccount.value) {
-    await navigateTo('/worker/inventory')
-    return
-  }
-    
+onBeforeMount(async () => {    
   await getStore()
   loading.startedLoading = false
 })

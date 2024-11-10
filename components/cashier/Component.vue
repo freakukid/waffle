@@ -202,7 +202,7 @@ onBeforeMount(async () => {
   await getStore()
 
   if(store.value.inventory?.columns.length < 2) {
-    await navigateTo('/boss/inventory')
+    await navigateTo('/inventory')
     return
   }
   loading.startedLoading = false

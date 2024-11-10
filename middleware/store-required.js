@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(() => {
   const pinia = useStore()
   const storeId = pinia.getStore()
 

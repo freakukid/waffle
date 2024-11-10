@@ -1,0 +1,20 @@
+{
+  "label": {
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "don't have an account?": "¿No tienes una cuenta?",
+    "register": "Registro"
+  },
+  "btn": {
+    "login": "Acceso"
+  },
+  "error": {
+    "username is required": "El nombre de usuario es obligatorio",
+    "password is required": "Se requiere contraseña"
+  },
+  "notification": {
+    "success": "Éxito",
+    "error": "Error",
+    "login successful": "Inicio de sesión exitoso"
+  }
+}
