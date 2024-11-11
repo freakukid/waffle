@@ -1,18 +1,18 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Item Recieved">
+    <el-dialog v-model="popup" title="Item Received">
       <label v-if="form.item[inventory.name_column]" class="block text-center text-base"><b>{{form.item[inventory.name_column]}}</b></label>
-      <el-form :model="form" @submit.prevent="recieveItem()" style="margin-top: 16px;">
+      <el-form :model="form" @submit.prevent="receiveItem()" style="margin-top: 16px;">
 
-        <div class="text-center mb-2">Qty Recieved:</div>
+        <div class="text-center mb-2">Qty Received:</div>
         <div class="flex items-center justify-center">
           <el-form-item prop="tax">
             <el-input-number v-model="form.qty" />
           </el-form-item>
         </div>
 
-        <p class="text-center mb-2">You can either submit cost per item or total cost of all items recieved.</p>
+        <p class="text-center mb-2">You can either submit cost per item or total cost of all items received.</p>
 
         <div class="flex items-center justify-center gap-4">
           <div>
@@ -36,7 +36,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="success" @click="recieveItem()" :loading="loading.recieve">Recieve Items</el-button>
+          <el-button type="success" @click="receiveItem()" :loading="loading.receive">Receive</el-button>
         </div>
       </template>
     </el-dialog>
@@ -46,13 +46,13 @@
 
 <script setup>
 //Import
-import { ElNotification } from 'element-plus'
+const { sendFrontendNotification } = useHelpers()
 const { handleInventoryRequest } = useHandleRequests()
 const { calcTotalCost, calcAvgCostPerItem } = useCalculations()
 const offlineStore = useOfflineStore()
 
 //Data
-const loading = reactive({ recieve: false })
+const loading = reactive({ receive: false })
 const popup = ref(false)
 const search = ref('')
 const options = ref([])
@@ -87,7 +87,7 @@ function openPopup(item) {
 
 
 //Request
-async function recieveItem() {
+async function receiveItem() {
   let inventory = null
   const { name_column, quantity_column, cost_column } = props.inventory
   let { key, qty, costPerItem, totalCost } = form
@@ -96,22 +96,22 @@ async function recieveItem() {
 
   //Checks
   if(!key) {
-    ElNotification({ title: 'Warning', message: 'No item was selected.', type: 'warn'})
+    sendFrontendNotification('No changes were provided', 'warn')
     return
   }
 
   if(!qty) {
-    ElNotification({ title: 'Warning', message: 'Must have a quantity greater than 0.', type: 'warn'})
+    sendFrontendNotification('Please enter a quantity greater than 0', 'warn')
     return
   }
 
   if(!costPerItem && !totalCost) {
-    ElNotification({ title: 'Warning', message: 'Cost per item or Total cost is required.', type: 'warn'})
+    sendFrontendNotification('Please specify either the cost per item or the total cost', 'warn')
     return
   }
 
   if(prevQty < 0) {
-    ElNotification({ title: 'Warning', message: 'The Quantity of this item is less than 0. Please edit this number into a non negative number on the inventory page.', type: 'warn'})
+    sendFrontendNotification('The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page', 'warn')
     return
   }
 
@@ -120,7 +120,7 @@ async function recieveItem() {
     totalCost = calcTotalCost(qty, costPerItem)
 
   //Make inventory request
-  loading.recieve = true
+  loading.receive = true
   const postData = { store_id: props.storeId, key: key, qty: qty, total_cost: totalCost, prev_cost: prevCost, quantity_column: quantity_column, cost_column: cost_column, timestamp: new Date() }
   const isUserOnline = await offlineStore.tryPingingServer()
 
@@ -143,7 +143,7 @@ async function recieveItem() {
     }
 
     offlineStore.addPostRequest('inventory', 'receiving', postData, { log: fakeLogData, qty: qty, cost: newCost })
-    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    sendFrontendNotification(`Your changes have been added to the offline queue and will take effect once you're back online`, 'offline_success')
   }
 
   //Emit to parent component
@@ -151,7 +151,7 @@ async function recieveItem() {
     emits('setInventory', inventory)
 
   //Loading complete, Close popup
-  loading.recieve = false
+  loading.receive = false
   popup.value = false
 }
 

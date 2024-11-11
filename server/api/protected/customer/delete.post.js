@@ -10,17 +10,17 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!id || !store_id || !name)
-    return { statusCode: 400, statusMessage: 'Required parameters are missing.' }
+    return { statusCode: 400, statusMessage: 'Required parameters are missing' }
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)
-    return { statusCode: 400, statusMessage: `You do not have access rights to delete a customer for this store.` }
+    return { statusCode: 400, statusMessage: `You do not have rights to commit this action.` }
 
   //Check if this worker has permission to commit this action
   if(isValidWorker) {
     const permissions = await getWorkerPermissions(authUser.worker.id)
     if(!permissions.make_transactions)
-      return { statusCode: 400, statusMessage: `You do not have the rights to commit this action.` }
+      return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
   }
 
   //Update layaway that are connected to customer
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we layaway transactions
   if (layaway.length)
-    return { statusCode: 400, statusMessage: 'Customer cannot be deleted because they are associated with layaway transactions.' }
+    return { statusCode: 400, statusMessage: 'Unable to delete customer: associated layaway transactions exist' }
 
   //Delete Customer
   const customer = await prisma.customer.delete({

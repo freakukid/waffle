@@ -12,7 +12,7 @@ definePageMeta({
 //Import
 const pinia = useStore()
 const offlineStore = useOfflineStore()
-import { ElNotification } from 'element-plus'
+const { sendNotification, sendFrontendNotification } = useHelpers()
 const { calcChange } = useCalculations()
 const { formatDate } = useFormatter()
 const { handleTransactionRequest } = useHandleRequests()
@@ -66,7 +66,7 @@ async function createTransaction(store, form) {
       total: total,
     }
     offlineStore.addPostRequest('transaction', 'create', postData, { transaction: fakeTransaction })
-    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    sendFrontendNotification(`Your changes have been added to the offline queue and will take effect once you're back online`, 'offline_success')
   }
 
   //Print Reciept
@@ -108,7 +108,7 @@ async function printReceipt(storeId, items, tax, subtotal, tax_total, savings, t
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 }

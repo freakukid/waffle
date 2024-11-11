@@ -191,7 +191,7 @@ definePageMeta({
 //Imports
 const pinia = useStore()
 const { $eventBus } = useNuxtApp()
-import { ElNotification } from 'element-plus'
+const { sendNotification } = useHelpers()
 const { formatDate, formatPhoneNumber } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
@@ -358,12 +358,12 @@ async function confirmPayment() {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   //Display success
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //Set new layaway
   const calcLayaway = doCalc([response.layaway])[0]
@@ -393,12 +393,12 @@ async function setStatus(item, status) {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   //Display success
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //Set new layaway
   const calcLayaway = doCalc([response.layaway])[0]
@@ -449,12 +449,12 @@ async function printReceipt(transaction) {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   //Display success
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 }
 
 //Adds customers to the list

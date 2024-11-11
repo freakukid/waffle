@@ -1,3 +1,5 @@
+import { ElNotification } from 'element-plus'
+
 export default () => {
   const { $t, $td } = useNuxtApp()
   
@@ -8,6 +10,24 @@ export default () => {
     textArea.select()
     document.execCommand('copy')
     document.body.removeChild(textArea)
+  }
+
+  function sendNotification(message, type) {
+    if(type === 'error')
+      ElNotification({ title: $t('server.Error'), message: $t(`server.invalid.${message}`), type: type})
+    else if(type === 'success')
+      ElNotification({ title: $t('server.Success'), message: $t(`server.valid.${message}`), type: type})
+  }
+
+  function sendFrontendNotification(message, type, param = {}) {
+    if(type === 'error')
+      ElNotification({ title: $t('server.Error'), message: $t(`frontend.invalid.${message}`, param), type: type})
+    else if(type === 'success')
+      ElNotification({ title: $t('server.Success'), message: $t(`frontend.valid.${message}`, param), type: type})
+    else if(type === 'offline_success')
+      ElNotification({ title: $t('server.Offline Success'), message: $t(`frontend.valid.${message}`, param), type: 'success'})
+    else if(type === 'warn')
+      ElNotification({ title: $t('server.Warning'), message: $t(`frontend.warning.${message}`, param), type: type})
   }
 
   function getLogDescription(logs) {
@@ -74,6 +94,8 @@ export default () => {
 
   return {
     copyToClipboard,
-    getLogDescription
+    getLogDescription,
+    sendNotification,
+    sendFrontendNotification
   }
 }

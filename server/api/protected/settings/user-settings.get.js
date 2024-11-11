@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if this user is login
   if(!user_id) {
-    throw new Error(`You must be login fetch user settings.`)
+    throw new Error(`You do not have the rights to view this data`)
   }
 
   const settings = await prisma.settings.findUnique({

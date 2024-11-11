@@ -200,7 +200,6 @@
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
 const { $eventBus } = useNuxtApp()
-import { ElNotification } from 'element-plus'
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()

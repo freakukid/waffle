@@ -19,7 +19,7 @@
 
 <script setup>
 //Import
-import { ElNotification } from 'element-plus'
+const { sendNotification } = useHelpers()
 
 //Data
 const loading = ref(false)
@@ -53,13 +53,13 @@ async function deleteCustomer() {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     popup.value = false
     return
   }
 
   //show success message
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //emit value to parent component, close popup
   emits('deleteCustomer', id)

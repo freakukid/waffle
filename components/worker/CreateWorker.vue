@@ -46,7 +46,7 @@
 <script setup>
 //Imports
 const { validateUsername, validateOptionalEmail } = useValidator()
-import { ElNotification } from 'element-plus'
+const { sendNotification } = useHelpers()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 
@@ -100,12 +100,12 @@ async function createUser() {
 
   //Error case
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   // Success case
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //Update local data
   if('user' in response) {

@@ -26,13 +26,13 @@ export default defineEventHandler(async (event) => {
   })
 
   if(!user) {
-    return { statusCode: 403, statusMessage: `User not found.` }
+    return { statusCode: 403, statusMessage: `User not found` }
   }
 
   const isPasswordValid = await compare(password, user.password)
 
   if (!isPasswordValid) {
-    return { statusCode: 403, statusMessage: `Invalid password.` }
+    return { statusCode: 403, statusMessage: `Invalid password` }
   }
 
   //Setup session data
@@ -57,5 +57,5 @@ export default defineEventHandler(async (event) => {
 
   setResponseStatus(event, 201)
   
-  return { message: 'Login successful' }
+  return { message: 'Login Successful!' }
 })

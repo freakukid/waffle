@@ -110,8 +110,9 @@ definePageMeta({
 })
 
 //Imports
-import { ElNotification } from 'element-plus'
+const { sendNotification, sendFrontendNotification } = useHelpers()
 const { validateUsername, validateOptionalEmail } = useValidator()
+const { sendNotification } = useHelpers()
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()
@@ -201,12 +202,12 @@ async function editUser() {
 
   //Error case
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   // Success case
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //Update local data
   workers.value[form.edit.index].user = response.user
@@ -228,12 +229,12 @@ async function deleteUser() {
 
   //Error case
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   // Success case
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //Update local data
   workers.value.splice(form.delete.index, 1)
@@ -244,7 +245,7 @@ async function deleteUser() {
 //Edit permissions
 async function handleCheckChange(data, checked) {
   if(!offlineStore.getOnlineStatus()) {
-    ElNotification({ title: 'Error', message: 'Feature only available online.', type: 'error'})
+    sendFrontendNotification('Feature only available online', 'error')
     return
   }
 
@@ -259,19 +260,18 @@ async function handleCheckChange(data, checked) {
       body: {
         store_id: storeId.value,
         worker_id: currentWorker.id,
-        name: currentWorker.user.name,
         permissions: currentWorker.permission
       }
     })
 
     //Error case
     if (response.statusCode) {
-      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+      sendNotification(response.statusMessage, 'error')
       return
     }
 
     // Success case
-    ElNotification({ title: 'Success', message: response.message, type: 'success'})
+    sendNotification(response.message, 'success')
   }
 }
 

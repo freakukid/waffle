@@ -1,4 +1,4 @@
-import { ElNotification } from 'element-plus'
+const { sendNotification, sendFrontendNotification } = useHelpers()
 
 export default () => {
   async function handleGetRequest(url) {
@@ -26,24 +26,27 @@ export default () => {
 
       //Error case
       if (response.statusCode) {
-        ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+        sendNotification(response.statusMessage, 'error')
         return
       }
 
       // Success case
-      ElNotification({ title: 'Success', message: response.message || 'Operation successful!', type: 'success'})
+      if(response.message)
+        sendNotification(response.message, 'success')
+      else
+        sendFrontendNotification(`Operation successful!`, 'success')
       
       // Assuming you want to update the inventory in the store
       if (response.inventory) {
         return response.inventory
       } else {
-        ElNotification({ title: 'Error', message: 'Inventory data is not present.', type: 'error'})
+        sendFrontendNotification(`No inventory data is available`, 'error')
         return false
       }
         
     } catch (error) {
       // Handle any network errors or unexpected issues
-      ElNotification({ title: 'Error', message: 'An unexpected error occurred. Please try again.', type: 'error'})
+      sendFrontendNotification(`An unexpected error occurred, please try again`, 'error')
       console.error('API error:', error) // Log error for debugging
       return false
     }
@@ -54,12 +57,12 @@ export default () => {
 
     //Display error
     if (response.statusCode) {
-      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+      sendNotification(response.statusMessage, 'error')
       return false
     }
 
     //show success message
-    ElNotification({ title: 'Success', message: response.message, type: 'success'})
+    sendNotification(response.message, 'success')
 
     return response
   }
@@ -69,12 +72,12 @@ export default () => {
     
     //Display error
     if (response.statusCode) {
-      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+      sendNotification(response.statusMessage, 'error')
       return false
     }
   
     //show success message
-    ElNotification({ title: 'Success', message: response.message, type: 'success'})
+    sendNotification(response.message, 'success')
 
     return response
   }
@@ -84,12 +87,12 @@ export default () => {
 
     //Display error
     if (response.statusCode) {
-      ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+      sendNotification(response.statusMessage, 'error')
       return false
     }
 
     //Show success message
-    ElNotification({ title: 'Success', message: response.message, type: 'success'})
+    sendNotification(response.message, 'success')
 
     return response
   }

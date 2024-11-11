@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if the bare minimum was filled out
   if (!username || !password || !name || !storeName) {
-    throw createError({statusCode: 400, statusMessage: "All fields are required."})
+    throw createError({statusCode: 400, statusMessage: `Required parameters are missing`})
   }
 
   //Check if we at least have a store code or store name
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if(userExists) {
-    throw createError({statusCode: 403, statusMessage: "Account username already exists"})
+    throw createError({statusCode: 403, statusMessage: "Username already exist"})
   }
 
   const isBoss = !storeCode && storeName
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
   if(!isBoss) {
     store = await prisma.store.findFirst({ where: { code: storeCode } })
     if (!store) {
-      throw createError({statusCode: 400, statusMessage: "Store code not found"})
+      throw createError({statusCode: 400, statusMessage: "Store not found"})
     }
   }
 
@@ -115,10 +115,10 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error) {
     console.error(error)
-    throw createError({statusCode: 500, statusMessage: "Error creating user"})
+    throw createError({statusCode: 500, statusMessage: "Error updating user"})
   }
 
   setResponseStatus(event, 201)
   
-  return { message: "User created" }
+  return { message: "User Created!" }
 })

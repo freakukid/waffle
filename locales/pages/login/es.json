@@ -7,14 +7,5 @@
   },
   "btn": {
     "login": "Acceso"
-  },
-  "error": {
-    "username is required": "El nombre de usuario es obligatorio",
-    "password is required": "Se requiere contraseña"
-  },
-  "notification": {
-    "success": "Éxito",
-    "error": "Error",
-    "login successful": "Inicio de sesión exitoso"
   }
 }

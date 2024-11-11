@@ -25,6 +25,6 @@ export default defineEventHandler(async (event) => {
   
   return {
     settings: settings,
-    message: "Settings successfully updated!"
+    message: "Settings Updated!"
   }
 })

@@ -35,5 +35,92 @@
     "E-mail must be valid": "El correo electrónico debe ser válido",
     "Password is required": "Se requiere contraseña",
     "Password must be at least 6 characters": "La contraseña debe tener al menos 6 caracteres"
+  },
+  "frontend": {
+    "valid": {
+      "You exited the store!": "¡Saliste de la tienda!",
+      "Increased the quantity": "Incrementó la cantidad de {name}",
+      "Item removed!": "Artículo eliminado!",
+      "Your changes have been added to the offline queue and will take effect once you're back online": "Sus cambios se han agregado a la cola sin conexión y entrarán en vigor una vez que vuelva a estar en línea",
+      "Enter store": "Entrar a la tienda: {name}",
+      "Operation successful!": "¡Operación exitosa!"
+    },
+    "invalid": {
+      "Both the Name and Price columns are required on the cashier page": "Tanto la columna Nombre como la columna Precio son obligatorias en la página del cajero",
+      "The tax percentage must be between 0% and 100%": "El porcentaje del impuesto debe estar entre el 0% y el 100%",
+      "No inventory data is available": "No hay datos de inventario disponibles",
+      "An unexpected error occurred, please try again": "Ocurrió un error inesperado, por favor intente nuevamente",
+      "Feature only available online": "Característica solo disponible en línea"
+    },
+    "warning": {
+      "No column name has been provided": "No se ha proporcionado ningún nombre de columna",
+      "The column already exist": "La columna '{name}' ya existe",
+      "No changes were provided": "No se proporcionaron cambios",
+      "All column names must be unique": "Todos los nombres de columnas deben ser únicos",
+      "No item have been selected": "No se ha seleccionado ningún elemento",
+      "Please enter a quantity greater than 0": "Por favor, introduzca una cantidad mayor a 0",
+      "Please specify either the cost per item or the total cost": "Por favor, especifique el coste por artículo o el coste total",
+      "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page": "La cantidad de este artículo es inferior a 0, revise este número a un valor no negativo en la página de inventario"
+    }
+  },
+  "server": {
+    "Success": "Éxito",
+    "Error": "Error",
+    "Offline Success": "Éxito sin Conexión",
+    "Warning": "Advertencia",
+    "valid": {
+      "Login Successful!": "¡Inicio de Sesión Exitoso!",
+      "User Created!": "¡Usuario Creado!",
+      "User Updated!": "¡Usuario Actualizado!",
+      "User Deleted!": "¡Usuario Eliminado!",
+      "Customer Created!": "¡Cliente Creado!",
+      "Customer Updated!": "¡Cliente Actualizado!",
+      "Customer Deleted!": "¡Cliente Eliminado!",
+      "Column Added!": "¡Columna Añadida!",
+      "Column Updated!": "¡Columna Actualizada!",
+      "Column Deleted!": "¡Columna Eliminada!",
+      "Columns Linked!": "¡Columnas Vinculadas!",
+      "Columns Sorted!": "¡Columnas Ordenadas!",
+      "Item Added!": "¡Artículo Añadido!",
+      "Item Updated!": "¡Artículo Actualizado!",
+      "Item Deleted!": "¡Artículo Eliminado!",
+      "Item Received!": "¡Artículo Recibido!",
+      "Inventory Created!": "¡Inventario Creado!",
+      "Inventory Deleted!": "¡Inventario Eliminado!",
+      "Layaway Created!": "¡Layaway Creado!",
+      "Layaway Transaction Status: paid!": "¡Estado de la Transacción de Pago a Plazos: Pagado!",
+      "Layaway Transaction Status: pending!": "¡Estado de la Transacción de Pago a Plazos: Pendiente!",
+      "Layaway Transaction Status: declined!": "¡Estado de la Transacción de Pago a Plazos: Rechazada!",
+      "Store Created!": "¡Tienda Creada!",
+      "Store Updated!": "¡Tienda Actualizada!",
+      "Store Deleted!": "¡Tienda Eliminada!",
+      "Transaction Created!": "¡Transacción Creada!",
+      "Settings Updated!": "¡Configuración Actualizada!",
+      "Permissions Updated!": "¡Permisos Actualizados!",
+      "Email Sent!": "¡Correo enviado!",
+      "Receipt Printed!": "¡Recibo Impreso!"
+    },
+    "invalid": {
+      "Required parameters are missing": "Faltan los parámetros obligatorios.",
+      "You do not have the rights to view this data": "No tienes derechos para ver estos datos.",
+      "You do not have the rights to commit this action": "No tienes derecho a cometer esta acción.",
+      "Unable to delete customer: associated layaway transactions exist": "No se puede eliminar el cliente: existen transacciones de apartado asociadas.",
+      "Invalid data": "Datos inválidos.",
+      "The status is already set to paid": "El estado ya está establecido como pagado.",
+      "The status is already set to pending": "El estado ya está establecido como pendiente.",
+      "The status is already set to declined": "El estado ya está configurado como rechazado.",
+      "Status is invalid. Valid statuses: paid, pending, or declined": "El estado no es válido. Estados válidos: pagado, pendiente o rechazado.",
+      "Store name must be at least 2 characters long": "El nombre de la tienda debe tener al menos 2 caracteres.",
+      "Receipt needs items": "El recibo necesita artículos.",
+      "No IP address has been set": "No se ha establecido ninguna dirección IP.",
+      "Username must be between 3 and 15 characters and contain only letters and numbers": "El nombre de usuario debe tener entre 3 y 15 caracteres y contener sólo letras y números.",
+      "Password must be at least 6 characters long": "La contraseña debe tener al menos 6 caracteres.",
+      "Username already exist": "El nombre de usuario ya existe.",
+      "Error updating user": "Error al actualizar el usuario.",
+      "Error creating user": "Error al crear el usuario.",
+      "Store not found": "Tienda no encontrada.",
+      "User not found": "Usuario no encontrado.",
+      "Invalid password": "Contraseña inválida."
+    }
   }
 }

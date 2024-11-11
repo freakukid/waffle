@@ -23,8 +23,8 @@
 </template>
 
 <script setup>
+const { sendFrontendNotification } = useHelpers()
 const { handleInventoryRequest } = useHandleRequests()
-import { ElNotification } from 'element-plus'
 const offlineStore = useOfflineStore()
 
 const loading = reactive({ addColumn: false })
@@ -62,13 +62,13 @@ async function addColumn() {
 
   //Check if we at least have a string
   if(!columnName) {
-    ElNotification({ title: 'Warning', message: 'No column name was provided.', type: 'warn'})
+    sendFrontendNotification('No column name has been provided', 'warn')
     return
   }
 
   //Check if this column already exist
   if (props.inventory.columns.includes(columnName)) {
-    ElNotification({ title: 'Warning', message: `Column '${columnName}' already exist.`, type: 'warn'})
+    sendFrontendNotification('The column already exist', 'warn', {name: columnName})
     return
   }
 

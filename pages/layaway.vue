@@ -13,7 +13,7 @@ definePageMeta({
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 const { $eventBus } = useNuxtApp()
-import { ElNotification } from 'element-plus'
+const { sendFrontendNotification } = useHelpers()
 const { formatDate } = useFormatter()
 const { handleGetRequest, handleLayawayRequest } = useHandleRequests()
 
@@ -117,7 +117,7 @@ async function createLayaway(store, form) {
       status: 'pending',
     }
     offlineStore.addPostRequest('layaway', 'create', postData, { layaway: fakeLayaway })
-    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    sendFrontendNotification(`Your changes have been added to the offline queue and will take effect once you're back online`, 'offline_success')
   }
 
   //Reset transaction, set inventory data, close popup

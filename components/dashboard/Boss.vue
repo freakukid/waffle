@@ -82,8 +82,7 @@
 
 <script setup>
 //Import
-import { ref } from '#imports'
-import { ElNotification } from 'element-plus'
+const { sendNotification, sendFrontendNotification } = useHelpers()
 const { fetch } = useUserSession()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
@@ -127,12 +126,13 @@ async function openEditStore(store) {
 
 function setStore(id, name) {
   pinia.setStore(id)
-  ElNotification({ title: 'Success', message: 'Enter store: ' + name, type: 'success'})
+  sendFrontendNotification('Enter store', 'success', {name: name})
 }
 
 function exitStore() {
   pinia.exitStore()
-  ElNotification({ title: 'Success', message: 'You exited a store', type: 'success'})
+  sendFrontendNotification('You exited the store!', 'success')
+
 }
 
 async function updateStores() {
@@ -172,13 +172,13 @@ async function deleteStore() {
 
   //Show error notification
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   //Close popup, notify user
   popup.deleteStore = false
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
   //Remove store from list
   stores.value = stores.value.filter(item => item.id !== response.store_id)
 }

@@ -9,11 +9,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id)
-    throw new Error(`Required parameters are missing.`)
+    throw new Error(`Required parameters are missing`)
 
   //Check if this user has access rights to view workers
   if(!isStoreOwner(authUser, store_id))
-    throw new Error(`You do not have access rights to view workers.`)
+    throw new Error(`You do not have the rights to view this data`)
 
   const workers = await prisma.worker.findMany({
     where: {

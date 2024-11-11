@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!boss_id)
-    return { statusCode: 400, statusMessage: `You must be login to retrieve stores.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to view this data` }
 
   const stores = await prisma.store.findMany({
     where: {

@@ -9,11 +9,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id)
-    throw new Error(`Required parameters are missing.`)
+    throw new Error(`Required parameters are missing`)
   
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id) && !isStoreWorker(authUser, store_id))
-    throw new Error(`You do not have access rights to retrieve this store.`)
+    throw new Error(`You do not have rights to view this data.`)
 
   const inventory = await prisma.inventory.findUnique({
     where: {
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if(!inventory) 
-    throw new Error(`Invalid store id.`)
+    throw new Error(`Invalid data`)
 
   return inventory
 })

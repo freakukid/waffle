@@ -61,7 +61,7 @@
 //Import
 const offlineStore = useOfflineStore()
 const { validateEmail } = useValidator()
-import { ElNotification } from 'element-plus'
+const { sendNotification, sendFrontendNotification } = useHelpers()
 const { handleCustomerRequest } = useHandleRequests()
 const { getRandomString } = useFormatter()
 //Data
@@ -165,7 +165,7 @@ async function createCustomer() {
   } else {
     postData.offline_id = getRandomString(postData.name)
     offlineStore.addCustomerRequests(postData, { customer: postData })
-    ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
+    sendFrontendNotification(`Your changes have been added to the offline queue and will take effect once you're back online`, 'offline_success')
   }
   loading.value = false
 
@@ -200,12 +200,12 @@ async function editCustomer() {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   //show success message
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 
   //emit value to parent component, close popup
   emits('editCustomer', response.customer)

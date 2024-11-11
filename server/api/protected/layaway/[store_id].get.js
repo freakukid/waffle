@@ -10,17 +10,17 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id)
-    throw new Error(`Required parameters are missing.`)
+    throw new Error(`Required parameters are missing`)
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)
-    throw new Error(`You do not have access rights to view layaway transactions.`)
+    throw new Error(`You do not have the rights to view this data`)
 
   //Check if this worker has permission to commit this action
   if(isValidWorker) {
     const permissions = await getWorkerPermissions(authUser.worker.id)
     if(!permissions.make_transactions)
-      throw new Error(`You do not have the rights to view layaway transactions.`)
+      throw new Error(`You do not have the rights to view this data`)
   }
 
   const layaway = await prisma.layaway.findMany({

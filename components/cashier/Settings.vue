@@ -192,7 +192,7 @@
 
 <script setup>
 //Import
-import { ElNotification } from 'element-plus'
+const { sendNotification, sendFrontendNotification } = useHelpers()
 const offlineStore = useOfflineStore()
 //Data
 const loading = reactive({ startedLoading: true, settings: false })
@@ -255,7 +255,7 @@ function addFooter() {
 async function printReceipt() {
   //Check if tax is withing 0 to 100%
   if(form.tax < 0 || form.tax > 100) {
-    ElNotification({ title: 'Error', message: 'Tax percentage cannot be under 0% or above 100%', type: 'error'})
+    sendFrontendNotification('The tax percentage must be between 0% and 100%', 'error')
     return
   }
 
@@ -287,12 +287,12 @@ async function printReceipt() {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
   //Display Success
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 }
 
 //Request to get settings
@@ -305,7 +305,7 @@ async function getUserSettings() {
 async function changeSettings() {
   //Check if tax is withing 0 to 100%
   if(form.tax < 0 || form.tax > 100) {
-    ElNotification({ title: 'Error', message: 'Tax percentage cannot be under 0% or above 100%', type: 'error'})
+    sendFrontendNotification('The tax percentage must be between 0% and 100%', 'error')
     return
   }
 
@@ -326,7 +326,7 @@ async function changeSettings() {
 
   //Display error
   if (response.statusCode) {
-    ElNotification({ title: 'Error', message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     return
   }
 
@@ -336,7 +336,7 @@ async function changeSettings() {
 
   //Close popup, Show success message
   popup.value = false
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 }
 
 // Expose the openPopup method to parent

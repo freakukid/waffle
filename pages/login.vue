@@ -1,10 +1,10 @@
 <template>
   <div id="login-page">
     <el-form id="form" :model="form" label-width="auto" label-position="top" @submit.prevent>
-      <el-form-item :label="$t('label.username')" prop="username"  :rules="[{ required: true, message: $t('error.username is required') }]">
+      <el-form-item :label="$t('label.username')" prop="username"  :rules="[{ required: true, message: $t('invalid.Username is required') }]">
         <el-input v-model="form.username" type="text" autocomplete="off" autofocus />
       </el-form-item>
-      <el-form-item :label="$t('label.password')" prop="password" :rules="[{ required: true, message: $t('error.password is required') }]">
+      <el-form-item :label="$t('label.password')" prop="password" :rules="[{ required: true, message: $t('invalid.Password is required') }]">
         <el-input v-model="form.password" type="password" autocomplete="off" autofocus />
       </el-form-item>
 
@@ -23,9 +23,9 @@ definePageMeta({
 })
 
 //Import
-import { ElNotification } from 'element-plus'
 const { fetch } = useUserSession()
 const { getAuthUser } = useAuth()
+const { sendNotification } = useHelpers()
 const { $t, $switchLocale } = useNuxtApp()
 const pinia = useStore()
 
@@ -46,11 +46,11 @@ const login = async () => {
   
   //Show error if a failed request
   if (response.statusCode) {
-    ElNotification({ title: $t('notification.error'), message: response.statusMessage, type: 'error'})
+    sendNotification(response.statusMessage, 'error')
     loading.value = false
     return
   } else {
-    ElNotification({ title: $t('notification.success'), message: $t('notification.login successful'), type: 'success'})
+    sendNotification(response.message, 'success')
   }
 
   await fetch()

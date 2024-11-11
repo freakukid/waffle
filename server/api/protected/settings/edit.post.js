@@ -11,11 +11,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id)
-    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing` }
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id) && !isStoreWorker(authUser, store_id))
-    return { statusCode: 400, statusMessage: `You do not have save settings for this store/user.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
   //Edit store 
   const store = await prisma.store.update({
@@ -52,6 +52,6 @@ export default defineEventHandler(async (event) => {
   return {
     store: store,
     settings: settings,
-    message: "Settings successfully edited!"
+    message: "Settings Updated!"
   }
 })

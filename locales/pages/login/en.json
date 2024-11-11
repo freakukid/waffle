@@ -7,14 +7,5 @@
   },
   "btn": {
     "login": "Login"
-  },
-  "error": {
-    "username is required": "Username is required",
-    "password is required": "Password is required"
-  },
-  "notification": {
-    "success": "Success",
-    "error": "Error",
-    "login successful": "Login Successful"
   }
 }

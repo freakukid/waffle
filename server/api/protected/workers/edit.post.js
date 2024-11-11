@@ -12,11 +12,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!id, !store_id || !username || !name)
-    return {statusCode: 400, statusMessage: `Required parameters are missing.`}
+    return {statusCode: 400, statusMessage: `Required parameters are missing`}
 
   //Check if this user has access rights to view workers
   if(!isStoreOwner(authUser, store_id))
-    return {statusCode: 400, statusMessage: `You do not have access rights to create a worker in this store.`}
+    return {statusCode: 400, statusMessage: `You do not have the rights to commit this action`}
 
   //Check username params
   if (!/^(?:[a-zA-Z0-9]{3,15})$/.test(username))
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     })
 
     if(userExists) {
-      return {statusCode: 403, statusMessage: "Account username already exists"}
+      return {statusCode: 403, statusMessage: "Username already exist"}
     }
   }
 
@@ -76,10 +76,10 @@ export default defineEventHandler(async (event) => {
     })
   } catch (error) {
     console.error(error)
-    return {statusCode: 500, statusMessage: "Error editing user"}
+    return {statusCode: 500, statusMessage: "Error updating user"}
   }
 
   setResponseStatus(event, 201)
   
-  return { user: user, message: "User edited" }
+  return { user: user, message: "User Updated!" }
 })

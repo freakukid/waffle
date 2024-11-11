@@ -37,7 +37,7 @@ definePageMeta({
 
 const route = useRoute()
 const { fetch } = useUserSession()
-import { ElNotification } from 'element-plus'
+const { sendNotification } = useHelpers()
 const { validateUsername, validateEmail } = useValidator()
 
 const hasStoreCode = route.query.code ? route.query.code : ''
@@ -91,11 +91,11 @@ const register = async (formEl) => {
   })
 
   if (error.value) {
-    ElNotification({ title: 'Error', message: error.value.statusMessage, type: 'error'})
+    sendNotification(error.value.statusMessage, 'error')
     return
   }
 
-  ElNotification({ title: 'Success', message: data.value.message, type: 'success'})
+  sendNotification(data.value.message, 'success')
 
   //Login
   const response = await useFetchApi(`/api/auth/login`, {
@@ -104,7 +104,7 @@ const register = async (formEl) => {
   })
 
   if (response.error) {
-    ElNotification({ title: 'Error', message: response.error, type: 'error'})
+    sendNotification(response.error, 'error')
     return
   }
 

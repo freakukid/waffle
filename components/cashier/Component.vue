@@ -121,7 +121,7 @@
 <script setup>
 //Imports
 const { $eventBus } = useNuxtApp()
-import { ElNotification } from 'element-plus'
+const { sendFrontendNotification } = useHelpers()
 const { calcDictSubtotal, calcTaxTotal, calcTotal } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
@@ -246,7 +246,7 @@ async function getStore() {
 function addItemToTransaction(value) {
   if (value in form.transaction.items) {
     form.transaction.items[value].__qty += 1
-    ElNotification({ title: 'Success', message: `Added another ${form.transaction.items[value][store.value.inventory.name_column]} to its quantity.`, type: 'success'})
+    sendFrontendNotification('Increased the quantity', 'success', {name: form.transaction.items[value][store.value.inventory.name_column]})  
   } else {
     const item = { ...store.value.inventory.stock[value] }
     item.__qty = 1
@@ -263,8 +263,7 @@ function addItemToTransaction(value) {
 //Removes an item from the transaction
 function removeItemFromTransaction(key) {
   delete form.transaction.items[key]
-  ElNotification({ title: 'Success', message: 'Item removed!', type: 'success'})
-
+  sendFrontendNotification('Item removed!', 'success')
   calcTransactionTotal()
 }
 

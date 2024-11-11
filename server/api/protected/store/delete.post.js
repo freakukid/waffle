@@ -9,11 +9,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!id)
-    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing` }
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, id))
-    return { statusCode: 400, statusMessage: `You do not have access rights to delete this store.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
   //Delete all users associated with the store
   await prisma.user.deleteMany({
@@ -38,6 +38,6 @@ export default defineEventHandler(async (event) => {
   setResponseStatus(event, 201)
   return {
     store_id: store.id,
-    message: "Store deleted!"
+    message: "Store Deleted!"
   }
 })

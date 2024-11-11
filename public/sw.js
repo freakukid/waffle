@@ -1,6 +1,6 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
-const CACHE_NAME = 'static-v18'
+const CACHE_NAME = 'static-v19'
 
 self.addEventListener('install', (event) => {
   // Immediately take control, and skip waiting

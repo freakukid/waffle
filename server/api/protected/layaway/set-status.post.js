@@ -11,43 +11,27 @@ export default defineEventHandler(async (event) => {
   
   //Check if we have required fields
   if (!store_id || !id || !status || !items)
-    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing` }
 
   //Check if we are changing status
   if (prev_status === status)
-    return { statusCode: 400, statusMessage: `The status is already set to ${status}.` }
+    return { statusCode: 400, statusMessage: `The status is already set to ${status}` }
 
   //Check if status is valid
   if (!validStatuses.includes(status)) {
-    return { statusCode: 400, statusMessage: `Status is invalid. Valid statuses: paid, pending, or declined.` }
+    return { statusCode: 400, statusMessage: `Status is invalid. Valid statuses: paid, pending, or declined` }
   }
   
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)
-    return { statusCode: 400, statusMessage: `You do not have access rights to make this transaction.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
   //Check if this worker has permission to commit this action
   if(isValidWorker) {
     const permissions = await getWorkerPermissions(authUser.worker.id)
     if(!permissions.make_transactions)
-      return { statusCode: 400, statusMessage: `You do not have the rights to make this transaction.` }
+      return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
   }
-
-  // if(prev_status === 'pending' && status === 'paid') {
-
-  // } else if(prev_status === 'pending' && status === 'declined') { //put items back into the inventory
-  //   operator = '+'
-  //   editQty = true
-  // } else if(prev_status === 'declined' && status === 'paid') { //subtract items from inventory because we put them back when declined
-  //   editQty = true
-  // } else if(prev_status === 'declined' && status === 'pending') { //subtract items from inventory because we put them back when declined
-  //   editQty = true
-  // } else if(prev_status === 'paid' && status === 'pending') { // do nothing
-
-  // } else if(prev_status === 'paid' && status === 'declined') { //put items back into the inventory
-  //   operator = '+'
-  //   editQty = true
-  // }
 
   let operator = '-'
   let editQty = false
@@ -130,7 +114,7 @@ export default defineEventHandler(async (event) => {
   
   return {
     layaway: layaway,
-    message: `Layaway transaction status: ${status}!`
+    message: `Layaway Transaction Status: ${status}!`
   }
 })
 

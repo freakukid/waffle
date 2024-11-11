@@ -11,17 +11,17 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id || !key || !item)
-    return { statusCode: 400, statusMessage: 'Required parameters are missing.' }
+    return { statusCode: 400, statusMessage: 'Required parameters are missing' }
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)
-    return { statusCode: 400, statusMessage: `You do not have access rights to edit this store.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
   //Check if this worker has permission to commit this action
   if(isValidWorker) {
     const permissions = await getWorkerPermissions(authUser.worker.id)
     if(!permissions.delete_item)
-      return { statusCode: 400, statusMessage: `You do not have the rights to commit this action.` }
+      return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
   }
 
   let query = `
@@ -48,6 +48,6 @@ export default defineEventHandler(async (event) => {
   
   return {
     inventory: result[0],
-    message: "Item deleted!"
+    message: "Item Deleted!"
   }
 })

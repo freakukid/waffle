@@ -10,20 +10,17 @@ export default defineEventHandler(async (event) => {
   const user_id = session?.user?.id
   //Check if user is login
   if(!user_id)
-    return { statusCode: 400, statusMessage: 'You must be login print a receipt.' }
+    return { statusCode: 400, statusMessage: 'You do not have the rights to commit this action' }
 
   //Data
   const { store_id, items, tax, subtotal, tax_total, savings, total, payment, cash, card, change } = await readBody(event)
 
   //Check data
-  if(!store_id)
-    return { statusCode: 400, statusMessage: 'Need store id.' }
+  if(!store_id || !subtotal || !tax_total || !total)
+    return { statusCode: 400, statusMessage: 'Required parameters are missing' }
 
   if(!items || !items.length)
-    return { statusCode: 400, statusMessage: 'Receipt needs items.' }
-
-  if(!subtotal || !tax_total || !total)
-    return { statusCode: 400, statusMessage: 'Missing subtotal, tax total, or total' }
+    return { statusCode: 400, statusMessage: 'Receipt needs items' }
 
   //Get store
   const store = await prisma.store.findUnique({
@@ -41,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if ip address is present
   if(!settings.ip)
-    return { statusCode: 400, statusMessage: 'You must setup an ip address to connect to.' }
+    return { statusCode: 400, statusMessage: 'No IP address has been set' }
 
   //Connect to printer
   let printer = new ThermalPrinter({
@@ -156,13 +153,13 @@ export default defineEventHandler(async (event) => {
   try {
     let execute = printer.execute()
   } catch (error) {
-    console.error("Print failed:", error)
+    console.error("Print Failed:", error)
   }
   
   setResponseStatus(event, 201)
   
   return {
-    message: "Print receipt!"
+    message: "Receipt Printed!"
   }
 })
 

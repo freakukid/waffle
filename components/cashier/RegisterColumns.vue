@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { ElNotification } from 'element-plus'
+const { sendFrontendNotification } = useHelpers()
 const { handleInventoryRequest } = useHandleRequests()
 const { formatNameColumn, formatPriceColumn, formatQuantityColumn, formatDiscountColumn, formatCostColumn } = useFormatter()
 const offlineStore = useOfflineStore()
@@ -124,7 +124,7 @@ async function registerColumns() {
 
   //Must have name or price to continue
   if(name === '' || price === '') {
-    ElNotification({ title: 'Error', message: 'Name and Price columns are required for the cashier page', type: 'error'})
+    sendFrontendNotification('Both the Name and Price columns are required on the cashier page', 'error')
   }
 
   //Format data

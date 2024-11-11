@@ -10,11 +10,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id || !column_name)
-    return { statusCode: 400, statusMessage: 'Required parameters are missing.' }
+    return { statusCode: 400, statusMessage: 'Required parameters are missing' }
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, store_id))
-    return { statusCode: 400, statusMessage: `You do not have access rights to edit this store.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
   //Add a column
   const result = await prisma.$queryRawUnsafe(`
@@ -45,6 +45,6 @@ export default defineEventHandler(async (event) => {
   
   return {
     inventory: result[0],
-    message: "Column added!"
+    message: "Column Added!"
   }
 })

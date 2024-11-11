@@ -35,5 +35,92 @@
     "E-mail must be valid": "E-mail must be valid",
     "Password is required": "Password is required",
     "Password must be at least 6 characters": "Password must be at least 6 characters"
+  },
+  "frontend": {
+    "valid": {
+      "You exited the store!": "You exited the store!",
+      "Increased the quantity": "Increased the quantity of {name}",
+      "Item removed!": "Item removed!",
+      "Your changes have been added to the offline queue and will take effect once you're back online": "Your changes have been added to the offline queue and will take effect once you're back online",
+      "Enter store": "Enter store: {name}",
+      "Operation successful!": "Operation successful!"
+    },
+    "invalid": {
+      "Both the Name and Price columns are required on the cashier page": "Both the Name and Price columns are required on the cashier page",
+      "The tax percentage must be between 0% and 100%": "The tax percentage must be between 0% and 100%",
+      "No inventory data is available": "No inventory data is available",
+      "An unexpected error occurred, please try again": "An unexpected error occurred, please try again",
+      "Feature only available online": "Feature only available online"
+    },
+    "warning": {
+      "No column name has been provided": "No column name has been provided",
+      "The column already exist": "The column '{name}' already exist",
+      "No changes were provided": "No changes were provided",
+      "All column names must be unique": "All column names must be unique",
+      "No item have been selected": "No item have been selected",
+      "Please enter a quantity greater than 0": "Please enter a quantity greater than 0",
+      "Please specify either the cost per item or the total cost": "Please specify either the cost per item or the total cost",
+      "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page": "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page"
+    }
+  },
+  "server": {
+    "Success": "Success",
+    "Error": "Error",
+    "Offline Success": "Offline Success",
+    "Warning": "Warning",
+    "valid": {
+      "Login Successful!": "Login Successful!",
+      "User Created!": "User Created!",
+      "User Updated!": "User Updated!",
+      "User Deleted!": "User Deleted!",
+      "Customer Created!": "Customer Created!",
+      "Customer Updated!": "Customer Updated!",
+      "Customer Deleted!": "Customer Deleted!",
+      "Column Added!": "Column Added!",
+      "Column Updated!": "Column Updated!",
+      "Column Deleted!": "Column Deleted!",
+      "Columns Linked!": "Columns Linked!",
+      "Columns Sorted!": "Columns Sorted!",
+      "Item Added!": "Item Added!",
+      "Item Updated!": "Item Updated!",
+      "Item Deleted!": "Item Deleted!",
+      "Item Received!": "Item Received!",
+      "Inventory Created!": "Inventory Created!",
+      "Inventory Deleted!": "Inventory Deleted!",
+      "Layaway Created!": "Layaway Created!",
+      "Layaway Transaction Status: paid!": "Layaway Transaction Status: Paid!",
+      "Layaway Transaction Status: pending!": "Layaway Transaction Status: Pending!",
+      "Layaway Transaction Status: declined!": "Layaway Transaction Status: Declined!",
+      "Store Created!": "Store Created!",
+      "Store Updated!": "Store Updated!",
+      "Store Deleted!": "Store Deleted!",
+      "Transaction Created!": "Transaction Created!",
+      "Settings Updated!": "Settings Updated!",
+      "Permissions Updated!": "Permissions Updated!",
+      "Email Sent!": "Email Sent!",
+      "Receipt Printed!": "Receipt Printed!"
+    },
+    "invalid": {
+      "Required parameters are missing": "Required parameters are missing.",
+      "You do not have the rights to view this data": "You do not have the rights to view this data.",
+      "You do not have the rights to commit this action": "You do not have the rights to commit this action.",
+      "Unable to delete customer: associated layaway transactions exist": "Unable to delete customer: associated layaway transactions exist.",
+      "Invalid data": "Invalid data.",
+      "The status is already set to paid": "The status is already set to paid.",
+      "The status is already set to pending": "The status is already set to pending.",
+      "The status is already set to declined": "The status is already set to declined.",
+      "Status is invalid. Valid statuses: paid, pending, or declined": "Status is invalid. Valid statuses: paid, pending, or declined.",
+      "Store name must be at least 2 characters long": "Store name must be at least 2 characters long.",
+      "Receipt needs items": "Receipt needs items.",
+      "No IP address has been set": "No IP address has been set.",
+      "Username must be between 3 and 15 characters and contain only letters and numbers": "Username must be between 3 and 15 characters and contain only letters and numbers.",
+      "Password must be at least 6 characters long": "Password must be at least 6 characters long.",
+      "Username already exist": "Username already exist.",
+      "Error updating user": "Error updating user.",
+      "Error creating user": "Error updating user.",
+      "Store not found": "Store not found.",
+      "User not found": "User not found.",
+      "Invalid password": "Invalid password."
+    }
   }
 }

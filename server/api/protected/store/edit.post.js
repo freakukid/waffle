@@ -10,15 +10,15 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!id || !name)
-    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing` }
 
-  //Check if this user has access rights to this store
+  //Check if this user has access rights to this data
   if(!isStoreOwner(authUser, id))
-    return { statusCode: 400, statusMessage: `You do not have access rights to edit this store.` }
+    return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
   //Check if store name is at least 2 characters long
   if(name.length < 2)
-    return { statusCode: 400, statusMessage: 'Store name must be at least 2 characters long.' }
+    return { statusCode: 400, statusMessage: 'Store name must be at least 2 characters long' }
 
   //Edit store 
   const store = await prisma.store.update({
@@ -46,6 +46,6 @@ export default defineEventHandler(async (event) => {
   
   return {
     store: store,
-    message: "Store successfully edited!"
+    message: "Store Updated!"
   }
 })

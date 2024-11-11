@@ -10,15 +10,15 @@ export default defineEventHandler(async (event) => {
 
   //Check if this is a boss account
   if(!boss_id)
-    return { statusCode: 400, statusMessage: 'You must be a boss account to create a store.' }
+    return { statusCode: 400, statusMessage: 'You do not have the rights to commit this action' }
   
   //Check if we have required fields
   if (!name)
-    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing` }
 
   //Check if store name is at least 2 characters long
   if(name.length < 2)
-    return { statusCode: 400, statusMessage: 'Store name must be at least 2 characters long.' }
+    return { statusCode: 400, statusMessage: 'Store name must be at least 2 characters long' }
 
   //Create store 
   const store = await prisma.store.create({
@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
   setResponseStatus(event, 201)
   return {
     store: store,
-    message: "Store created!"
+    message: "Store Created!"
   }
 })
 

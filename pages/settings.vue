@@ -70,6 +70,7 @@ definePageMeta({
 const { fetch } = useUserSession()
 const { $switchLocale } = useNuxtApp()
 const { getAuthUser } = useAuth()
+const { sendNotification } = useHelpers()
 const { validateUsername, validateOptionalEmail } = useValidator()
 
 const tab = ref('account')
@@ -100,7 +101,7 @@ async function saveUserSettings() {
   //Switch language
   $switchLocale(form.language)
 
-  ElNotification({ title: 'Success', message: response.message, type: 'success'})
+  sendNotification(response.message, 'success')
 }
 </script>
 

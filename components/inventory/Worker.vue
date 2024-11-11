@@ -117,7 +117,6 @@
 <script setup>
 //Imports
 import { Loading as LoadingIcon } from '@element-plus/icons-vue'
-import { ElNotification } from 'element-plus'
 const { $eventBus } = useNuxtApp()
 const pinia = useStore()
 const offlineStore = useOfflineStore()

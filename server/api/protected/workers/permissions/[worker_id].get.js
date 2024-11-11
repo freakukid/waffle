@@ -10,11 +10,11 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!worker_id)
-    throw new Error(`Required parameters are missing.`)
+    throw new Error(`Required parameters are missing`)
 
   //Check if this user has access rights to this user's permission
   if(!parseInt(worker_id) === auth_worker_id)
-    throw new Error(`You do not have access rights get this user's permission.`)
+    throw new Error(`You do not have the rights to view this data`)
 
   const permissions = await prisma.permission.findUnique({
     where: {
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if(!permissions)
-    throw new Error(`Worker does not exist`)
+    throw new Error(`Invalid data`)
 
   return permissions
 })
