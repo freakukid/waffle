@@ -1,1 +1,12 @@
-{}
+{
+  "import": "<b style='color: green'>Importó</b> un archivo Excel para crear el inventario.",
+  "add_column": "<b style='color: green'>Se agregó</b> una nueva columna: <b style='color: white'>{after}</b>",
+  "edit_column": "<div><b style='color: yellow'>Editó</b> una columna de <b style='color: white'>{before}</b> a <b style='color: white'>{after}</b></div>",
+  "delete_column": "<b style='color: red'>Se eliminó</b> una columna: <b style='color: white'>{before}</b>",
+  "add_row": "<span><b style='color: green'>Se agregó</b> nuevo artículo:</span>",
+  "edit_row_1": "<b style='color: yellow'>Editado</b> <b>{before}</b> de:",
+  "edit_row_2": "<b style='color: yellow'>Editado</b> <b>un artículo</b> de:",
+  "edit_row_3": "<div>{column}: <b>{before}</b> a <b>{after}</b></div>",
+  "delete_row": "<span><b style='color: red'>Se eliminó</b> un elemento:</span>",
+  "receiving": "<span><b style='color: green'>Recibido</b> <b>{name}</b></span><div>Cantidad recibida: <b style='color: green'>+{qty}</b></div><div>Costo Total de los Artículos Recibidos: {total_cost}</div><div>Costo Por Artículo: De {before_cost} a <b>${after_cost}</b></div>"
+}

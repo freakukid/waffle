@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Add Item">
+    <el-dialog v-model="popup" :title="$t(`title.add item`)">
       <el-form :model="form.value" label-position="top" @submit.prevent="addRow()">
         <el-form-item v-for="column in props.inventory.columns" :key="column" :label="column">
           <el-input v-model="form.value[column]" autocomplete="off" />
@@ -9,8 +9,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="success" @click="addRow()" :loading="loading.addRow">Add</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-button type="success" @click="addRow()" :loading="loading.addRow">{{$t(`label.add`)}}</el-button>
         </div>
       </template>
     </el-dialog>

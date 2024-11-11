@@ -1,1 +1,16 @@
-{}
+{
+  "label": {
+    "create worker": "Create Worker",
+    "edit user": "Edit User",
+    "delete user": "Delete User",
+    "add item": "Add Item",
+    "edit item": "Edit Item",
+    "delete item": "Delete Item",
+    "make transactions": "Make Transactions",
+    "view log": "View Log",
+    "receiving": "Receiving"
+  },
+  "text": {
+    "delete": "Are you sure you want to delete the user: {name}? This cannot be undone!"
+  }
+}

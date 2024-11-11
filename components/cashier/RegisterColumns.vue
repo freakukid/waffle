@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Register Columns" :show-close="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''" :close-on-click-modal="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''">
-      <p>In order to get the cashier working you would need to register columns in your inventory.</p>
+    <el-dialog v-model="popup" :title="$t(`title.link columns`)" :show-close="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''" :close-on-click-modal="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''">
+      <p class="text-center">In order to get the cashier working you would need to register columns in your inventory.</p>
       <el-form :model="form" @submit.prevent="registerColumns()">
         <el-form-item>
           <label><b>Name (Required):&nbsp;</b></label>
@@ -68,22 +68,15 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button v-if="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''" @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button type="success" disabled>Register Columns</el-button>
+          <el-button v-if="props.inventory?.name_column !== '' && props.inventory?.price_column !== ''" @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button type="success" disabled>{{$t(`label.link`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="success" @click="registerColumns()" :loading="loading.registerColumns" :disabled="form.name === '' || form.price === ''">Register Columns</el-button>
+          <el-button v-else type="success" @click="registerColumns()" :loading="loading.registerColumns" :disabled="form.name === '' || form.price === ''">{{$t(`label.link`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Register Btn -->
-    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button type="success" disabled>Column Settings</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Column Settings</el-button> -->
-    <!-- Register Btn -->
   </div>
 </template>
 

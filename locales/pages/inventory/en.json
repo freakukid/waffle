@@ -1,1 +1,38 @@
-{}
+{
+  "title": {
+    "item recieved": "Item Recieved",
+    "cost per item": "Cost Per Item",
+    "total cost": "Total Cost",
+    "quantity received": "Quantity Received",
+    "add item": "Add Item",
+    "edit item": "Edit Item",
+    "delete item": "Delete Item",
+    "add column": "Add Column",
+    "edit columns": "Edit Columns",
+    "sort columns": "Sort Columns",
+    "link columns": "Link Columns",
+    "delete column": "Delete Column",
+    "export table": "Export Table",
+    "delete table": "Delete Table",
+    "drop table": "Drop Table",
+    "search by": "Search By",
+    "sort ascending": "Sort Ascending",
+    "sort descending": "Sort Descending"
+  },
+  "label": {
+    "column": "Column",
+    "import inventory by excel file": "Import Inventory by Excel File"
+  },
+  "text": {
+    "you can either submit cost per item or total cost of all items received": "You can either submit cost per item or total cost of all items received.",
+    "please wait until inventory set by your employer": "Please wait until inventory set by your employer.",
+    "are you sure you want to delete the following item?": "Are you sure you want to delete the following item?",
+    "this will delete the following data:": "This will delete the following data:",
+    "the following will be deleted:": "The following will be deleted:",
+    "this cannot be undone!": "This cannot be undone!",
+    "inventory": "Inventory",
+    "inventory logs": "Inventory Logs",
+    "transaction history": "Transaction History",
+    "layaway transactions": "Layaway Transactions"
+  }
+}

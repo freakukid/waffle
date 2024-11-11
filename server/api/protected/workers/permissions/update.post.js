@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id || !worker_id || !name || !permissions)
-    return { statusCode: 400, statusMessage: 'Required: store_id, item, worker_id, permissions' }
+    return { statusCode: 400, statusMessage: 'Required parameters are missing.' }
 
   //Check if this user has access rights to change permissions for this worker
   if(!isStoreOwner(authUser, store_id))
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       delete_item: permissions.delete_item,
       make_transactions: permissions.make_transactions,
       view_log: permissions.view_log,
-      recieving: permissions.recieving,
+      receiving: permissions.receiving,
     },
   })
 

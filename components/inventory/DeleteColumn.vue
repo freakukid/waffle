@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Delete Column">
+    <el-dialog v-model="popup" :title="$t(`title.delete column`)">
       <p style="text-align: center; color: #ff4545; font-size: 24px;">
-        <b>Deleting this column will delete the following data:</b>
+        <b>{{$t(`text.this will delete the following data:`)}}</b>
       </p>
 
       <el-table :data="props.inventoryList" style="width: 100%; height: 100%;" table-layout="auto">
@@ -12,12 +12,12 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
 
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled type="danger">Delete</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled type="danger">{{$t(`label.delete`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="danger" @click="deleteColumn()" :loading="loading.deleteColumn">Delete</el-button>
+          <el-button v-else type="danger" @click="deleteColumn()" :loading="loading.deleteColumn">{{$t(`label.delete`)}}</el-button>
         </div>
       </template>
     </el-dialog>

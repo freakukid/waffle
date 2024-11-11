@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   
   //Check if we have required fields
   if (!store_id || !id || !status || !items)
-    return { statusCode: 400, statusMessage: `Required: store_id, id, prev_status, status, items.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
 
   //Check if we are changing status
   if (prev_status === status)

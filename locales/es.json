@@ -1,10 +1,15 @@
 {
   "label": {
+    "add": "Agregar",
     "create": "Crear",
     "edit": "Editar",
     "delete": "Borrar",
+    "sort": "Clasificar",
+    "link": "Enlace",
     "cancel": "Cancelar",
+    "username": "Nombre de Usuario",
     "name": "Nombre",
+    "password": "Contraseña",
     "email": "Email",
     "website": "Sitio Web",
     "phone number": "Número de Teléfono",
@@ -12,9 +17,23 @@
     "city": "Ciudad",
     "zip code": "Código Postal",
     "state": "Estado",
-    "country": "País"
+    "country": "País",
+    "menu": "Menú",
+    "operations": "Operaciones",
+    "search": "Buscar",
+    "optional": "opcional"
   },
   "tippy": {
-    "feature only available online": "Característica solo disponible en línea"
+    "feature only available online": "Característica solo disponible en línea",
+    "name, quantity, cost column must be registered before receiving": "El Nombre, La Cantidad, y La Columna de Costo deben registrarse antes de recibirlos."
+  },
+  "invalid": {
+    "Name is required": "El nombre es obligatorio",
+    "Username is required": "El nombre de usuario es obligatorio",
+    "Username must be between 3 and 15 characters": "El nombre de usuario debe tener entre 3 y 15 caracteres",
+    "Username can only contain letters and numbers": "El nombre de usuario solo puede contener letras y números",
+    "E-mail must be valid": "El correo electrónico debe ser válido",
+    "Password is required": "Se requiere contraseña",
+    "Password must be at least 6 characters": "La contraseña debe tener al menos 6 caracteres"
   }
 }

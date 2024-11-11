@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!id, !store_id || !username || !name)
-    return {statusCode: 400, statusMessage: `Required: id, store_id, username, name.`}
+    return {statusCode: 400, statusMessage: `Required parameters are missing.`}
 
   //Check if this user has access rights to view workers
   if(!isStoreOwner(authUser, store_id))

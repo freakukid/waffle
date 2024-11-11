@@ -7,18 +7,18 @@
         <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6 mb-4 rounded-t-[6px]">
           <el-dropdown placement="bottom-start" trigger="click">
             <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
-              Menu
+              {{$t(`label.menu`)}}
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                   <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> Create Worker
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> {{$t(`label.create worker`)}}
                   </div>
                 </el-tooltip>
 
                 <el-dropdown-item v-else @click="createWorkerRef.openPopup()">
-                  <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> Create Worker
+                  <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> {{$t(`label.create worker`)}}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -36,17 +36,17 @@
         >
           <template #default="{ node, data }">
             <span class="tree-node">
-              <span>{{ node.label }}</span>
+              <span>{{ data.is_worker ? node.label : $t(`label.${node.label}`) }}</span>
 
               <span v-if="!data.permission">
-                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-                  <el-button type="warning" size="small" plain disabled>Edit</el-button>
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+                  <el-button type="warning" size="small" plain disabled>{{$t(`label.edit`)}}</el-button>
                 </el-tooltip>
-                <el-button v-else type="warning" size="small" plain @click="editPrompt($event, data)">Edit</el-button>
-                <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-                  <el-button type="danger" size="small" plain disabled>Delete</el-button>
+                <el-button v-else type="warning" size="small" plain @click="editPrompt($event, data)">{{$t(`label.edit`)}}</el-button>
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+                  <el-button type="danger" size="small" plain disabled>{{$t(`label.delete`)}}</el-button>
                 </el-tooltip>
-                <el-button v-else type="danger" size="small" plain @click="deletePrompt($event, data)">Delete</el-button>
+                <el-button v-else type="danger" size="small" plain @click="deletePrompt($event, data)">{{$t(`label.delete`)}}</el-button>
               </span>
             </span>
           </template>
@@ -55,47 +55,48 @@
     </div>
 
     <!-- Popup -->
-    <el-dialog v-model="popup.deleteUser" title="Delete User">
+    <el-dialog v-model="popup.deleteUser" :title="$t(`label.delete user`)">
       <p style="text-align: center; color: #ff4545; font-size: 24px;">
-        <b>Are you sure you want to delete {{form.delete?.user?.user?.name}}. This cannot be reversed!</b>
+        <b>{{$t(`text.delete`, {name: form.delete?.user?.user?.name})}}</b>
       </p>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup.deleteUser = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button type="danger" disabled>Delete</el-button>
+          <el-button @click="popup.deleteUser = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button type="danger" disabled>{{$t(`label.delete`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="danger" @click="deleteUser()" :loading="loading.deleteUser">Delete</el-button>
+          <el-button v-else type="danger" @click="deleteUser()" :loading="loading.deleteUser">{{$t(`label.delete`)}}</el-button>
         </div>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="popup.editUser" title="Edit User">
+    <el-dialog v-model="popup.editUser" :title="$t(`label.edit user`)">
       <el-form :model="form.edit.model" label-position="top" @submit.prevent="editUser()">
-        <el-form-item label="Username" prop="username"
-        :rules="[{required: true, message: 'Username is required', trigger: 'blur'},
-          { min: 3, max: 15, message: 'Username must be between 3 and 15 characters', trigger: 'blur' },
+        <el-form-item :label="$t('label.username')" prop="username"
+        :rules="[
+          {required: true, message: $t('invalid.Username is required'), trigger: 'blur'},
+          { min: 3, max: 15, message: $t('invalid.Username must be between 3 and 15 characters'), trigger: 'blur' },
           { validator: validateUsername, trigger: 'change' }]"
         >
           <el-input v-model="form.edit.model.username" :value="form.edit.model.username" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="Name" prop="name" :rules="[{ required: true, message: 'Name is required', trigger: 'blur' }]">
+        <el-form-item :label="$t('label.name')" prop="name" :rules="[{ required: true, message: $t('invalid.Name is required'), trigger: 'blur' }]">
           <el-input v-model="form.edit.model.name" :value="form.edit.model.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="Email (optional)" prop="email" :rules="[{ validator: validateOptionalEmail, trigger: 'blur' }]">
+        <el-form-item :label="`${$t('label.email')} (${$t('label.optional')})`" prop="email" :rules="[{ validator: validateOptionalEmail, trigger: 'blur' }]">
           <el-input v-model="form.edit.model.email" :value="form.edit.model.email" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="Password (optional)">
+        <el-form-item :label="`${$t('label.password')} (${$t('label.optional')})`">
           <el-input v-model="form.edit.model.password" :value="form.edit.model.password" type="password" placeholder="******" autocomplete="off" />
         </el-form-item>
 
         <div class="dialog-footer">
-          <el-button @click="popup.editUser = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button type="warning" disabled>Edit</el-button>
+          <el-button @click="popup.editUser = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button type="warning" disabled>{{$t(`label.edit`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="warning" @click="editUser()" :loading="loading.editUser" native-type="submit">Edit</el-button>
+          <el-button v-else type="warning" @click="editUser()" :loading="loading.editUser" native-type="submit">{{$t(`label.edit`)}}</el-button>
         </div>
       </el-form>
     </el-dialog>
@@ -105,7 +106,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: ['unauth', 'store-required']
+  middleware: ['unauth', 'store-required', 'language']
 })
 
 //Imports
@@ -288,7 +289,7 @@ function setupTreeData() {
 
   for (let i = 0; i < workers.value.length; i++) {
     let worker = workers.value[i]
-    let workerTree = {id: identifier, label: worker.user.name, disabled: true, children: [], permission: false, index: i}
+    let workerTree = {id: identifier, label: worker.user.name, disabled: true, children: [], permission: false, index: i, is_worker: true}
     expanded.value.push(identifier)
     identifier += 1
     for (let permission in worker.permission) {

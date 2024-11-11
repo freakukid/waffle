@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Edit Item">
+    <el-dialog v-model="popup" :title="$t(`title.edit item`)">
       <el-form :model="form.editRow" label-position="top" @submit.prevent="editRow()">
         <el-form-item v-for="column in props.inventory.columns" :key="column" :label="column">
           <el-input v-model="form.model[column]" :value="form.model[column]" autocomplete="off" />
@@ -9,11 +9,11 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled type="warning">Edit</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled type="warning">{{$t(`label.edit`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="warning" @click="editRow()" :loading="loading.editRow">Edit</el-button>
+          <el-button v-else type="warning" @click="editRow()" :loading="loading.editRow">{{$t(`label.edit`)}}</el-button>
         </div>
       </template>
     </el-dialog>

@@ -1,10 +1,15 @@
 {
   "label": {
+    "add": "Add",
     "create": "Create",
     "edit": "Edit",
     "delete": "Delete",
+    "sort": "Sort",
+    "link": "Link",
     "cancel": "Cancel",
+    "username": "Username",
     "name": "Name",
+    "password": "Password",
     "email": "Email",
     "website": "Website",
     "phone number": "Phone Number",
@@ -12,9 +17,23 @@
     "city": "City",
     "zip code": "Zip Code",
     "state": "State",
-    "country": "Country"
+    "country": "Country",
+    "menu": "Menu",
+    "operations": "Operations",
+    "search": "Search",
+    "optional": "optional"
   },
   "tippy": {
-    "feature only available online": "Feature only available online."
+    "feature only available online": "Feature only available online.",
+    "name, quantity, cost column must be registered before receiving": "Name, Quantity, Cost Column must be registered before receiving."
+  },
+  "invalid": {
+    "Name is required": "Name is required",
+    "Username is required": "Username is required",
+    "Username must be between 3 and 15 characters": "Username must be between 3 and 15 characters",
+    "Username can only contain letters and numbers": "Username can only contain letters and numbers",
+    "E-mail must be valid": "E-mail must be valid",
+    "Password is required": "Password is required",
+    "Password must be at least 6 characters": "Password must be at least 6 characters"
   }
 }

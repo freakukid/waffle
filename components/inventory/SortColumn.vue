@@ -1,26 +1,19 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Sort Columns" width="300">
+    <el-dialog v-model="popup" :title="$t(`title.sort columns`)" width="300">
       <el-tree :data="form.value" draggable :allow-drop="allowDrop" />
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled type="warning">Sort</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled type="warning">{{$t(`label.sort`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="warning" @click="sortColumn()" :loading="loading.sortColumn">Sort</el-button>
+          <el-button v-else type="warning" @click="sortColumn()" :loading="loading.sortColumn">{{$t(`label.sort`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Sort Btn -->
-    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button disabled type="warning">Sort Columns</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="warning">Sort Columns</el-button> -->
-    <!-- Sort Btn -->
   </div>
 </template>
 

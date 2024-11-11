@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id || !key || !qty || !total_cost || !prev_cost || !cost_column || !quantity_column)
-    return { statusCode: 400, statusMessage: 'Required: store_id, key, qty, total_cost, prev_cost, cost_column, quantity_column.' }
+    return { statusCode: 400, statusMessage: 'Required parameters are missing.' }
 
   //Check if this user has access rights to this store
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   //Check if this worker has permission to commit this action
   if(isValidWorker) {
     const permissions = await getWorkerPermissions(authUser.worker.id)
-    if(!permissions.recieving)
+    if(!permissions.receiving)
       return { statusCode: 400, statusMessage: `You do not have the rights to commit this action.` }
   }
 
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
       store: { connect: { id: store_id } },
       user: { connect: { id: user_id } },
       timestamp: timestamp ? timestamp : new Date(),
-      action: 'recieving',
+      action: 'receiving',
       before: {cost: prev_cost},
       after: {name: item[name_column], qty: qty, total_cost: parseFloat(total_cost).toFixed(2), cost: item[cost_column]},
       item_id: parseInt(key),

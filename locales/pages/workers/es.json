@@ -1,1 +1,16 @@
-{}
+{
+  "label": {
+    "create worker": "Crear Trabajador",
+    "edit user": "Editar Usuario",
+    "delete user": "Borrar Usuario",
+    "add item": "Agregar Artículo",
+    "edit item": "Editar Artículo",
+    "delete item": "Eliminar Artículo",
+    "make transactions": "Realizar Transacciones",
+    "view log": "Ver Registro",
+    "receiving": "Receptación"
+  },
+  "text": {
+    "delete": "¿Estás seguro de que deseas eliminar el usuario: {name}? Esto no se puede deshacer!"
+  }
+}

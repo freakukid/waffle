@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id)
-    throw new Error(`Required: store_id.`)
+    throw new Error(`Required parameters are missing.`)
   
   //Check if this user has access rights to this store
   if(!isStoreOwner(authUser, store_id) && !isStoreWorker(authUser, store_id))

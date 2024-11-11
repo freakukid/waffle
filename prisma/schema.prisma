@@ -151,7 +151,7 @@ model Permission {
 
   view_log          Boolean     @default(true)
   make_transactions Boolean     @default(true)
-  recieving         Boolean     @default(false)
+  receiving         Boolean     @default(false)
 }
 
 // Layaway belongs to one store (many to one)

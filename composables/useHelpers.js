@@ -1,5 +1,5 @@
 export default () => {
-  const { formatDate } = useFormatter()
+  const { $t, $td } = useNuxtApp()
   
   const copyToClipboard = (text) => {
     const textArea = document.createElement('textarea')
@@ -12,24 +12,24 @@ export default () => {
 
   function getLogDescription(logs) {
     for (const log of logs) {
-      log.date = formatDate(log.timestamp)
+      log.date = $td(log.timestamp, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   
       //Setup data
       if(log.action === 'import')
-        log.description = `<b style="color: green">Imported</b> an excel file to create inventory.`
+        log.description = $t('import')
       else if(log.action === 'add_column')
-        log.description = `<b style="color: green">Added</b> a new column: <b style="color: white">${log.after.title}</b>`
+        log.description = $t('add_column', { after: log.after.title })
       else if(log.action === 'edit_column') {
         let html = ``
         for (let beforeString in log.after) {
           const afterString = log.after[beforeString]
-          html += `<div><b style="color: yellow">Edited</b> a column from <b style="color: white">${beforeString}</b> to <b style="color: white">${afterString}</b></div>`
+          html += $t('edit_column', { before: beforeString, after: afterString })
         }
         log.description = html
       } else if(log.action === 'delete_column')
-        log.description = `<b style="color: red">Deleted</b> a column: <b style="color: white">${log.before.title}</b>`
+        log.description = $t('delete_column', { before: log.before.title })
       else if(log.action === 'add_row') {
-        let html = `<span><b style="color: green">Added</b> new item:</span>`
+        let html = $t('add_row')
         for (let column in log.after) {
           const value = log.after[column]
           if(value) {
@@ -38,17 +38,23 @@ export default () => {
         }
         log.description = html
       } else if(log.action === 'edit_row') {
-        let html = `<b style="color: yellow">Edited</b> <b>${log.before.name ? log.before.name : 'an item'}</b> from:`
+        let html = ''
+        if(log.before.name) {
+          html = $t('edit_row_1', { before: log.before.name })
+        } else {
+          html = $t('edit_row_2')
+        }        
+        
         for (let column in log.before.item) {
           const beforeValue = log.before.item[column]
           const afterValue = log.after.item[column]
           if(beforeValue !== afterValue) {
-            html += `<div>${column}: <b>${beforeValue}</b> to <b>${afterValue}</b></div>`
+            html += $t('edit_row_3', { column: column, before: beforeValue, after: afterValue })
           }
         }
         log.description = html
       } else if(log.action === 'delete_row') {
-        let html = `<span><b style="color: red">Deleted</b> an item:</span>`
+        let html = $t('delete_row')
         for (let column in log.before) {
           const value = log.before[column]
           if(value) {
@@ -56,12 +62,8 @@ export default () => {
           }
         }
         log.description = html
-      } else if(log.action === 'recieving') {
-        let html = `
-          <span><b style="color: green">Recieved</b> <b>${log.after.name}</b></span>
-          <div>Recieved Quantity: <b style="color: green">+${log.after.qty}</b></div>
-          <div>Total Cost of Recieved Items: ${log.after.total_cost}</div>
-          <div>Cost Per Item: From ${log.before.cost} to <b>${log.after.cost}</b></div>`
+      } else if(log.action === 'receiving') {
+        let html = $t('receiving', { name: log.after.name, qty: log.after.qty, total_cost: log.after.total_cost, before_cost: log.before.cost, after_cost: log.after.cost })
   
         log.description = html
       }

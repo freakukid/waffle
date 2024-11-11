@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   //Check if we have required fields
   if (!store_id)
-    throw new Error(`Required: store_id.`)
+    throw new Error(`Required parameters are missing.`)
 
   //Check if this user has access rights to view workers
   if(!isStoreOwner(authUser, store_id))
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
           delete_item: true,
           make_transactions: true,
           view_log: true,
-          recieving: true
+          receiving: true
         }
       }
     },

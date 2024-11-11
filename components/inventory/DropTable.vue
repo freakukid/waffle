@@ -1,36 +1,29 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Delete Table" width="300">
-      <p class="text-center">The following will be deleted:</p>
+    <el-dialog v-model="popup" :title="$t(`title.delete table`)" width="300">
+      <p class="text-center">{{$t(`text.the following will be deleted:`)}}</p>
       <ul class="list-disc w-44 my-4 mx-auto">
-        <li>Inventory</li>
-        <li>Transaction History</li>
-        <li>Layaway Transactions</li>
-        <li>Inventory Logs</li>
+        <li>{{$t(`text.inventory`)}}</li>
+        <li>{{$t(`text.inventory logs`)}}</li>
+        <li>{{$t(`text.transaction history`)}}</li>
+        <li>{{$t(`text.layaway transactions`)}}</li>
       </ul>
 
-      <p class="text-center text-red-400"><b>This cannot be undone!</b></p>
+      <p class="text-center text-red-400"><b>{{$t(`text.this cannot be undone!`)}}</b></p>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
 
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled type="danger">Drop Table</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled type="danger">{{$t(`label.delete`)}}</el-button>
           </el-tooltip>
-          <el-button v-else :loading="loading.dropTable" type="danger" @click="dropTable()">Drop Table</el-button>
+          <el-button v-else :loading="loading.dropTable" type="danger" @click="dropTable()">{{$t(`label.delete`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Drop Table Btn -->
-    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button disabled type="danger">Drop Table</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup" type="danger">Drop Table</el-button> -->
-    <!-- Drop Table Btn -->
   </div>
 </template>
 

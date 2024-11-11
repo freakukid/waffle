@@ -1,1 +1,38 @@
-{}
+{
+  "title": {
+    "item recieved": "Artículo Recibido",
+    "cost per item": "Costo Por Artículo",
+    "total cost": "Costo Total",
+    "quantity received": "Cantidad Recibida",
+    "add item": "Agregar Artículo",
+    "edit item": "Editar Artículo",
+    "delete item": "Eliminar Artículo",
+    "add column": "Agregar Columna",
+    "edit columns": "Editar Columnas",
+    "sort columns": "Ordenar Columnas",
+    "link columns": "Vincular Columnas",
+    "delete column": "Eliminar Columna",
+    "export table": "Exportar Tabla",
+    "delete table": "Eliminar Tabla",
+    "drop table": "Eliminar Tabla",
+    "search by": "Buscar Por",
+    "sort ascending": "Ordenar Ascendente",
+    "sort descending": "Ordenar Descendente"
+  },
+  "label": {
+    "column": "Columna",
+    "import inventory by excel file": "Importar Inventario Mediante Archivo Excel"
+  },
+  "text": {
+    "You can either submit cost per item or total cost of all items received": "Puede enviar el costo por artículo o el costo total de todos los artículos recibidos.",
+    "please wait until inventory set by your employer": "Por favor espere hasta que su empleador establezca el inventario.",
+    "are you sure you want to delete the following item?": "¿Está seguro de que desea eliminar el siguiente elemento?",
+    "this will delete the following data:": "Esto eliminará los siguientes datos:",
+    "the following will be deleted:": "Se suprimirá lo siguiente:",
+    "this cannot be undone!": "¡Esto no se puede deshacer!",
+    "inventory": "Inventario",
+    "inventory logs": "Registros de Inventario",
+    "transaction history": "Historial de Transacciones",
+    "layaway transactions": "Transacciones de Pago a Plazos"
+  }
+}

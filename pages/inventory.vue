@@ -7,7 +7,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: ['unauth', 'store-required']
+  middleware: ['unauth', 'store-required', 'language']
 })
 //Imports
 const { getAuthUser } = useAuth()

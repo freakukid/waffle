@@ -9,7 +9,7 @@
         </div>
         <div v-else style="height: calc(100vh - 215px); width: calc(100vw - 140px); padding-top: 32px;">
           <!-- TABLE ACTIONS -->
-          <OperationsRecieving ref="recievingRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
+          <OperationsReceiving ref="receivingRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryAddRow ref="addRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryEditRow ref="editRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryDeleteRow ref="deleteRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
@@ -24,71 +24,71 @@
           <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
             <el-dropdown placement="bottom-start" trigger="click">
               <span class="p-2 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
-                Menu
+                {{$t(`label.menu`)}}
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Item
+                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add item`)}}
                     </div>
                   </el-tooltip>
 
                   <el-dropdown-item v-else @click="handleRowClick('add')">
-                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Item
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add item`)}}
                   </el-dropdown-item>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Column
+                      <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add column`)}}
                     </div>
                   </el-tooltip>
 
                   <el-dropdown-item divided v-else @click="handleColumnClick('add', column)">
-                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> Add Column
+                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add column`)}}
                   </el-dropdown-item>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                      <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> Edit Columns
+                      <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{$t(`title.edit columns`)}}
                     </div>
                   </el-tooltip>
 
                   <el-dropdown-item v-else @click="handleColumnClick('edit', column)">
-                    <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> Edit Columns
+                    <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{$t(`title.edit columns`)}}
                   </el-dropdown-item>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                      <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> Sort Columns
+                      <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{$t(`title.sort columns`)}}
                     </div>
                   </el-tooltip>
 
                   <el-dropdown-item v-else @click="handleColumnClick('sort', column)">
-                    <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> Sort Columns
+                    <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{$t(`title.sort columns`)}}
                   </el-dropdown-item>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                      <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                      <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.link columns`)}}
                     </div>
                   </el-tooltip>
 
                   <el-dropdown-item v-else @click="registerColumnsRef.openPopup()">
-                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.link columns`)}}
                   </el-dropdown-item>
 
                   <el-dropdown-item divided @click="exportTableRef.outputExcelFile()">
-                    <Icon class="mr-3 mt-[1px]" name="vscode-icons:file-type-excel" /> Export Table
+                    <Icon class="mr-3 mt-[1px]" name="vscode-icons:file-type-excel" /> {{$t(`title.export table`)}}
                   </el-dropdown-item>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                      <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> Drop Table
+                      <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> {{$t(`title.drop table`)}}
                     </div>
                   </el-tooltip>
                   <el-dropdown-item v-else @click="dropTableRef.openPopup()">
-                    <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> Drop Table
+                    <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> {{$t(`title.drop table`)}}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -96,7 +96,7 @@
 
             <!-- SEARCH -->
             <div class="max-w-sm mx-auto w-full">
-              <el-input v-model="form.search.query" size="large" placeholder="Search" clearable>
+              <el-input v-model="form.search.query" size="large" :placeholder="$t(`label.search`)" clearable>
                 <template #suffix>
                   <el-dropdown placement="bottom-end" trigger="click">
                     <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
@@ -104,7 +104,7 @@
                     </span>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <div class="text-base py-2 px-3"><label>Search by</label></div>
+                        <div class="text-base py-2 px-3"><label>{{$t(`title.search by`)}}</label></div>
                         <el-checkbox-group v-model="form.search.checked" class="flex flex-col" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
                           <el-checkbox v-for="column in store.inventory.columns" :key="column" class="!mx-0 px-4 !h-10" :label="column" :value="column">{{ column }}</el-checkbox>
                         </el-checkbox-group>
@@ -120,25 +120,25 @@
 
           <!-- TABLE -->
           <el-table v-if="inventory.length" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }" border>
-            <el-table-column label="Operations" width="140">
+            <el-table-column :label="$t(`label.operations`)" width="140">
               <template #header>
                 <div class="flex items-center gap-1 w-full">
-                  <div class="text-center w-full">Operations</div>
+                  <div class="text-center w-full">{{$t(`label.operations`)}}</div>
                 </div>
               </template>
 
               <template #default="scope">
                 <div class="flex justify-center">
-                  <el-tooltip v-if="!store.inventory.name_column || !store.inventory.quantity_column || !store.inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
+                  <el-tooltip v-if="!store.inventory.name_column || !store.inventory.quantity_column || !store.inventory.cost_column" :content="$t(`tippy.name, quantity, cost column must be registered before receiving`)" placement="top">
                     <el-button disabled link>
                       <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
                     </el-button>
                   </el-tooltip>
-                  <el-button v-else link @click="handleRowClick('recieving', scope.row)">
+                  <el-button v-else link @click="handleRowClick('receiving', scope.row)">
                     <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
                   </el-button>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <el-button class="!ml-0" disabled link>
                       <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
                     </el-button>
@@ -147,7 +147,7 @@
                     <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
                   </el-button>
 
-                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                  <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                     <el-button class="!ml-0" disabled link type="danger">
                       <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
                     </el-button>
@@ -170,17 +170,17 @@
                     </span>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> Sort Ascending</el-dropdown-item>
-                        <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> Sort Descending</el-dropdown-item>
+                        <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> {{$t(`title.sort ascending`)}}</el-dropdown-item>
+                        <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> {{$t(`title.sort descending`)}}</el-dropdown-item>
                         
-                        <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
+                        <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                           <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                            <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> Delete Column
+                            <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{$t(`title.delete column`)}}
                           </div>
                         </el-tooltip>
 
                         <el-dropdown-item v-else @click="handleColumnClick('delete', column)">
-                          <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> Delete Column
+                          <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{$t(`title.delete column`)}}
                         </el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
@@ -226,7 +226,7 @@ const addColRef = ref(null)
 const editColRef = ref(null)
 const deleteColRef = ref(null)
 const sortColRef = ref(null)
-const recievingRowRef = ref(null)
+const receivingRowRef = ref(null)
 const exportTableRef = ref(null)
 const dropTableRef = ref(null)
 const registerColumnsRef = ref(null)
@@ -296,8 +296,8 @@ function handleRowClick(type, row) {
     editRowRef.value.openPopup(row)
   } else if(type === 'delete') {
     deleteRowRef.value.openPopup(row)
-  } else if(type === 'recieving') {
-    recievingRowRef.value.openPopup(row)
+  } else if(type === 'receiving') {
+    receivingRowRef.value.openPopup(row)
   }
 }
 

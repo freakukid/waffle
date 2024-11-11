@@ -1,30 +1,23 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Edit Column">
+    <el-dialog v-model="popup" :title="$t(`title.edit columns`)">
       <el-form :model="form.value" label-position="top" @submit.prevent="editColumn()">
-        <el-form-item v-for="(column, index) in props.inventory.columns" :key="column" :label="`Column ${index+1}`">
+        <el-form-item v-for="(column, index) in props.inventory.columns" :key="column" :label="`${$t('label.column')} ${index+1}`">
           <el-input v-model="form.value[column]" :value="form.value[column]" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled type="warning">Edit</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled type="warning">{{$t(`label.edit`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="warning" @click="editColumn()" :loading="loading.editColumn">Edit</el-button>
+          <el-button v-else type="warning" @click="editColumn()" :loading="loading.editColumn">{{$t(`label.edit`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Edit Btn -->
-    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button disabled type="warning">Edit Column</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="warning">Edit Column</el-button> -->
-    <!-- Edit Btn -->
   </div>
 </template>
 

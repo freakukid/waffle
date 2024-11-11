@@ -34,7 +34,7 @@ export default () => {
         delete_item: true,
         make_transactions: true,
         view_log: true,
-        recieving: true,
+        receiving: true,
       }
     })
       

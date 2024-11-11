@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Add Column" width="300" @opened="focusInput">
+    <el-dialog v-model="popup" :title="$t(`title.add column`)" width="300" @opened="focusInput">
       <el-form :model="form" @submit.prevent="addColumn()">
         <el-form-item prop="name">
           <el-input v-model="form.name" ref="addColumnInput" autocomplete="off" />
@@ -9,23 +9,16 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
 
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-            <el-button disabled type="success">Add Column</el-button>
+          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+            <el-button disabled type="success">{{$t(`label.add`)}}</el-button>
           </el-tooltip>
-          <el-button v-else type="success" @click="addColumn()" :loading="loading.addColumn">Add Column</el-button>
+          <el-button v-else type="success" @click="addColumn()" :loading="loading.addColumn">{{$t(`label.add`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Add Btn -->
-    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button disabled type="success">Add Column</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Add Column</el-button> -->
-    <!-- Add Btn -->
   </div>
 </template>
 

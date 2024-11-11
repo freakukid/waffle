@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   
   //Check if we have required fields
   if (!name)
-    return { statusCode: 400, statusMessage: `Required: name.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
 
   //Check if store name is at least 2 characters long
   if(name.length < 2)

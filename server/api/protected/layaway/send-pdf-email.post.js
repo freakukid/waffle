@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   
   //Check if we have required fields
   if (!pdf || !store_id || !store_name || !email || !invoice_id)
-    return { statusCode: 400, statusMessage: `Required: pdf, store_id, store_name, email, invoice_id.` }
+    return { statusCode: 400, statusMessage: `Required parameters are missing.` }
 
   //Check if this user has access rights to this store
   if(!isStoreOwner(authUser, store_id) && !isValidWorker)

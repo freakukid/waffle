@@ -41,15 +41,6 @@
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Receiving Btn -->
-    <!-- <el-tooltip v-if="!inventory.name_column || !inventory.quantity_column || !inventory.cost_column" content="Name, Quantity, Cost Column must be registered before recieving." placement="top">
-      <el-button disabled type="success">Recieving</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">
-      <span>Recieving</span>
-    </el-button> -->
-    <!-- Receiving Btn -->
   </div>
 </template>
 
@@ -134,7 +125,7 @@ async function recieveItem() {
   const isUserOnline = await offlineStore.tryPingingServer()
 
   if(isUserOnline) {
-    inventory = await handleInventoryRequest({ path: 'recieving', data: postData })
+    inventory = await handleInventoryRequest({ path: 'receiving', data: postData })
   } else {
     //Setup fake data to render
     const { getAuthUser } = useAuth()
@@ -145,13 +136,13 @@ async function recieveItem() {
     const fakeLogData = {
       timestamp: postData.timestamp,
       user: { name: user.name },
-      action: 'recieving',
+      action: 'receiving',
       before: { cost: prevCost },
       after: { name: item[name_column], qty: qty, total_cost: parseFloat(totalCost).toFixed(2), cost: newCost },
       item_id: key
     }
 
-    offlineStore.addPostRequest('inventory', 'recieving', postData, { log: fakeLogData, qty: qty, cost: newCost })
+    offlineStore.addPostRequest('inventory', 'receiving', postData, { log: fakeLogData, qty: qty, cost: newCost })
     ElNotification({ title: 'Offline Success', message: `Added to the offline queue. Changes will take effect when you're back online.`, type: 'success'})
   }
 

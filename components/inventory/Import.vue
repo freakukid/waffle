@@ -6,10 +6,10 @@
 
     <!-- Import Btn -->
     <div class="mt-32">
-      <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-        <el-button disabled type="primary">Import Inventory by Excel File</el-button>
+      <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+        <el-button disabled type="primary">{{$t(`label.import inventory by excel file`)}}</el-button>
       </el-tooltip>
-      <el-button v-else @click="fileInput.click()" type="primary">Import Inventory by Excel File</el-button>
+      <el-button v-else @click="fileInput.click()" type="primary">{{$t(`label.import inventory by excel file`)}}</el-button>
     </div>
     <!-- Import Btn -->
   </div>
