@@ -1,59 +1,54 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" :title="`${type} Customer`" @opened="focusInput()">
+    <el-dialog v-model="popup" :title="$t(`label.${type} Customer`)" @opened="focusInput()">
       
       <el-form id="form" ref="formRef" :model="form" :rules="rules" label-width="auto" label-position="top" @submit.prevent>
-        <el-form-item label="Name" prop="name">
+        <el-form-item :label="$t(`label.name`)" prop="name">
           <el-input v-model="form.name" ref="nameRef" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Email" prop="email">
+        <el-form-item :label="$t(`label.email`)" prop="email">
           <el-input v-model="form.email" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Phone Number" prop="phone">
+        <el-form-item :label="$t(`label.phone number`)" prop="phone">
           <el-input v-model="form.phone" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Company Name" prop="company">
+        <el-form-item :label="$t(`label.company`)" prop="company">
           <el-input v-model="form.company" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Address" prop="address">
+        <el-form-item :label="$t(`label.address`)" prop="address">
           <el-input v-model="form.address" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="City" prop="city">
+        <el-form-item :label="$t(`label.city`)" prop="city">
           <el-input v-model="form.city" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Zip Code" prop="zipcode">
+        <el-form-item :label="$t(`label.zip code`)" prop="zipcode">
           <el-input v-model="form.zipcode" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="State" prop="state">
+        <el-form-item :label="$t(`label.state`)" prop="state">
           <el-input v-model="form.state" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-form-item label="Country" prop="country">
+        <el-form-item :label="$t(`label.country`)" prop="country">
           <el-input v-model="form.country" type="text" autocomplete="off" />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-button :loading="loading" native-type="submit" @click="validateForm">{{type}} Customer</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-button :loading="loading" native-type="submit" @click="validateForm">{{$t(`label.${type}`)}}</el-button>
         </div>
       </template>
     </el-dialog>
     <!-- Popup -->
-
-    <!-- Customer Btn -->
-    <!-- <el-button v-if="type === 'Create'" @click="openPopup(true)" type="success">Create Customer</el-button>
-    <el-button v-else @click="openPopup(true)" type="warning">Edit Customer</el-button> -->
-    <!-- Customer Btn -->
   </div>
 </template>
 

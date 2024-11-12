@@ -112,7 +112,6 @@ definePageMeta({
 //Imports
 const { sendNotification, sendFrontendNotification } = useHelpers()
 const { validateUsername, validateOptionalEmail } = useValidator()
-const { sendNotification } = useHelpers()
 const { isBoss } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const pinia = useStore()

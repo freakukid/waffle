@@ -21,10 +21,11 @@
   },
   "label": {
     "column": "Columna",
-    "import inventory by excel file": "Importar Inventario Mediante Archivo Excel"
+    "import inventory by excel file": "Importar Inventario Mediante Archivo Excel",
+    "or": "o"
   },
   "text": {
-    "You can either submit cost per item or total cost of all items received": "Puede enviar el costo por artículo o el costo total de todos los artículos recibidos.",
+    "please provide either the cost for each item or the total cost for all items received": "Proporcione el costo de cada artículo o el costo total de todos los artículos recibidos",
     "please wait until inventory set by your employer": "Por favor espere hasta que su empleador establezca el inventario.",
     "are you sure you want to delete the following item?": "¿Está seguro de que desea eliminar el siguiente elemento?",
     "this will delete the following data:": "Esto eliminará los siguientes datos:",

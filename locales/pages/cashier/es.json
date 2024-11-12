@@ -1,1 +1,39 @@
-{}
+{
+  "title": {
+    "Create Customer": "Crear Cliente",
+    "Link Columns": "Columnas de Enlace",
+    "Cashier Settings": "Configuración del Cajero"
+  },
+  "label": {
+    "Search Customer": "Buscar Cliente",
+    "Search Product": "Buscar Producto",
+    "Quantity": "Cantidad",
+    "Price": "Precio",
+    "Savings": "Ahorros",
+    "Subtotal Price": "Precio Subtotal",
+    "Tax": "Impuesto",
+    "Total": "Total",
+    "Total Price": "Precio Total",
+    "Cash": "Dinero",
+    "Credit Card": "Tarjeta de Crédito",
+    "Check": "Cheque",
+    "Customer": "Cliente",
+    "Company": "Compañía",
+    "Print Receipt After Transaction": "Imprimir Recibo Después de la Transacción",
+    "Create Layaway": "Crear Layaway",
+    "Create Transaction": "Crear Transacción",
+    "Create Customer": "Crear Cliente",
+    "Edit Customer": "Editar Cliente",
+    "Feature Disabled": "Característica Deshabilitado",
+    "Return to Dashboard": "Regresar al Panel de Control",
+    "Payment Method": "Método de Pago",
+    "Change Due": "Cambio Debido",
+    "Check Number": "Número de Cheque",
+    "Submit Payment": "Enviar Pago",
+    "Create": "Crear",
+    "No Product": "Sin Producto"
+  },
+  "text": {
+    "The cashier feature is not yet activated, please wait for the manager to enable it": "La función de cajero aún no está activada, espere a que el administrador la habilite."
+  }
+}

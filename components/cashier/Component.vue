@@ -5,34 +5,34 @@
       <div class="flex items-center flex-nowrap gap-2 bg-[#090909] py-2 px-6 mb-2 rounded-t-[6px]">
         <el-dropdown placement="bottom-start" trigger="click">
           <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
-            Menu
+            {{$t(`label.menu`)}}
           </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item v-if="isLayaway" @click="createCustomerRef.openPopup(true)">
-                <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> Create Customer
+                <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> {{$t(`title.Create Customer`)}}
               </el-dropdown-item>
               
               <div v-if="isBossAccount">
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
                   <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.Link Columns`)}}
                   </div>
                 </el-tooltip>
 
                 <el-dropdown-item v-else :divided="isLayaway" @click="registerColumnsRef.openPopup()">
-                  <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> Link Columns
+                  <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.Link Columns`)}}
                 </el-dropdown-item>
               </div>
               
               <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
                 <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                  <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> Cashier Settings
+                  <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> {{$t(`title.Cashier Settings`)}}
                 </div>
               </el-tooltip>
 
               <el-dropdown-item v-else @click="cashierSettingsRef.openPopup()">
-                <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> Cashier Settings
+                <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> {{$t(`title.Cashier Settings`)}}
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -40,18 +40,15 @@
 
         <!-- SELECT -->
         <div class="w-full flex gap-2">
-          <el-select v-if="isLayaway" class="max-w-52" :model-value="customer" value-key="name" filterable remote reserve-keyword clearable placeholder="Search Customer" :remote-method="filterCustomer" @change="$emit('update:customer', $event)">
+          <el-select v-if="isLayaway" class="max-w-52" :model-value="customer" value-key="name" filterable remote reserve-keyword clearable :placeholder="$t('label.Search Customer')" :remote-method="filterCustomer" @change="$emit('update:customer', $event)">
             <el-option v-for="item in customers" :key="item" :label="item.name" :value="item">
               <div class="relative">
-                <div class="absolute -top-1 -left-3">
-                  <el-tag size="small" type="success">Customer</el-tag>
-                </div>
-                <div class="pt-4">{{item.name}}</div>
+                <div>{{item.name}}</div>
               </div>
             </el-option>
           </el-select>
 
-          <el-select v-model="form.transaction.query" filterable remote placeholder="Search Product" :remote-method="filterInventory" @change="addItemToTransaction">
+          <el-select v-model="form.transaction.query" filterable remote :placeholder="$t('label.Search Product')" :remote-method="filterInventory" @change="addItemToTransaction">
             <el-option v-for="(item, key) in options" :key="key" :label="item[store.inventory?.name_column]" :value="key" />
           </el-select>
         </div>
@@ -65,13 +62,13 @@
       <!-- TOOLBAR -->
 
       <!-- ITEMS -->
-      <el-table :data="Object.keys(form.transaction.items).map(key => form.transaction.items[key])" style="width: 100%; height: 100%;" table-layout="auto" >
-        <el-table-column label="Quantity">
+      <el-table :data="Object.keys(form.transaction.items).map(key => form.transaction.items[key])" style="width: 100%; height: 100%;" table-layout="auto" :empty-text="$t('label.No Product')">
+        <el-table-column :label="$t('label.Quantity')">
           <template #default="scope">
             <el-input-number v-model="scope.row.__qty" :min="1" @change="calcTransactionTotal()" />
           </template>
         </el-table-column>
-        <el-table-column #default="scope" label="Price">
+        <el-table-column #default="scope" :label="$t('label.Price')">
           <span v-if="store.inventory?.discount_column && scope.row[store.inventory?.discount_column] > 0">
             <div>
               <span style="text-decoration: line-through;">{{scope.row[store.inventory?.price_column]}}</span>
@@ -83,11 +80,11 @@
           <div v-else>{{scope.row[store.inventory?.price_column]}}</div>
           
         </el-table-column>
-        <el-table-column :prop="store.inventory?.name_column" label="Name" />
-        <el-table-column label="Operations">
+        <el-table-column :prop="store.inventory?.name_column" :label="$t('label.name')" />
+        <el-table-column :label="$t('label.operations')">
           <template #default="scope">
             <el-button size="small" type="danger" @click="removeItemFromTransaction(scope.row.__key)">
-              Delete
+              {{$t('label.delete')}}
             </el-button>
           </template>
         </el-table-column>
@@ -97,21 +94,21 @@
       <!-- RESULTS -->
       <div id="footer">
         <div>
-          <div v-if="form.transaction.savings !== '0.00'">Savings: {{form.transaction.savings}}</div>
-          <div>Subtotal Price: {{form.transaction.subtotal}}</div>
-          <div>Tax ({{store.tax}}%): {{form.transaction.taxTotal}}</div>
-          <div>Total Price: {{form.transaction.total}}</div>
+          <div v-if="form.transaction.savings !== '0.00'">{{$t('label.Savings')}}: {{form.transaction.savings}}</div>
+          <div>{{$t('label.Subtotal Price')}}: {{form.transaction.subtotal}}</div>
+          <div>{{$t('label.Tax')}} ({{store.tax}}%): {{form.transaction.taxTotal}}</div>
+          <div>{{$t('label.Total Price')}}: {{form.transaction.total}}</div>
         </div>
 
         <el-card v-if="customer" class="text-sm ml-auto" style="width: 250px">
-          <div><b>Customer:</b> {{customer.name}}</div>
-          <div v-if="customer.company"><b>Company:</b> {{customer.company}}</div>
+          <div><b>{{$t('label.Customer')}}:</b> {{customer.name}}</div>
+          <div v-if="customer.company"><b>{{$t('label.Company')}}:</b> {{customer.company}}</div>
         </el-card>
 
-        <el-checkbox v-if="!isLayaway" :model-value="printReceiptAfterTransaction" size="large" border @change="pinia.togglePrintReceipt()">Print Receipt After Transaction</el-checkbox>
+        <el-checkbox v-if="!isLayaway" :model-value="printReceiptAfterTransaction" size="large" border @change="pinia.togglePrintReceipt()">{{$t('label.Print Receipt After Transaction')}}</el-checkbox>
 
-        <el-button v-if="isLayaway" @click="$emit('createLayaway', store, form.transaction)" :disabled="customer && !Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" :loading="loadingTransaction" type="success" style="margin-left: auto;">Create Layaway</el-button>
-        <el-button v-else @click="openPaymentPopup(true)" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" type="success" style="margin-left: auto;">Create Transaction</el-button>
+        <el-button v-if="isLayaway" @click="$emit('createLayaway', store, form.transaction)" :disabled="customer && !Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" :loading="loadingTransaction" type="success" style="margin-left: auto;">{{$t('label.Create Layaway')}}</el-button>
+        <el-button v-else @click="openPaymentPopup(true)" :disabled="!Object.keys(form.transaction.items).some(k => Object.prototype.hasOwnProperty.call(form.transaction.items, k))" type="success" style="margin-left: auto;">{{$t('label.Create Transaction')}}</el-button>
       </div>
       <!-- RESULTS -->
     </div>

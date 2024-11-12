@@ -1,31 +1,31 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Item Received">
+    <el-dialog v-model="popup" :title="$t('title.item received')">
       <label v-if="form.item[inventory.name_column]" class="block text-center text-base"><b>{{form.item[inventory.name_column]}}</b></label>
       <el-form :model="form" @submit.prevent="receiveItem()" style="margin-top: 16px;">
 
-        <div class="text-center mb-2">Qty Received:</div>
+        <div class="text-center mb-2">{{$t('title.quantity received')}}</div>
         <div class="flex items-center justify-center">
           <el-form-item prop="tax">
             <el-input-number v-model="form.qty" />
           </el-form-item>
         </div>
 
-        <p class="text-center mb-2">You can either submit cost per item or total cost of all items received.</p>
+        <p class="text-center mb-2">{{$t('text.please provide either the cost for each item or the total cost for all items received')}}</p>
 
         <div class="flex items-center justify-center gap-4">
           <div>
-            <div class="text-center mb-2">Cost Per Item:</div>
+            <div class="text-center mb-2">{{$t('title.cost per item')}}</div>
             <el-form-item prop="tax">
               <el-input-number v-model="form.costPerItem" :precision="2" @change="form.totalCost = 0" />
             </el-form-item>
           </div>
 
-          <div>or</div>
+          <div>{{$t('label.or')}}</div>
 
           <div>
-            <div class="text-center mb-2">Total Cost:</div>
+            <div class="text-center mb-2">{{$t('title.total cost')}}:</div>
             <el-form-item prop="tax">
               <el-input-number v-model="form.totalCost" :precision="2" @change="form.costPerItem = 0" />
             </el-form-item>
@@ -35,8 +35,8 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="success" @click="receiveItem()" :loading="loading.receive">Receive</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-button type="success" @click="receiveItem()" :loading="loading.receive">{{$t(`label.receive`)}}</el-button>
         </div>
       </template>
     </el-dialog>

@@ -1,6 +1,6 @@
-const { sendNotification, sendFrontendNotification } = useHelpers()
-
 export default () => {
+  const { sendNotification, sendFrontendNotification } = useHelpers()
+
   async function handleGetRequest(url) {
     try {
       return await useFetchApi(url)

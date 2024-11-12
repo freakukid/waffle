@@ -1,15 +1,15 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Payment method" @opened="focusInput(payment)">
-      <div class="text-blue-400 text-center text-xl mb-2"><b>Total: ${{parseFloat(total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+    <el-dialog v-model="popup" :title="$t('label.Payment Method')" @opened="focusInput(payment)">
+      <div class="text-blue-400 text-center text-xl mb-2"><b>{{$t('label.Total')}}: ${{parseFloat(total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
 
       <div class="flex justify-center">
         <el-segmented :model-value="payment" :options="options" @change="$emit('update:payment', $event), focusInput($event)">
           <template #default="{ item }">
             <div class="flex flex-col items-center gap-2 p-2">
               <Icon size="28" :name="item.icon" />
-              <div>{{ item.label }}</div>
+              <div>{{ $t(`label.${item.label}`) }}</div>
             </div>
           </template>
         </el-segmented>
@@ -18,7 +18,7 @@
       <div class="flex justify-center my-4">
         <div v-show="payment === 'cash'">
           <el-input :model-value="cash" ref="cashRef" class="w-60 text-center" placeholder="Cash Given" @input="sanitizeCash" />
-          <div class="text-red-400 text-center text-2xl mt-2"><b v-if="cash && parseFloat(cash) > parseFloat(total)">Change Due: ${{calcChange(cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+          <div class="text-red-400 text-center text-2xl mt-2"><b v-if="cash && parseFloat(cash) > parseFloat(total)">{{$t('label.Change Due')}}: ${{calcChange(cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
         </div>
         <el-radio-group v-if="payment === 'card'" :model-value="card" @change="$emit('update:cash', ''), $emit('update:check', ''), $emit('update:card', $event)">
           <el-radio value="american express">American Express</el-radio>
@@ -28,13 +28,13 @@
         </el-radio-group>
 
         <div v-show="payment === 'check'" class="w-60">
-          <el-input :model-value="check" ref="checkRef" placeholder="Check Number" @input="$emit('update:cash', ''), $emit('update:card', ''), $emit('update:check', $event)" />
+          <el-input :model-value="check" ref="checkRef" :placeholder="$t('label.Check Number')" @input="$emit('update:cash', ''), $emit('update:card', ''), $emit('update:check', $event)" />
         </div>
       </div>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button :disabled="(payment === 'cash' && (!cash || parseFloat(cash) < parseFloat(total))) || (payment === 'card' && !card) || (payment === 'check' && !check)" type="success" @click="$emit('createTransaction')" :loading="loading">Submit Payment</el-button>
+          <el-button :disabled="(payment === 'cash' && (!cash || parseFloat(cash) < parseFloat(total))) || (payment === 'card' && !card) || (payment === 'check' && !check)" type="success" @click="$emit('createTransaction')" :loading="loading">{{$t('label.Submit Payment')}}</el-button>
         </div>
       </template>
     </el-dialog>

@@ -21,10 +21,11 @@
   },
   "label": {
     "column": "Column",
-    "import inventory by excel file": "Import Inventory by Excel File"
+    "import inventory by excel file": "Import Inventory by Excel File",
+    "or": "or"
   },
   "text": {
-    "you can either submit cost per item or total cost of all items received": "You can either submit cost per item or total cost of all items received.",
+    "please provide either the cost for each item or the total cost for all items received": "Please provide either the cost for each item or the total cost for all items received.",
     "please wait until inventory set by your employer": "Please wait until inventory set by your employer.",
     "are you sure you want to delete the following item?": "Are you sure you want to delete the following item?",
     "this will delete the following data:": "This will delete the following data:",
