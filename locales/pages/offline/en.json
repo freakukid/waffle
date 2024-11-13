@@ -1,1 +1,53 @@
-{}
+{
+  "Offline Manager": "Offline Manager",
+  "Pending Inventory Operations": "Pending Inventory Operations",
+  "Pending Transactions": "Pending Transactions",
+  "Pending Layaways": "Pending Layaways",
+  "Pending New Customers": "Pending New Customers",
+  "Nothing in queue!": "Nothing in queue!",
+  "label": {
+    "Date": "Date",
+    "User": "User",
+    "Action": "Action",
+    "Cashier": "Cashier",
+    "Payment": "Payment",
+    "Total": "Total",
+    "Cash": "Cash",
+    "Card": "Card",
+    "Check": "Check",
+    "Change": "Change",
+    "Customer": "Customer",
+    "Company": "Company",
+    "Contact": "Contact",
+    "Name": "Name",
+    "Phone": "Phone",
+    "Email": "Email",
+    "Address": "Address",
+    "Status": "Status",
+    "Paid": "Paid",
+    "Pending": "Pending",
+    "Declined": "Declined",
+    "receiving": "Receiving",
+    "Operations": "Operations",
+    "Items Sold": "Items Sold",
+    "Qty": "Qty",
+    "Price": "Price",
+    "Discount (Base Price) | Percent": "Discount (Base Price) | Percent"
+  },
+  "btn": {
+    "Invoice Menu": "Invoice Menu",
+    "View Invoice": "View Invoice",
+    "Download Invoice": "Download Invoice"
+  },
+  "pdf": {
+    "Invoice": "Invoice",
+    "Customer Email": "Customer Email",
+    "Additional Notes": "Additional Notes",
+    "Text": "Text",
+    "Bold": "Bold",
+    "Add": "Add",
+    "Email Invoice": "Email Invoice",
+    "Download Invoice": "Download Invoice",
+    "View Invoice": "View Invoice"
+  }
+}

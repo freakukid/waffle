@@ -8,105 +8,122 @@
     <!-- Transaction -->
     <el-table v-if="tab === 'transaction'" :data="transactions" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
-      <el-table-column prop="date" label="Date" />
-      <el-table-column prop="name" label="Cashier" />
+      <el-table-column prop="date" :label="$t('label.Date')" />
+      <el-table-column prop="name" :label="$t('label.Name')" />
       <TransactionTable />
 
-      <el-table-column label="Payment">
+      <el-table-column :label="$t('label.Payment')">
         <template #default="scope">
           <div v-if="scope.row.payment === 'cash'">
             <div>
-              <div class="one-line">Cash: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
-              <div v-if="parseFloat(scope.row.change) > 0" class="one-line">Change: ${{scope.row.change}}<b></b></div>
+              <div class="one-line">{{$t('label.Cash')}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+              <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t('label.Change')}}: ${{scope.row.change}}<b></b></div>
             </div>
           </div>
           <div v-if="scope.row.payment === 'card'">
-            <div class="one-line">Card: <b class="capitalize">{{scope.row.card}}</b></div>
+            <div class="one-line">{{$t('label.Card')}}: <b class="capitalize">{{scope.row.card}}</b></div>
           </div>
           <div v-if="scope.row.payment === 'check'">
-            <div class="one-line">Check: <b>{{scope.row.check}}</b></div>
+            <div class="one-line">{{$t('label.Check')}}: <b>{{scope.row.check}}</b></div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="total" label="Total" />
-      <el-table-column prop="profit" label="Profit" />
-      <el-table-column label="Operations">
+      <el-table-column prop="total" :label="$t('label.Total')" />
+      <el-table-column prop="profit" :label="$t('label.Profit')" />
+      <el-table-column :label="$t('label.Operations')">
         <template #default="scope">
           <el-button size="small" type="success" @click="printReceipt(scope.row)">
-            Print Receipt
+            {{$t('btn.Print Receipt')}}
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- Layaway -->
-    <el-table v-if="tab === 'layaway'" :data="layaway" style="width: 100%; height: 100%;" table-layout="auto">
-      <el-table-column prop="id" label="ID" />
-      <el-table-column prop="date" label="Date" />
+    <div v-if="tab === 'layaway'">
+      <el-table :data="layaway" style="width: 100%; height: 100%;" table-layout="auto">
+        <el-table-column prop="id" label="ID" />
+        <el-table-column prop="date" :label="$t('label.Date')" />
 
-      <el-table-column prop="customer.name" label="Customer">
-        <template #default="scope">
-          <div>
-            <div class="truncate"><b>Name:</b> {{scope.row.customer.name}}</div>
-            <div v-if="scope.row.customer.phone" class="truncate"><b>Phone:</b> {{formatPhoneNumber(scope.row.customer.phone)}}</div>
-            <div v-if="scope.row.customer.email" class="truncate"><b>Email:</b> {{scope.row.customer.email}}</div>
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="name" label="Cashier" />
-
-      <TransactionTable />
-
-      <el-table-column prop="total" label="Total" />
-      <el-table-column label="Status">
-        <template #default="scope">
-          <div v-if="scope.row.status === 'paid'">
-            <el-tag size="small" type="success">Paid</el-tag>
-          </div>
-          <div v-if="scope.row.status === 'pending'">
-            <el-tag size="small" type="warning">Pending</el-tag>
-          </div>
-          <div v-if="scope.row.status === 'declined'">
-            <el-tag size="small" type="danger">Declined</el-tag>
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Operations">
-        <template #default="scope">
-          <div class="flex flex-col justify-center gap-3">
-            <div v-if="scope.row.status !== 'paid'">
-              <el-button size="small" type="success" class="w-full" @click="openPaymentPrompt(scope.row)">
-                Confirm Payment
-              </el-button>
-            </div>
-            <div v-if="scope.row.status !== 'pending'">
-              <el-button size="small" type="warning" class="w-full" @click="setStatus(scope.row, 'pending')">
-                Set Pending
-              </el-button>
-            </div>
-            <div v-if="scope.row.status !== 'declined'">
-              <el-button size="small" type="danger" class="w-full" @click="setStatus(scope.row, 'declined')">
-                Cancel Invoice
-              </el-button>
-            </div>
+        <el-table-column prop="customer.name" :label="$t('label.Customer')">
+          <template #default="scope">
             <div>
-              <el-select placeholder="Invoice Menu">
-                <el-option label="View Invoice" value="" @click="pdfComponent.openNotesPopup('view', store, scope.row)" />
-                <el-option label="Download Invoice" value="" @click="pdfComponent.openNotesPopup('download', store, scope.row)" />
-                <el-option label="Email Invoice" value="" @click="pdfComponent.openNotesPopup('email', store, scope.row)" />
-              </el-select>
+              <div class="truncate"><b>{{$t('label.Name')}}:</b> {{scope.row.customer.name}}</div>
+              <div v-if="scope.row.customer.phone" class="truncate"><b>{{$t('label.Phone')}}:</b> {{formatPhoneNumber(scope.row.customer.phone)}}</div>
+              <div v-if="scope.row.customer.email" class="truncate"><b>{{$t('label.Email')}}:</b> {{scope.row.customer.email}}</div>
             </div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="name" :label="$t('label.Cashier')" />
+
+        <TransactionTable />
+
+        <el-table-column prop="total" :label="$t('label.Total')" />
+        <el-table-column :label="$t('label.Status')">
+          <template #default="scope">
+            <div v-if="scope.row.status === 'paid'">
+              <el-tag size="small" type="success">{{$t('label.Paid')}}</el-tag>
+            </div>
+            <div v-if="scope.row.status === 'pending'">
+              <el-tag size="small" type="warning">{{$t('label.Pending')}}</el-tag>
+            </div>
+            <div v-if="scope.row.status === 'declined'">
+              <el-tag size="small" type="danger">{{$t('label.Declined')}}</el-tag>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="Operations">
+          <template #default="scope">
+            <div class="flex flex-col justify-center gap-3">
+              <div v-if="scope.row.status !== 'paid'">
+                <el-button size="small" type="success" class="w-full" @click="openPaymentPrompt(scope.row)">
+                  {{$t('btn.Confirm Payment')}}
+                </el-button>
+              </div>
+              <div v-if="scope.row.status !== 'pending'">
+                <el-button size="small" type="warning" class="w-full" @click="setStatus(scope.row, 'pending')">
+                  {{$t('btn.Set Pending')}}
+                </el-button>
+              </div>
+              <div v-if="scope.row.status !== 'declined'">
+                <el-button size="small" type="danger" class="w-full" @click="setStatus(scope.row, 'declined')">
+                  {{$t('btn.Cancel Invoice')}}
+                </el-button>
+              </div>
+              <div>
+                <el-select :placeholder="$t('btn.Invoice Menu')">
+                  <el-option :label="$t('btn.View Invoice')" value="" @click="pdfComponent.openPopup('view', store, scope.row)" />
+                  <el-option :label="$t('btn.Download Invoice')" value="" @click="pdfComponent.openPopup('download', store, scope.row)" />
+                  <el-option :label="$t('btn.Email Invoice')" value="" @click="pdfComponent.openPopup('email', store, scope.row)" />
+                </el-select>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <!-- Customer -->
     <div v-if="tab === 'customer'">
-      <div class="mb-2">
-        <CustomerModifyCustomer :storeId="storeId" @addCustomer="addCustomer" />
+      <div class="flex items-center flex-nowrap gap-2 bg-[#090909] py-2 px-6 mb-2 rounded-t-[6px]">
+        <el-dropdown placement="bottom-start" trigger="click">
+          <span class="p-2 mr-4 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
+            {{$t(`label.menu`)}}
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="createCustomerRef.openPopup(true)">
+                <Icon class="text-green-500 mr-3 mt-[1px]" name="material-symbols:person-add-rounded" /> {{$t(`label.Create Customer`)}}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+
+      <div>
+        <CustomerModifyCustomer ref="createCustomerRef" :storeId="storeId" @addCustomer="addCustomer" />
         <CustomerModifyCustomer ref="editCustomerRef" type="Edit"
           :id="form.customer?.id"
           :name="form.customer?.name"
@@ -123,17 +140,18 @@
         />
         <CustomerDeleteCustomer ref="deleteCustomerRef" :storeId="storeId" :id="form.customer?.id" :name="form.customer?.name" @deleteCustomer="deleteCustomer" />
       </div>
+
       <el-table :data="customers" style="width: 100%; height: 100%;" table-layout="auto">
         <el-table-column prop="id" label="ID" />
-        <el-table-column prop="name" label="Customer" />
-        <el-table-column prop="company" label="Company" />
-        <el-table-column label="Contact">
+        <el-table-column prop="name" :label="$t('label.Customer')"  />
+        <el-table-column prop="company" :label="$t('label.Company')" />
+        <el-table-column :label="$t('label.Contact')">
           <template #default="scope">
             <div v-if="scope.row.email">{{scope.row.email}}</div>
             <div v-if="scope.row.phone">{{formatPhoneNumber(scope.row.phone)}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="Address">
+        <el-table-column :label="$t('label.Address')">
           <template #default="scope">
             <div v-if="scope.row.address">
               <div>{{scope.row.address}}</div>
@@ -146,17 +164,17 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="Operations" width="140">
+        <el-table-column :label="$t('label.Operations')" width="140">
           <template #default="scope">
             <div class="flex flex-col justify-center gap-3">
               <div>
                 <el-button size="small" type="warning" class="w-full" @click="openCustomerEdit(scope.row)">
-                  Edit Customer
+                  {{$t('label.Edit Customer')}}
                 </el-button>
               </div>
               <div>
                 <el-button size="small" type="danger" class="w-full" @click="form.customer = scope.row, deleteCustomerRef.openPopup(true)">
-                  Delete Customer
+                  {{$t('label.Delete Customer')}}
                 </el-button>
               </div>
             </div>
@@ -185,7 +203,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: ['unauth', 'store-required']
+  middleware: ['unauth', 'store-required', 'language']
 })
 
 //Imports
@@ -196,6 +214,7 @@ const { formatDate, formatPhoneNumber } = useFormatter()
 const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
+const { $t, $td } = useNuxtApp()
 
 //Data
 const storeId = computed(pinia.getStore)
@@ -207,13 +226,14 @@ const store = ref(null)
 const inventory = ref(null)
 const tab = ref('transaction')
 const options = [
-  { label: 'Transaction', value: 'transaction', icon: 'uil:transaction' },
-  { label: 'Layaway', value: 'layaway', icon: 'hugeicons:invoice-03'},
-  { label: 'Customer', value: 'customer', icon: 'material-symbols:person-rounded'}
+  { label: $t('tabs.Transaction'), value: 'transaction', icon: 'uil:transaction' },
+  { label: $t('tabs.Layaway'), value: 'layaway', icon: 'hugeicons:invoice-03'},
+  { label: $t('tabs.Customer'), value: 'customer', icon: 'material-symbols:person-rounded'}
 ]
 
 //Element Reference
 const paymentTypeRef = ref(null)
+const createCustomerRef = ref(null)
 const editCustomerRef = ref(null)
 const deleteCustomerRef = ref(null)
 const pdfComponent = ref(null)
@@ -411,7 +431,7 @@ function doCalc(items) {
     const {subtotal, noDiscountSubtotal, savings, profit} = calcSubtotal(transaction.items)
     const taxTotal = calcTaxTotal(subtotal, transaction.tax)
     const total = calcTotal(subtotal, taxTotal)
-    transaction.date = formatDate(transaction.timestamp)
+    transaction.date = $td(transaction.timestamp, { year: 'numeric', month: 'long', day: 'numeric' })
     transaction.tax = transaction.tax.toFixed(2)
     transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")

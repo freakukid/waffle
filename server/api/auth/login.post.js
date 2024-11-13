@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
     userData.is_boss = false
   }
 
-  await setUserSession(event, { user: userData, loggedInAt: new Date() })
+  await setUserSession(event, { user: userData, loggedInAt: new Date() }, { maxAge: 60 * 60 * 24 * 30 })
 
   setResponseStatus(event, 201)
   

@@ -1,1 +1,68 @@
-{}
+{
+  "tabs": {
+    "Transaction": "Transaction",
+    "Layaway": "Layaway",
+    "Customer": "Customer"
+  },
+  "label": {
+    "Date": "Date",
+    "Cashier": "Cashier",
+    "Items Sold": "Items Sold",
+    "Qty": "Qty",
+    "Name": "Name",
+    "Phone": "Phone",
+    "Email": "Email",
+    "Price": "Price",
+    "Discount (Base Price) | Percent": "Discount (Base Price) | Percent",
+    "Payment": "Payment",
+    "Total": "Total",
+    "Profit": "Profit",
+    "Operations": "Operations",
+    "Customer": "Customer",
+    "Company": "Company",
+    "Contact": "Contact",
+    "Address": "Address",
+    "Status": "Status",
+    "Payment Method": "Payment Method",
+    "Card": "Card",
+    "Cash": "Cash",
+    "Change": "Change",
+    "Credit Card": "Credit Card",
+    "Check": "Check",
+    "Submit Payment": "Submit Payment",
+    "Check Number": "Check Number",
+    "Create Customer": "Create Customer",
+    "Edit Customer": "Edit Customer",
+    "Delete Customer": "Delete Customer",
+    "Create": "Create",
+    "Edit": "Edit",
+    "Paid": "Paid",
+    "Pending": "Pending",
+    "Declined": "Declined"
+  },
+  "btn": {
+    "Print Receipt": "Print Receipt",
+    "Confirm Payment": "Confirm Payment",
+    "Set Pending": "Set Pending",
+    "Cancel Invoice": "Cancel Invoice",
+    "Invoice Menu": "Invoice Menu",
+    "View Invoice": "View Invoice",
+    "Download Invoice": "Download Invoice",
+    "Email Invoice": "Email Invoice"
+  },
+  "text": {
+    "Do you wish to permanently delete the customer": "Do you wish to permanently delete the customer: {name}?",
+    "This cannot be undone!": "This cannot be undone!"
+  },
+  "pdf": {
+    "Invoice": "Invoice",
+    "Customer Email": "Customer Email",
+    "Additional Notes": "Additional Notes",
+    "Text": "Text",
+    "Bold": "Bold",
+    "Add": "Add",
+    "Email Invoice": "Email Invoice",
+    "Download Invoice": "Download Invoice",
+    "View Invoice": "View Invoice"
+  }
+}

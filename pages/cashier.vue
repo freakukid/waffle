@@ -6,7 +6,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: ['unauth', 'store-required']
+  middleware: ['unauth', 'store-required', 'language']
 })
 
 //Import
@@ -14,7 +14,7 @@ const pinia = useStore()
 const offlineStore = useOfflineStore()
 const { sendNotification, sendFrontendNotification } = useHelpers()
 const { calcChange } = useCalculations()
-const { formatDate } = useFormatter()
+const { $td } = useNuxtApp()
 const { handleTransactionRequest } = useHandleRequests()
 
 //Ref
@@ -55,7 +55,7 @@ async function createTransaction(store, form) {
     const { getAuthUser } = useAuth()
     const user = getAuthUser()
     const fakeTransaction = {
-      date: formatDate(postData.timestamp),
+      date: $td(postData.timestamp, { year: 'numeric', month: 'long', day: 'numeric' }),
       items: transactionItems,
       tax: tax,
       name: user.name,

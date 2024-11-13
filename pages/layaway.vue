@@ -6,7 +6,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: ['unauth', 'store-required']
+  middleware: ['unauth', 'store-required', 'language']
 })
 
 //Imports
@@ -14,7 +14,7 @@ const pinia = useStore()
 const offlineStore = useOfflineStore()
 const { $eventBus } = useNuxtApp()
 const { sendFrontendNotification } = useHelpers()
-const { formatDate } = useFormatter()
+const { $td } = useNuxtApp()
 const { handleGetRequest, handleLayawayRequest } = useHandleRequests()
 
 //Ref
@@ -108,7 +108,7 @@ async function createLayaway(store, form) {
     const { getAuthUser } = useAuth()
     const user = getAuthUser()
     const fakeLayaway = {
-      date: formatDate(postData.timestamp),
+      date: $td(postData.timestamp, { year: 'numeric', month: 'long', day: 'numeric' }),
       name: user.name,
       customer: customer.value,
       items: transactionItems,

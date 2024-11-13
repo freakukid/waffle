@@ -1,16 +1,16 @@
 <template>
-  <el-table-column label="Items Sold">
-    <el-table-column label="Qty">
+  <el-table-column :label="$t('label.Items Sold')">
+    <el-table-column :label="$t('label.Qty')">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item" class="text-center">{{item.qty}}</div>
       </template>
     </el-table-column>
-    <el-table-column label="Name">
+    <el-table-column :label="$t('label.Name')">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item" class="truncate">{{item.name}}</div>
       </template>
     </el-table-column>
-    <el-table-column label="Price">
+    <el-table-column :label="$t('label.Price')">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item" class="text-center">
           <div v-if="item.discount === 0">{{item.price}}</div>
@@ -19,7 +19,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="Discount (Base Price) | Percent">
+    <el-table-column :label="$t('label.Discount (Base Price) | Percent')">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item">
           <div v-if="item.discount == 0">&nbsp;</div>

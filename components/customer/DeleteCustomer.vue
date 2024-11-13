@@ -1,15 +1,15 @@
 <template>
   <div>
     <!-- Popup -->
-    <el-dialog v-model="popup" title="Delete Customer">
+    <el-dialog v-model="popup" :title="$t('label.Delete Customer')">
       <p style="text-align: center; font-size: 24px;">
-        Are you sure you want to delete customer: <b class="text-red-500">{{name}}</b>? <br> THIS CANNOT BE UNDONE.
+        {{$t(`text.Do you wish to permanently delete the customer`, {name: name})}} <br> {{$t(`text.This cannot be undone!`)}}
       </p>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="popup = false">Cancel</el-button>
-          <el-button type="danger" @click="deleteCustomer()" :loading="loading">Delete</el-button>
+          <el-button @click="popup = false">{{$t(`label.cancel`)}}</el-button>
+          <el-button type="danger" @click="deleteCustomer()" :loading="loading">{{$t(`label.delete`)}}</el-button>
         </div>
       </template>
     </el-dialog>

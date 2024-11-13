@@ -1,1 +1,53 @@
-{}
+{
+  "Offline Manager": "Administrador Sin Conexión",
+  "Pending Inventory Operations": "Operaciones de Inventario Pendientes",
+  "Pending Transactions": "Transacciones Pendientes",
+  "Pending Layaways": "Layaways Pendientes",
+  "Pending New Customers": "Nuevos Clientes Pendientes",
+  "Nothing in queue!": "¡No hay nada en cola!",
+  "label": {
+    "Date": "Fecha",
+    "User": "Usuario",
+    "Action": "Acción",
+    "Cashier": "Cajero",
+    "Payment": "Pago",
+    "Total": "Total",
+    "Cash": "Dinero",
+    "Card": "Tarjeta",
+    "Check": "Cheque",
+    "Change": "Cambio",
+    "Customer": "Cliente",
+    "Company": "Compañía",
+    "Contact": "Contacto",
+    "Name": "Nombre",
+    "Phone": "Teléfono",
+    "Email": "Email",
+    "Address": "Dirección",
+    "Status": "Estatus",
+    "Paid": "Pagado",
+    "Pending": "Pendiente",
+    "Declined": "Rechazado",
+    "receiving": "Receptación",
+    "Operations": "Operaciones",
+    "Items Sold": "Artículos Vendidos",
+    "Qty": "Cantidad",
+    "Price": "Precio",
+    "Discount (Base Price) | Percent": "Descuento (Precio Base) | Porcentaje"
+  },
+  "btn": {
+    "Invoice Menu": "Menú de Facturas",
+    "View Invoice": "Ver Factura",
+    "Download Invoice": "Descargar Factura"
+  },
+  "pdf": {
+    "Invoice": "Factura",
+    "Customer Email": "Email del Cliente",
+    "Additional Notes": "Notas Adicionales",
+    "Text": "Texto",
+    "Bold": "Negrito",
+    "Add": "Agregar",
+    "Email Invoice": "Factura por Email",
+    "Download Invoice": "Descargar Factura",
+    "View Invoice": "Ver Factura"
+  }
+}

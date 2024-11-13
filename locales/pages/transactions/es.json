@@ -1,1 +1,68 @@
-{}
+{
+  "tabs": {
+    "Transaction": "Transacción",
+    "Layaway": "Layaway",
+    "Customer": "Cliente"
+  },
+  "label": {
+    "Date": "Fecha",
+    "Cashier": "Cajero",
+    "Items Sold": "Artículos Vendidos",
+    "Qty": "Cantidad",
+    "Name": "Nombre",
+    "Phone": "Teléfono",
+    "Email": "Email",
+    "Price": "Precio",
+    "Discount (Base Price) | Percent": "Descuento (Precio Base) | Porcentaje",
+    "Payment": "Pago",
+    "Total": "Total",
+    "Profit": "Ganancia",
+    "Operations": "Operaciones",
+    "Customer": "Cliente",
+    "Company": "Compañía",
+    "Contact": "Contacto",
+    "Address": "Dirección",
+    "Status": "Estatus",
+    "Payment Method": "Método de Pago",
+    "Card": "Tarjeta",
+    "Cash": "Dinero",
+    "Change": "Cambio",
+    "Credit Card": "Tarjeta de Crédito",
+    "Check": "Cheque",
+    "Submit Payment": "Enviar Pago",
+    "Check Number": "Número de Cheque",
+    "Create Customer": "Crear Cliente",
+    "Edit Customer": "Editar Cliente",
+    "Delete Customer": "Eliminar Cliente",
+    "Create": "Crear",
+    "Edit": "Editar",
+    "Paid": "Pagado",
+    "Pending": "Pendiente",
+    "Declined": "Rechazado"
+  },
+  "btn": {
+    "Print Receipt": "Imprimir Recibo",
+    "Confirm Payment": "Confirmar Pago",
+    "Set Pending": "Establecer Pendiente",
+    "Cancel Invoice": "Cancelar Factura",
+    "Invoice Menu": "Menú de Facturas",
+    "View Invoice": "Ver Factura",
+    "Download Invoice": "Descargar Factura",
+    "Email Invoice": "Factura por Email"
+  },
+  "text": {
+    "Do you wish to permanently delete the customer": "¿Desea eliminar permanentemente al cliente: {name}?",
+    "This cannot be undone!": "¡Esto no se puede deshacer!"
+  },
+  "pdf": {
+    "Invoice": "Factura",
+    "Customer Email": "Email del Cliente",
+    "Additional Notes": "Notas Adicionales",
+    "Text": "Texto",
+    "Bold": "Negrito",
+    "Add": "Agregar",
+    "Email Invoice": "Factura por Email",
+    "Download Invoice": "Descargar Factura",
+    "View Invoice": "Ver Factura"
+  }
+}
