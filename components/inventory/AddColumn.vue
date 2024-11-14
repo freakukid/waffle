@@ -62,13 +62,13 @@ async function addColumn() {
 
   //Check if we at least have a string
   if(!columnName) {
-    sendFrontendNotification('No column name has been provided', 'warn')
+    sendFrontendNotification('No column name has been provided', 'warning')
     return
   }
 
   //Check if this column already exist
   if (props.inventory.columns.includes(columnName)) {
-    sendFrontendNotification('The column already exist', 'warn', {name: columnName})
+    sendFrontendNotification('The column already exist', 'warning', {name: columnName})
     return
   }
 

@@ -67,12 +67,12 @@ async function editColumn() {
 
   //Check if there is something to change
   if(Object.keys(map).length === 0) {
-    sendFrontendNotification('No changes were provided', 'warn')
+    sendFrontendNotification('No changes were provided', 'warning')
     return
   }
   //Check if all columns are unique
   if(!areValuesUnique(form.value)) {
-    sendFrontendNotification('All column names must be unique', 'warn')
+    sendFrontendNotification('All column names must be unique', 'warning')
     return
   }
 

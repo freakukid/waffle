@@ -26,7 +26,7 @@ export default () => {
       ElNotification({ title: $t('server.Success'), message: $t(`frontend.valid.${message}`, param), type: type})
     else if(type === 'offline_success')
       ElNotification({ title: $t('server.Offline Success'), message: $t(`frontend.valid.${message}`, param), type: 'success'})
-    else if(type === 'warn')
+    else if(type === 'warning')
       ElNotification({ title: $t('server.Warning'), message: $t(`frontend.warning.${message}`, param), type: type})
   }
 

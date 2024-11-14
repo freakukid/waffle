@@ -68,7 +68,7 @@ async function editRow() {
   }
   //If no changes were found exit function
   if(!changedKeys.length) {
-    sendFrontendNotification('No changes were provided', 'warn')
+    sendFrontendNotification('No changes were provided', 'warning')
     return
   }
 

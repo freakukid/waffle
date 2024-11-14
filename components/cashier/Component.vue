@@ -20,9 +20,11 @@
                   </div>
                 </el-tooltip>
 
-                <el-dropdown-item v-else :divided="isLayaway" @click="registerColumnsRef.openPopup()">
-                  <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.Link Columns`)}}
-                </el-dropdown-item>
+                <NuxtLink v-else to="/settings#columns">
+                  <el-dropdown-item :divided="isLayaway">
+                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.Link Columns`)}}
+                  </el-dropdown-item>
+                </NuxtLink>
               </div>
               
               <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
@@ -54,10 +56,9 @@
         </div>
         <!-- SELECT -->
       </div>
-      <CashierRegisterColumns v-if="isBossAccount" ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
       <CashierSettings ref="cashierSettingsRef" :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
       <CustomerModifyCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
-      <CashierDisabled ref="disabledCashierRef" />
+      <CashierDisabled ref="disabledCashierRef" :isBoss="isBossAccount" />
       <CashierPaymentType ref="paymentTypeRef" @createTransaction="$emit('createTransaction', store, form.transaction)" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loadingTransaction" :total="form.transaction.total.replace(/,/g, '')" />
       <!-- TOOLBAR -->
 
@@ -150,7 +151,6 @@ const initialTransaction = { query: '', items: {}, subtotal: '0.00', taxTotal: '
 const $resetTransactionState = () => { form.transaction = JSON.parse(JSON.stringify(initialTransaction)) }
 
 //Element Reference
-const registerColumnsRef = ref(null)
 const disabledCashierRef = ref(null)
 const paymentTypeRef = ref(null)
 const createCustomerRef = ref(null)
@@ -222,11 +222,7 @@ onBeforeUnmount(() => {
 //Checks if we have name and price columns set, if not prompt user
 function columnChecks() {
   if(store.value.inventory && (!store.value.inventory.name_column || !store.value.inventory.price_column)) {
-    if(isBossAccount.value) {
-      registerColumnsRef.value.openPopup()
-    } else {
-      disabledCashierRef.value.openPopup()
-    }
+    disabledCashierRef.value.openPopup()
   }
 }
 

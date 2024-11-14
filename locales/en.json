@@ -62,7 +62,8 @@
       "No item have been selected": "No item have been selected",
       "Please enter a quantity greater than 0": "Please enter a quantity greater than 0",
       "Please specify either the cost per item or the total cost": "Please specify either the cost per item or the total cost",
-      "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page": "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page"
+      "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page": "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page",
+      "The Name and Price columns are mandatory for saving": "The Name and Price columns are mandatory for saving."
     }
   },
   "server": {

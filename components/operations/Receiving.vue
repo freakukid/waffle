@@ -96,22 +96,22 @@ async function receiveItem() {
 
   //Checks
   if(!key) {
-    sendFrontendNotification('No changes were provided', 'warn')
+    sendFrontendNotification('No changes were provided', 'warning')
     return
   }
 
   if(!qty) {
-    sendFrontendNotification('Please enter a quantity greater than 0', 'warn')
+    sendFrontendNotification('Please enter a quantity greater than 0', 'warning')
     return
   }
 
   if(!costPerItem && !totalCost) {
-    sendFrontendNotification('Please specify either the cost per item or the total cost', 'warn')
+    sendFrontendNotification('Please specify either the cost per item or the total cost', 'warning')
     return
   }
 
   if(prevQty < 0) {
-    sendFrontendNotification('The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page', 'warn')
+    sendFrontendNotification('The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page', 'warning')
     return
   }
 

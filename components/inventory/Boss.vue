@@ -19,7 +19,6 @@
           <InventorySortColumn ref="sortColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
           <InventoryExport ref="exportTableRef" :inventory="store.inventory" />
           <InventoryDropTable ref="dropTableRef" :storeId="storeId" @setInventory="setInventory" />
-          <CashierRegisterColumns ref="registerColumnsRef" :storeId="storeId" :inventory="store.inventory ? store.inventory : {}" @setInventory="setInventory" />
 
           <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
             <el-dropdown placement="bottom-start" trigger="click">
@@ -74,9 +73,11 @@
                     </div>
                   </el-tooltip>
 
-                  <el-dropdown-item v-else @click="registerColumnsRef.openPopup()">
-                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.link columns`)}}
-                  </el-dropdown-item>
+                  <NuxtLink v-else to="/settings#columns">
+                    <el-dropdown-item>
+                      <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.link columns`)}}
+                    </el-dropdown-item>
+                  </NuxtLink>
 
                   <el-dropdown-item divided @click="exportTableRef.outputExcelFile()">
                     <Icon class="mr-3 mt-[1px]" name="vscode-icons:file-type-excel" /> {{$t(`title.export table`)}}
@@ -228,7 +229,6 @@ const sortColRef = ref(null)
 const receivingRowRef = ref(null)
 const exportTableRef = ref(null)
 const dropTableRef = ref(null)
-const registerColumnsRef = ref(null)
 
 //Filters inventory depending on search query
 const filteredInventory = computed(() => {

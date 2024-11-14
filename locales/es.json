@@ -62,7 +62,8 @@
       "No item have been selected": "No se ha seleccionado ningún elemento",
       "Please enter a quantity greater than 0": "Por favor, introduzca una cantidad mayor a 0",
       "Please specify either the cost per item or the total cost": "Por favor, especifique el coste por artículo o el coste total",
-      "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page": "La cantidad de este artículo es inferior a 0, revise este número a un valor no negativo en la página de inventario"
+      "The quantity of this item is below 0, please revise this number to a non-negative value on the inventory page": "La cantidad de este artículo es inferior a 0, revise este número a un valor no negativo en la página de inventario",
+      "The Name and Price columns are mandatory for saving": "Las columnas Nombre y Precio son obligatorias para guardar."
     }
   },
   "server": {

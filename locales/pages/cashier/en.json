@@ -25,6 +25,7 @@
     "Create Customer": "Create Customer",
     "Edit Customer": "Edit Customer",
     "Feature Disabled": "Feature Disabled",
+    "View Settings": "View Settings",
     "Return to Dashboard": "Return to Dashboard",
     "Payment Method": "Payment Method",
     "Change Due": "Change Due",
@@ -34,6 +35,7 @@
     "No Product": "No Product"
   },
   "text": {
+    "To enable the cashier feature, the name and price columns must be linked in the settings": "To enable the cashier feature, the name and price columns must be linked in the settings.",
     "The cashier feature is not yet activated, please wait for the manager to enable it": "The cashier feature is not yet activated, please wait for the manager to enable it."
   }
 }

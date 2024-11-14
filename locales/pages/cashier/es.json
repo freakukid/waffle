@@ -25,6 +25,7 @@
     "Create Customer": "Crear Cliente",
     "Edit Customer": "Editar Cliente",
     "Feature Disabled": "Característica Deshabilitado",
+    "View Settings": "Ver configuración",
     "Return to Dashboard": "Regresar al Panel de Control",
     "Payment Method": "Método de Pago",
     "Change Due": "Cambio Debido",
@@ -34,6 +35,7 @@
     "No Product": "Sin Producto"
   },
   "text": {
+    "To enable the cashier feature, the name and price columns must be linked in the settings": "Para habilitar la función de cajero, las columnas de nombre y precio deben estar vinculadas en la configuración.",
     "The cashier feature is not yet activated, please wait for the manager to enable it": "La función de cajero aún no está activada, espere a que el administrador la habilite."
   }
 }
