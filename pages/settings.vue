@@ -55,7 +55,7 @@
 
           <div class="px-6 py-4">
             <div>
-              <label class="block text-sm opacity-80 mb-2">Language</label>
+              <label class="block text-base font-bold mb-2">Language</label>
               <el-select v-model="form.language" placeholder="Language" @change="saveUserSettings">
                 <el-option label="English" value="en" />
                 <el-option label="Spanish" value="es" />
