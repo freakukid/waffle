@@ -13,6 +13,7 @@
 
         <!-- HEADER -->
         <div class="text-center mb-4"><b>RECIEPT SETTINGS</b></div>
+
         <div v-if="isBoss" id="receipt-wrapper">
           <div>
             <label>Receipt Header</label>
@@ -98,7 +99,7 @@
             <div v-for="item in items" :key="item" >
               <div class="table-line">
                 <div class="product-name">{{item.name}}</div>
-                <div class="price">{{item.price}}</div>
+                <div class="price">{{item.total}}</div>
               </div>
 
               <div v-if="item.discount > 0" class="line">{{`&nbsp;&nbsp;(${item.qty} @ ${item.price} ea) | Discount ${item.discount}%`}}</div>
@@ -108,16 +109,20 @@
             <br/>
 
             <div class="table-line">
-              <div class="output-name">SUBTOTAL:</div>
-              <div class="price">0.00</div>
+              <div class="output-name">SAVINGS:</div>
+              <div class="price">25.00</div>
             </div>
             <div class="table-line">
-              <div class="output-name">TAX(0.00%):</div>
-              <div class="price">0.00</div>
+              <div class="output-name">SUBTOTAL:</div>
+              <div class="price">475.00</div>
+            </div>
+            <div class="table-line">
+              <div class="output-name">TAX(10.00%):</div>
+              <div class="price">4.75</div>
             </div>
             <div class="table-line bold">
               <div class="output-name">TOTAL:</div>
-              <div class="price">0.00</div>
+              <div class="price">479.79</div>
             </div>
             <br/>
             <div class="table-line bold">
@@ -130,8 +135,6 @@
             :class="{'align-left': footer.align === 'left', 'align-center': footer.align === 'center', 'align-right': footer.align === 'right',
                      'font-1': footer.size === 1, 'font-2': footer.size === 2, 'font-3': footer.size === 3}">{{footer.text}}</div>
           </div>
-
-          
         </div>
 
         <!-- PRINT TEST RECEIPT -->
@@ -180,13 +183,6 @@
       </template>
     </el-dialog>
     <!-- Popup -->
-    
-    <!-- Settings Btn -->
-    <!-- <el-tooltip v-if="!offlineStore.getOnlineStatus()" content="Feature only available online." placement="top">
-      <el-button type="success" disabled>Settings</el-button>
-    </el-tooltip>
-    <el-button v-else @click="openPopup()" type="success">Settings</el-button> -->
-    <!-- Settings Btn -->
   </div>
 </template>
 
@@ -206,7 +202,7 @@ const form = reactive({
   footer: [{text: '', align: 'left', size: 1}],
   invoice_notes: [{text: '', bold: false}],
 })
-const items = ref([{name: 'Product Name', qty: 1, price: '100.00', discount: 0}, {name: 'Product Name', qty: 2, price: '50.00', discount: 0}, {name: 'Product Name', qty: 10, price: '25.00', discount: 10}])
+const items = ref([{name: 'Product Name', qty: 1, price: '100.00', discount: 0, total: '100.00'}, {name: 'Product Name', qty: 3, price: '50.00', discount: 0, total: '150.00'}, {name: 'Product Name', qty: 10, price: '25.00', discount: 10, total: '225.00'}])
 
 //Component Emits,Props
 const emits = defineEmits(['setStore'])
@@ -278,10 +274,13 @@ async function printReceipt() {
     body: {
       store_id: props.store.id,
       items: items.value,
-      tax: '0.00',
-      subtotal: '0.00',
-      tax_total: '0.00',
-      total: '0.00',
+      tax: '10.00',
+      subtotal: '475.00',
+      tax_total: '4.75',
+      total: '479.75',
+      savings: '25.00',
+      payment: 'card',
+      card: 'mastercard'
     }
   })
 

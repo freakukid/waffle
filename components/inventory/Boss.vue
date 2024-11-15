@@ -120,7 +120,7 @@
           <!-- TABLE ACTIONS -->
 
           <!-- TABLE -->
-          <el-table v-if="inventory.length" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }" border>
+          <el-table v-if="inventory.length" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: form.sort.col }" border>
             <el-table-column :label="$t(`label.operations`)" width="140">
               <template #header>
                 <div class="flex items-center gap-1 w-full">

@@ -29,6 +29,16 @@ export default defineNuxtConfig({
     autoDetectLanguage: true,
     meta: true,
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // Specify the appropriate API option as needed
+          api: 'modern-compiler', // or "modern"
+        },
+      },
+    },
+  },
   runtimeConfig: {    
     // Cloudinary
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,

@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
   //Check if printer is connected
   let isConnected = await printer.isPrinterConnected()
   if(!isConnected)
-    return { statusCode: 400, statusMessage: 'Printer is not connected.' }
+    return { statusCode: 400, statusMessage: 'Printer is not connected' }
 
   //Setup Logo
   const image = join(cwd(), 'public', 'test.png')

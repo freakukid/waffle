@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const { getAuthUser, updateAuthUser } = useAuthChecks()
   //Setup data
   const authUser = await getAuthUser(event)
-  const user_id = authUser?.id
+  const user_id = authUser.id
   const { ip, language } = await readBody(event)
 
   //Edit settings
@@ -14,12 +14,12 @@ export default defineEventHandler(async (event) => {
       user_id: user_id
     },
     data: {
-      ip: ip,
-      language: language
+      ip: ip ? ip : authUser.ip,
+      language: language ? language : authUser.language
     }
   })
 
-  await updateAuthUser(event, authUser.id)
+  await updateAuthUser(event, user_id)
 
   setResponseStatus(event, 201)
   

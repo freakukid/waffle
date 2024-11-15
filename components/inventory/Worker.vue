@@ -59,7 +59,7 @@
           <!-- TABLE ACTIONS -->
 
           <!-- TABLE -->
-          <el-table :data="filteredInventory" ref="tableRef" class="w-full h-full" table-layout="auto" :default-sort="{ prop: store?.inventory?.columns[0], order: 'ascending' }" border>
+          <el-table :data="filteredInventory" ref="tableRef" class="w-full h-full" table-layout="auto" :default-sort="{ prop: form.sort.col }" border>
             <el-table-column v-if="permissions.receiving || permissions.edit_item || permissions.delete_item" label="Operations" width="140">
               <template #header>
                 <div class="flex items-center gap-1 w-full">

@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare && prisma generate"
   },
   "devDependencies": {
-    "@element-plus/nuxt": "^1.0.10",
+    "@element-plus/nuxt": "^1.1.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.1",
     "@types/bcrypt": "^5.0.0",
@@ -18,7 +18,7 @@
     "nuxt-icon": "^0.6.10",
     "pinia": "^2.1.7",
     "prisma": "^5.15.0",
-    "sass": "^1.77.6"
+    "sass": "^1.79.0"
   },
   "dependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",

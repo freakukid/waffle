@@ -116,6 +116,7 @@
       "Store name must be at least 2 characters long": "Store name must be at least 2 characters long.",
       "Receipt needs items": "Receipt needs items.",
       "No IP address has been set": "No IP address has been set.",
+      "Printer is not connected": "Printer is not connected.",
       "Username must be between 3 and 15 characters and contain only letters and numbers": "Username must be between 3 and 15 characters and contain only letters and numbers.",
       "Password must be at least 6 characters long": "Password must be at least 6 characters long.",
       "Username already exist": "Username already exist.",

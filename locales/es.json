@@ -116,6 +116,7 @@
       "Store name must be at least 2 characters long": "El nombre de la tienda debe tener al menos 2 caracteres.",
       "Receipt needs items": "El recibo necesita artículos.",
       "No IP address has been set": "No se ha establecido ninguna dirección IP.",
+      "Printer is not connected": "La impresora no está conectada.",
       "Username must be between 3 and 15 characters and contain only letters and numbers": "El nombre de usuario debe tener entre 3 y 15 caracteres y contener sólo letras y números.",
       "Password must be at least 6 characters long": "La contraseña debe tener al menos 6 caracteres.",
       "Username already exist": "El nombre de usuario ya existe.",
