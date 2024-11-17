@@ -1,8 +1,8 @@
 <template>
   <!-- Popup -->
   <el-dialog v-model="popup" class="min-w-fit" :title="$t('pdf.Invoice')">
-    <div id="pdf-component" class="flex items-center justify-center flex-col">
-      <div v-if="store && layaway" ref="content" class="flex flex-col bg-white text-black w-[840px]" style="font-family: 'Calibri', sans-serif;">
+    <div class="flex items-center justify-center flex-col">
+      <div v-if="store && layaway" id="pdf-component" ref="content" class="flex flex-col bg-white text-black w-[840px]" style="font-family: 'Calibri', sans-serif;">
         <!-- HEADER -->
         <header class="flex items-center bg-gray-900 h-32 text-white px-6">
           <div class="text-left leading-tight w-1/3">
@@ -118,13 +118,13 @@
           <div v-if="form.notes[0].text !== '' || form.notes.length > 1 || store.invoice_notes[0].text !== ''" class="mt-4">
             <b>Notes:</b>
 
-            <div v-for="note in form.notes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
-              <p>{{note.text}}</p>
-            </div>
-
             <p v-for="note in store.invoice_notes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
               {{note.text}}
             </p>
+
+            <div v-for="note in form.notes" :key="note" class="my-3" :class="{'font-bold': note.bold}">
+              <p>{{note.text}}</p>
+            </div>
           </div>
           <!-- NOTES -->
         </div>
@@ -167,7 +167,6 @@
           <el-button class="mt-3" type="success" @click="addNote()">{{$t('pdf.Add')}}</el-button>
         </div>
       </div>
-      
     </el-form>
     
     <template #footer>

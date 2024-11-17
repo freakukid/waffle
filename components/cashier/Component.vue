@@ -33,9 +33,11 @@
                 </div>
               </el-tooltip>
 
-              <el-dropdown-item v-else @click="cashierSettingsRef.openPopup()">
-                <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> {{$t(`title.Cashier Settings`)}}
-              </el-dropdown-item>
+              <NuxtLink v-else to="/settings#receipt">
+                <el-dropdown-item>
+                  <Icon class="mr-3 mt-[1px]" name="tabler:settings-dollar" /> {{$t(`title.Cashier Settings`)}}
+                </el-dropdown-item>
+              </NuxtLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -56,7 +58,6 @@
         </div>
         <!-- SELECT -->
       </div>
-      <CashierSettings ref="cashierSettingsRef" :isBoss="isBossAccount" :store="store ? store : {}" @setStore="setStore" />
       <CustomerModifyCustomer ref="createCustomerRef" v-if="isLayaway" :storeId="storeId" @addCustomer="addCustomer" />
       <CashierDisabled ref="disabledCashierRef" :isBoss="isBossAccount" />
       <CashierPaymentType ref="paymentTypeRef" @createTransaction="$emit('createTransaction', store, form.transaction)" v-model:payment="form.transaction.payment" v-model:cash="form.transaction.cash" v-model:card="form.transaction.card" v-model:check="form.transaction.check" :loading="loadingTransaction" :total="form.transaction.total.replace(/,/g, '')" />
@@ -154,7 +155,6 @@ const $resetTransactionState = () => { form.transaction = JSON.parse(JSON.string
 const disabledCashierRef = ref(null)
 const paymentTypeRef = ref(null)
 const createCustomerRef = ref(null)
-const cashierSettingsRef = ref(null)
 
 //Filters inventory depending on search query
 const filterInventory = (query) => {
@@ -276,12 +276,6 @@ function calcTransactionTotal() {
   const total = calcTotal(subtotal, taxTotal)
   form.transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   form.transaction.cash = total.toFixed(2)
-}
-
-//Sets a store value for components to set
-function setStore(data) {
-  store.value = data
-  calcTransactionTotal()
 }
 
 //Sets a inventory value for components to set

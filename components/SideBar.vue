@@ -34,7 +34,7 @@
       </NuxtLink>
       <div v-if="storeId">
         <NuxtLink to="/inventory">
-          <el-menu-item class="sidebar-item" index="2" :class="{active: route.name === 'boss-inventory' || route.name === 'worker-inventory'}">
+          <el-menu-item class="sidebar-item" index="2" :class="{active: route.name === 'inventory'}">
             <Icon name="gravity-ui:boxes-3" />
             <template #title>Inventory</template>
           </el-menu-item>
@@ -46,7 +46,7 @@
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="isBossAccount" to="/workers">
-          <el-menu-item class="sidebar-item" index="4" :class="{active: route.name === 'boss-workers'}">
+          <el-menu-item class="sidebar-item" index="4" :class="{active: route.name === 'workers'}">
             <Icon name="gravity-ui:person-worker" />
             <template #title>Workers</template>
           </el-menu-item>
@@ -70,7 +70,7 @@
           </el-menu-item>
         </NuxtLink>
         <NuxtLink to="/offline">
-          <el-menu-item class="sidebar-item" index="8">
+          <el-menu-item class="sidebar-item" index="8" :class="{active: route.name === 'offline'}">
             <Icon name="oui:offline" class="text-red-500" />
             <template #title>Offline</template>
           </el-menu-item>

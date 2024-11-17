@@ -55,7 +55,6 @@
 <script setup>
 //Import
 const offlineStore = useOfflineStore()
-const { validateEmail } = useValidator()
 const { sendNotification, sendFrontendNotification } = useHelpers()
 const { handleCustomerRequest } = useHandleRequests()
 const { getRandomString } = useFormatter()

@@ -21,6 +21,11 @@
       <el-menu-item class="sidebar-item" :class="{active: tab === 'receipt'}" index="4" @click="tab = 'receipt'">
         <Icon name="tabler:receipt-filled" /> Receipt
       </el-menu-item>
+      <div>
+        <el-menu-item class="sidebar-item" :class="{active: tab === 'invoice'}" index="5" @click="tab = 'invoice'">
+          <Icon name="fa6-solid:file-invoice" /> Invoice
+        </el-menu-item>
+      </div>
     </el-menu>
     <div class="flex justify-center w-full">
       <div v-if="tab === 'account'" class="tab">
@@ -28,11 +33,10 @@
           <h1 class="text-xl text-white">Account</h1>
         </div>
 
-        <el-form class="px-6" :model="form" disabled label-position="top">
-          <el-form-item label="Username" prop="username"
-            :rules="[{ min: 3, max: 15, message: 'Username must be between 3 and 15 characters', trigger: 'blur' },
-            { validator: validateUsername, trigger: 'change' }]"
-          >
+        <el-form ref="userForm" class="flex flex-col gap-3 px-6" :model="form" :rules="userRules" label-position="top">
+          <label class="block text-base font-bold mb-1">General</label>
+
+          <el-form-item label="Username" prop="username">
             <el-input v-model="form.username" :value="form.username" autocomplete="off" />
           </el-form-item>
 
@@ -40,18 +44,35 @@
             <el-input v-model="form.name" :value="form.name" autocomplete="off" />
           </el-form-item>
 
-          <el-form-item label="Email" prop="email" :rules="[{ validator: validateOptionalEmail, trigger: 'blur' }]">
+          <el-form-item label="Email" prop="email">
             <el-input v-model="form.email" :value="form.email" autocomplete="off" />
           </el-form-item>
-
-          <el-form-item label="New Password" prop="password" :rules="[{ min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }]">
-            <el-input v-model="form.password" :value="form.password"  type="password" placeholder="******" autocomplete="off" />
-          </el-form-item>
+          
+          <div class="py-2">
+            <el-button class="!block ml-auto" plain type="success" :disabled="!form.username || !form.name || !form.email" :loading="loading.saveUser" @click="saveUser">Save</el-button>
+          </div>
         </el-form>
 
-        <div class="px-6 py-2">
-          <el-button class="!block ml-auto" disabled native-type="submit">Save</el-button>
-        </div>
+        <el-form ref="passwordForm" class="flex flex-col gap-3 pt-2 px-6" :model="form" :rules="passwordRules" label-position="top">
+          <label class="flex items-center justify-between text-base font-bold mb-1">
+            <span>Update Password</span>
+            <div class="cursor-pointer px-3 py-2 opacity-60 transition-all rounded-md hover:opacity-90" @click="form.seePassword = !form.seePassword">
+              <Icon class="text-xl" :name="form.seePassword ? 'tabler:eye-off' : 'tabler:eye'" />
+            </div>
+          </label>
+
+
+          <el-form-item label="New Password" prop="password1">
+            <el-input v-model="form.password1" :value="form.password1" :type="form.seePassword ? '' : 'password'" autocomplete="off" />
+          </el-form-item>
+
+          <el-form-item label="Confirm Password" prop="password2">
+            <el-input v-model="form.password2" :value="form.password2" :type="form.seePassword ? '' : 'password'" autocomplete="off" />
+          </el-form-item>
+          <div class="py-2">
+            <el-button class="!block ml-auto" plain type="success" :disabled="form.password1.length < 6 || form.password2.length < 6" :loading="loading.updatePassword" @click="updatePassword">Update</el-button>
+          </div>
+        </el-form>
       </div>
 
       <div v-if="tab === 'preference'" class="tab">
@@ -341,11 +362,53 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
 
-          <div class="px-6 py-3">
+          <div class="py-6">
+            <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+              <el-button class="!block ml-auto" type="success" plain disabled>Save</el-button>
+            </el-tooltip>
+            <el-button v-else class="!block ml-auto" type="success" :loading="loading.saveCashier" plain @click="saveCashierSettings">Save</el-button>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="tab === 'invoice'" class="tab">
+        <div class="pt-8 pb-4">
+          <h1 class="text-xl text-white">Invoice</h1>
+
+          <div class="flex flex-col gap-3 px-6 py-4">
+            <label class="flex items-center justify-between text-base font-bold">
+              <span>Notes</span>
+              <el-button type="success" plain @click="addNote()">Add</el-button>
+            </label>
+            <p class="text-sm -mt-3 mb-1 opacity-85">Standard messages to be included on all invoices.</p>
+
+            <div class="flex flex-col gap-4">
+              <div v-for="(note, i) in cashierForm.invoice_notes" :key="i">
+                <div class="flex items-center justify-center gap-4">
+                  <div>
+                    <label class="block pb-4">Bold</label>
+                    <el-checkbox class="flex items-center justify-center w-8 position-relative bottom-1" v-model="note.bold" style="transform: scale(1.6);" />
+                  </div>
+
+                  <div class="w-full">
+                    <label class="block pb-2">Text</label>
+                    <el-input v-model="note.text">
+                      <template v-if="i > 0" #append>
+                        <el-button @click="removeItem(cashierForm.invoice_notes, i)">
+                          <Icon class="text-base text-red-500" name="material-symbols:delete-rounded" />
+                        </el-button>
+                      </template>
+                    </el-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="py-6">
             <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
               <el-button class="!block ml-auto" type="success" plain disabled>Save</el-button>
             </el-tooltip>
@@ -364,7 +427,7 @@ definePageMeta({
 })
 
 const { fetch } = useUserSession()
-const { $switchLocale } = useNuxtApp()
+const { $switchLocale, $t } = useNuxtApp()
 const { handleGetRequest, handleInventoryRequest } = useHandleRequests()
 const { getAuthUser } = useAuth()
 const { sendNotification, sendFrontendNotification } = useHelpers()
@@ -377,17 +440,44 @@ const hash = computed(() => { return window.location.hash.replace('#', '') || ''
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 const isBossAccount = computed(isBoss)
-const tabOptions = ['account', 'preference', 'columns', 'cashier']
+const tabOptions = ['account', 'preference', 'columns', 'receipt', 'invoice']
 
-const loading = reactive({startedLoading: true, linkColumns: false, printReceipt: false, saveCashier: false})
+const loading = reactive({startedLoading: true, saveUser: false, updatePassword: false, linkColumns: false, printReceipt: false, saveCashier: false})
 const tab = ref('account')
 const user = ref(getAuthUser())
+const userForm = ref(null)
+const passwordForm = ref(null)
 const form = reactive({
   username: user.value.username,
   name: user.value.name,
-  password: '',
+  password1: '',
+  password2: '',
   email: user.value.email,
   language: user.value.language,
+  seePassword: false
+})
+const userRules = reactive({
+  username: [
+    { required: true, message: $t('invalid.Username is required'), trigger: ['blur', 'change'] },
+    { min: 3, max: 15, message: $t('invalid.Username must be between 3 and 15 characters'), trigger: ['blur', 'change'] },
+    { validator: validateUsername, trigger: 'change' }
+  ],
+  name: [
+    { required: true, message: `Name required`, trigger: ['blur', 'change'] }
+  ],
+  email: [
+    { required: true, message: `Email required`, trigger: ['blur', 'change'] },
+    { type: 'email', message: 'Invalid email format', trigger: ['blur', 'change'] }
+  ],
+})
+
+const passwordRules = reactive({
+  password1: [
+    { min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }
+  ],
+  password2: [
+    { min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }
+  ],
 })
 
 const storeId = computed(pinia.getStore)
@@ -421,6 +511,62 @@ onBeforeMount(async () => {
   loading.startedLoading = false
   // console.log(JSON.stringify(user.value))
 })
+
+async function saveUser() {
+  userForm.value.validate(async (valid) => {
+    if (valid) {
+      const { username, name, email } = form
+      //Make request
+      loading.saveUser = true
+      const response = await useFetchApi(`/api/protected/settings/edit-user`, {
+        method: "POST",
+        body: { username: username, name: name, email: email }
+      })
+      loading.saveUser = false
+
+      if (response.statusCode) {
+        sendNotification(response.statusMessage, 'error')
+        return
+      }
+      
+      //Fetch updated auth data
+      await fetch()
+      sendNotification(response.message, 'success')
+    }
+  })
+}
+
+async function updatePassword() {
+  passwordForm.value.validate(async (valid) => {
+    if (valid) {
+      const { password1, password2 } = form
+
+      if(password1 !== password2) {
+        sendFrontendNotification(`Passwords do not match`, 'error')
+        return
+      }
+
+      //Make request
+      loading.updatePassword = true
+      const response = await useFetchApi(`/api/protected/settings/update-password`, {
+        method: "POST",
+        body: { password: password1 }
+      })
+      loading.updatePassword = false
+
+      if (response.statusCode) {
+        sendNotification(response.statusMessage, 'error')
+        return
+      }
+
+      //Fetch updated auth data
+      await fetch()
+      form.password1 = ''
+      form.password2 = ''
+      sendNotification(response.message, 'success')
+    }
+  })
+}
 
 async function saveUserSettings() {
   //Make request
@@ -464,7 +610,7 @@ async function fetchStore() {
   }
 
   //Test data
-  console.log(JSON.stringify(store.value))
+  // console.log(JSON.stringify(store.value))
 }
 
 // COLUMNS //
@@ -552,6 +698,12 @@ async function printReceipt() {
   sendNotification(response.message, 'success')
 }
 // RECEIPT //
+
+// INVOICE //
+function addNote() {
+  cashierForm.invoice_notes.push({text: '', bold: false})
+}
+// INVOICE //
 
 //Saves cashier settings
 async function saveCashierSettings(notifyUser = true) {

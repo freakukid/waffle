@@ -1,6 +1,6 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
-const CACHE_NAME = 'static-v24'
+const CACHE_NAME = 'static-v25'
 
 self.addEventListener('install', (event) => {
   // Immediately take control, and skip waiting
@@ -115,8 +115,6 @@ const getAPIs = [
   /^https:\/\/legitski\.com\/api\/protected\/customer\/\d+$/,
   //Workers
   /^https:\/\/legitski\.com\/api\/protected\/workers\/\d+$/,
-  //Settings
-  'https://legitski.com/api/protected/settings/user-settings',
   //Worker Permissions
   /^https:\/\/legitski\.com\/api\/protected\/workers\/permissions\/\d+$/,
 ]

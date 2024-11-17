@@ -18,6 +18,8 @@ export default () => {
   const validateUsername = (rule, val, callback) => {
     if (!/^[a-zA-Z0-9]+$/.test(val)) {
       callback(new Error($t('invalid.Username can only contain letters and numbers')))
+    } else {
+      return true
     }
   }
 

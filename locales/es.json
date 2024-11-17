@@ -52,7 +52,8 @@
       "The tax percentage must be between 0% and 100%": "El porcentaje del impuesto debe estar entre el 0% y el 100%",
       "No inventory data is available": "No hay datos de inventario disponibles",
       "An unexpected error occurred, please try again": "Ocurrió un error inesperado, por favor intente nuevamente",
-      "Feature only available online": "Característica solo disponible en línea"
+      "Feature only available online": "Característica solo disponible en línea",
+      "Passwords do not match": "Las contraseñas no coinciden"
     },
     "warning": {
       "No column name has been provided": "No se ha proporcionado ningún nombre de columna",
@@ -73,6 +74,7 @@
     "Warning": "Advertencia",
     "valid": {
       "Login Successful!": "¡Inicio de Sesión Exitoso!",
+      "Password Updated!": "¡Contraseña actualizada!",
       "User Created!": "¡Usuario Creado!",
       "User Updated!": "¡Usuario Actualizado!",
       "User Deleted!": "¡Usuario Eliminado!",

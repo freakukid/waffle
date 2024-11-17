@@ -52,7 +52,8 @@
       "The tax percentage must be between 0% and 100%": "The tax percentage must be between 0% and 100%",
       "No inventory data is available": "No inventory data is available",
       "An unexpected error occurred, please try again": "An unexpected error occurred, please try again",
-      "Feature only available online": "Feature only available online"
+      "Feature only available online": "Feature only available online",
+      "Passwords do not match": "Passwords do not match"
     },
     "warning": {
       "No column name has been provided": "No column name has been provided",
@@ -73,6 +74,7 @@
     "Warning": "Warning",
     "valid": {
       "Login Successful!": "Login Successful!",
+      "Password Updated!": "Password Updated!",
       "User Created!": "User Created!",
       "User Updated!": "User Updated!",
       "User Deleted!": "User Deleted!",
