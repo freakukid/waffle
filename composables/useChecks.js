@@ -1,8 +1,11 @@
 export default () => {
   function isBoss() {
     const { getAuthUser } = useAuth()
-
-    return getAuthUser().is_boss
+    const user = getAuthUser()
+    if(user)
+      return user.is_boss
+    else
+      return false
   }
 
   //Gets workers permission

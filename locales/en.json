@@ -1,4 +1,18 @@
 {
+  "sidebar": {
+    "My Account": "My Account",
+    "Settings": "Settings",
+    "Logout": "Logout",
+    "Dashboard": "Dashboard",
+    "Inventory": "Inventory",
+    "Logs": "Logs",
+    "Workers": "Workers",
+    "Cashier": "Cashier",
+    "Layaway": "Layaway",
+    "Transactions": "Transactions",
+    "Offline": "Offline",
+    "Exit Store": "Exit Store"
+  },
   "label": {
     "add": "Add",
     "create": "Create",
@@ -34,7 +48,9 @@
     "Username is required": "Username is required",
     "Username must be between 3 and 15 characters": "Username must be between 3 and 15 characters",
     "Username can only contain letters and numbers": "Username can only contain letters and numbers",
+    "Email is required": "Email is required",
     "E-mail must be valid": "E-mail must be valid",
+    "Invalid email format": "Invalid email format",
     "Password is required": "Password is required",
     "Password must be at least 6 characters": "Password must be at least 6 characters"
   },

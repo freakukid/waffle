@@ -7,18 +7,18 @@
         </div>
         <template #dropdown>
           <el-dropdown-menu class="text-base">
-            <div class="pt-1 pb-1 px-4 w-40">My Account</div>
+            <div class="pt-1 pb-1 px-4 w-40">{{$t('sidebar.My Account')}}</div>
 
             <NuxtLink to="/settings">
               <el-dropdown-item class="flex item-center" divided>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="icon mr-2" width="1.2em" height="1.2em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065"></path><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0-6 0"></path></g></svg>
-                <span>Settings</span>
+                <span>{{$t('sidebar.Settings')}}</span>
               </el-dropdown-item>
             </NuxtLink>
 
             <el-dropdown-item class="flex item-center" divided @click="logoutUser()">
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="icon mr-2 text-red-500" width="1.2em" height="1.2em" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3 5c0-1.1.9-2 2-2h8v2H5v14h8v2H5c-1.1 0-2-.9-2-2zm14.176 6L14.64 8.464l1.414-1.414l4.95 4.95l-4.95 4.95l-1.414-1.414L17.176 13H10.59v-2z"></path></svg>
-              <span>Logout</span>
+              <span>{{$t('sidebar.Logout')}}</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -29,56 +29,56 @@
       <NuxtLink to="/dashboard">
         <el-menu-item class="sidebar-item" index="1" :class="{active: route.name === 'dashboard'}">
           <Icon name="zondicons:dashboard" />
-          <template #title>Dashboard</template>
+          <template #title>{{$t('sidebar.Dashboard')}}</template>
         </el-menu-item>
       </NuxtLink>
       <div v-if="storeId">
         <NuxtLink to="/inventory">
           <el-menu-item class="sidebar-item" index="2" :class="{active: route.name === 'inventory'}">
             <Icon name="gravity-ui:boxes-3" />
-            <template #title>Inventory</template>
+            <template #title>{{$t('sidebar.Inventory')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="permissions?.view_log" to="/logs">
           <el-menu-item class="sidebar-item" index="3" :class="{active: route.name === 'logs'}">
             <Icon name="mingcute:inventory-line" />
-            <template #title>Logs</template>
+            <template #title>{{$t('sidebar.Logs')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="isBossAccount" to="/workers">
           <el-menu-item class="sidebar-item" index="4" :class="{active: route.name === 'workers'}">
             <Icon name="gravity-ui:person-worker" />
-            <template #title>Workers</template>
+            <template #title>{{$t('sidebar.Workers')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="permissions?.make_transactions" to="/cashier">
           <el-menu-item class="sidebar-item" index="5" :class="{active: route.name === 'cashier'}">
             <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
-            <template #title>Cashier</template>
+            <template #title>{{$t('sidebar.Cashier')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="permissions?.make_transactions" to="/layaway">
           <el-menu-item class="sidebar-item" index="6" :class="{active: route.name === 'layaway'}">
             <Icon name="tabler:shopping-cart-pause" />
-            <template #title>Layaway</template>
+            <template #title>{{$t('sidebar.Layaway')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
           <el-menu-item class="sidebar-item" index="7" :class="{active: route.name === 'transactions'}">
             <Icon name="uil:transaction" />
-            <template #title>Transactions</template>
+            <template #title>{{$t('sidebar.Transactions')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink to="/offline">
           <el-menu-item class="sidebar-item" index="8" :class="{active: route.name === 'offline'}">
             <Icon name="oui:offline" class="text-red-500" />
-            <template #title>Offline</template>
+            <template #title>{{$t('sidebar.Offline')}}</template>
           </el-menu-item>
         </NuxtLink>
         <NuxtLink v-if="store.id !== storeId && isBossAccount" to="/dashboard" @click="exitStore()">
           <el-menu-item class="sidebar-item" index="9">
             <Icon name="tabler:door-exit" class="text-red-500" />
-            <template #title>Exit Store</template>
+            <template #title>{{$t('sidebar.Exit Store')}}</template>
           </el-menu-item>
         </NuxtLink>
       </div>
@@ -132,7 +132,7 @@ async function logoutUser() {
   position: fixed;
   top: 0;
   height: 100vh;
-  z-index: 10;
+  z-index: 2;
   background: #111;
   display: flex;
   flex-direction: column;

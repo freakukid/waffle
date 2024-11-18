@@ -1,105 +1,139 @@
 <template>
   <div v-if="!loading.startedLoading" id="settings-page" class="flex">
     <el-menu id="settings-sidebar">
-      <h1 class="text-base pb-4">Settings</h1>
-      <label class="block text-xs opacity-60 mb-1">General</label>
-      <el-menu-item class="sidebar-item" :class="{active: tab === 'account'}" index="1" @click="tab = 'account'">
-        <Icon name="mingcute:user-setting-fill" /> Account
-      </el-menu-item>
-      <el-menu-item class="sidebar-item" :class="{active: tab === 'preference'}" index="2" @click="tab = 'preference'">
-        <Icon name="oui:controls-horizontal" /> Preference
-      </el-menu-item>
-
-      <div v-if="storeId">
-        <label class="block text-xs opacity-60 mb-1">Inventory</label>
-        <el-menu-item class="sidebar-item" :class="{active: tab === 'columns'}" index="3" @click="tab = 'columns'">
-          <Icon name="fluent:database-plug-connected-20-filled" /> Columns
+      <div id="sidebar-wrapper">
+        <h1 class="text-base pb-4">{{$t('title.Settings')}}</h1>
+        <label class="block text-xs opacity-60 mb-1">{{$t('title.General')}}</label>
+        <el-menu-item class="sidebar-item" :class="{active: tab === 'account'}" index="1" @click="tab = 'account'">
+          <Icon name="mingcute:user-setting-fill" /> <span>{{$t('title.Account')}}</span>
         </el-menu-item>
-      </div>
-
-      <label class="block text-xs opacity-60 mb-1">Cashier</label>
-      <el-menu-item class="sidebar-item" :class="{active: tab === 'receipt'}" index="4" @click="tab = 'receipt'">
-        <Icon name="tabler:receipt-filled" /> Receipt
-      </el-menu-item>
-      <div>
-        <el-menu-item class="sidebar-item" :class="{active: tab === 'invoice'}" index="5" @click="tab = 'invoice'">
-          <Icon name="fa6-solid:file-invoice" /> Invoice
+        <el-menu-item class="sidebar-item" :class="{active: tab === 'preference'}" index="2" @click="tab = 'preference'">
+          <Icon name="oui:controls-horizontal" /> <span>{{$t('title.Preference')}}</span>
         </el-menu-item>
+
+        <div v-if="storeId">
+          <div v-if="isBossAccount">
+            <label class="block text-xs opacity-60 mb-1">{{$t('title.Inventory')}}</label>
+            <el-menu-item class="sidebar-item" :class="{active: tab === 'columns'}" index="3" @click="tab = 'columns'">
+              <Icon name="fluent:database-plug-connected-20-filled" /> <span>{{$t('title.Columns')}}</span>
+            </el-menu-item>
+          </div>
+  
+          <label class="block text-xs opacity-60 mb-1">{{$t('title.Cashier')}}</label>
+          <el-menu-item class="sidebar-item" :class="{active: tab === 'receipt'}" index="4" @click="tab = 'receipt'">
+            <Icon name="tabler:receipt-filled" /> <span>{{$t('title.Receipt')}}</span>
+          </el-menu-item>
+
+          <div v-if="isBossAccount">
+            <el-menu-item class="sidebar-item" :class="{active: tab === 'invoice'}" index="5" @click="tab = 'invoice'">
+              <Icon name="fa6-solid:file-invoice" /> <span>{{$t('title.Invoice')}}</span>
+            </el-menu-item>
+          </div>
+        </div>
       </div>
     </el-menu>
-    <div class="flex justify-center w-full">
+    
+    <div id="settings-wrapper" class="flex justify-center w-full pl-[180px]">
       <div v-if="tab === 'account'" class="tab">
         <div class="pt-8 pb-4">
-          <h1 class="text-xl text-white">Account</h1>
+          <h1 class="text-xl text-white">{{$t('title.Account')}}</h1>
+          <p v-if="!isBossAccount" class="text-sm mb-2 opacity-85">{{$t('text.Only a manager can edit account details')}}</p>
         </div>
 
         <el-form ref="userForm" class="flex flex-col gap-3 px-6" :model="form" :rules="userRules" label-position="top">
-          <label class="block text-base font-bold mb-1">General</label>
+          <label class="block text-base font-bold mb-1">{{$t('title.General')}}</label>
 
-          <el-form-item label="Username" prop="username">
-            <el-input v-model="form.username" :value="form.username" autocomplete="off" />
+          <el-form-item :label="$t('label.username')" prop="username">
+            <el-tooltip v-if="!isBossAccount" :content="$t(`text.Contact your manager to update your account details`)" placement="top">
+              <el-input v-model="form.username" :value="form.username" autocomplete="off" disabled />
+            </el-tooltip>
+            <el-input v-else v-model="form.username" :value="form.username" autocomplete="off" />
           </el-form-item>
 
-          <el-form-item label="Name" prop="name">
-            <el-input v-model="form.name" :value="form.name" autocomplete="off" />
+          <el-form-item :label="$t('label.name')" prop="name">
+            <el-tooltip v-if="!isBossAccount" :content="$t(`text.Contact your manager to update your account details`)" placement="top">
+              <el-input v-model="form.name" :value="form.name" autocomplete="off" disabled />
+            </el-tooltip>
+            <el-input v-else v-model="form.name" :value="form.name" autocomplete="off" />
           </el-form-item>
 
-          <el-form-item label="Email" prop="email">
-            <el-input v-model="form.email" :value="form.email" autocomplete="off" />
+          <el-form-item :label="$t('label.email')" prop="email">
+            <el-tooltip v-if="!isBossAccount" :content="$t(`text.Contact your manager to update your account details`)" placement="top">
+              <el-input v-model="form.email" :value="form.email" autocomplete="off" disabled />
+            </el-tooltip>
+            <el-input v-else v-model="form.email" :value="form.email" autocomplete="off" />
           </el-form-item>
           
-          <div class="py-2">
-            <el-button class="!block ml-auto" plain type="success" :disabled="!form.username || !form.name || !form.email" :loading="loading.saveUser" @click="saveUser">Save</el-button>
+          <div v-if="isBossAccount" class="py-2">
+            <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+              <el-button class="!block ml-auto" type="success" plain disabled>{{$t('label.Save')}}</el-button>
+            </el-tooltip>
+            <el-button v-else class="!block ml-auto" plain type="success" :disabled="!form.username || !form.name || !form.email" :loading="loading.saveUser" @click="saveUser">{{$t('label.Save')}}</el-button>
           </div>
         </el-form>
 
         <el-form ref="passwordForm" class="flex flex-col gap-3 pt-2 px-6" :model="form" :rules="passwordRules" label-position="top">
           <label class="flex items-center justify-between text-base font-bold mb-1">
-            <span>Update Password</span>
-            <div class="cursor-pointer px-3 py-2 opacity-60 transition-all rounded-md hover:opacity-90" @click="form.seePassword = !form.seePassword">
+            <span>{{$t('label.Update Password')}}</span>
+            <div v-if="isBossAccount" class="cursor-pointer px-3 py-2 opacity-60 transition-all rounded-md hover:opacity-90" @click="form.seePassword = !form.seePassword">
               <Icon class="text-xl" :name="form.seePassword ? 'tabler:eye-off' : 'tabler:eye'" />
             </div>
           </label>
 
 
-          <el-form-item label="New Password" prop="password1">
-            <el-input v-model="form.password1" :value="form.password1" :type="form.seePassword ? '' : 'password'" autocomplete="off" />
+          <el-form-item :label="$t('label.New Password')" prop="password1">
+            <el-tooltip v-if="!isBossAccount" :content="$t(`text.Contact your manager to update your password`)" placement="top">
+              <el-input v-model="form.password1" :value="form.password1" :type="form.seePassword ? '' : 'password'" autocomplete="off" disabled />
+            </el-tooltip>
+            <el-input v-else v-model="form.password1" :value="form.password1" :type="form.seePassword ? '' : 'password'" autocomplete="off" />
           </el-form-item>
 
-          <el-form-item label="Confirm Password" prop="password2">
-            <el-input v-model="form.password2" :value="form.password2" :type="form.seePassword ? '' : 'password'" autocomplete="off" />
+          <el-form-item :label="$t('label.Confirm Password')" prop="password2">
+            <el-tooltip v-if="!isBossAccount" :content="$t(`text.Contact your manager to update your password`)" placement="top">
+              <el-input v-model="form.password2" :value="form.password2" :type="form.seePassword ? '' : 'password'" autocomplete="off" disabled />
+            </el-tooltip>
+            <el-input v-else v-model="form.password2" :value="form.password2" :type="form.seePassword ? '' : 'password'" autocomplete="off" />
           </el-form-item>
-          <div class="py-2">
-            <el-button class="!block ml-auto" plain type="success" :disabled="form.password1.length < 6 || form.password2.length < 6" :loading="loading.updatePassword" @click="updatePassword">Update</el-button>
+          <div v-if="isBossAccount" class="py-2">
+            <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+              <el-button class="!block ml-auto" type="success" plain disabled>{{$t('label.Update')}}</el-button>
+            </el-tooltip>
+            <el-button v-else class="!block ml-auto" plain type="success" :disabled="form.password1.length < 6 || form.password2.length < 6" :loading="loading.updatePassword" @click="updatePassword">{{$t('label.Update')}}</el-button>
           </div>
         </el-form>
       </div>
 
       <div v-if="tab === 'preference'" class="tab">
         <div class="pt-8 pb-4">
-          <h1 class="text-xl text-white">Preference</h1>
+          <h1 class="text-xl text-white">{{$t('title.Preference')}}</h1>
 
           <div class="px-6 py-4">
             <div>
-              <label class="block text-base font-bold mb-2">Language</label>
-              <el-select v-model="form.language" placeholder="Language" @change="saveUserSettings">
-                <el-option label="English" value="en" />
-                <el-option label="Spanish" value="es" />
+              <label class="block text-base font-bold mb-2">{{$t('title.Language')}}</label>
+              <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+                <el-select v-model="form.language" :placeholder="$t('title.Language')" disabled>
+                  <el-option :label="$t('label.English')" value="en" />
+                  <el-option :label="$t('label.Spanish')" value="es" />
+                </el-select>
+              </el-tooltip>
+              <el-select v-else v-model="form.language" :placeholder="$t('title.Language')" @change="saveUserSettings">
+                <el-option :label="$t('label.English')" value="en" />
+                <el-option :label="$t('label.Spanish')" value="es" />
               </el-select>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-if="tab === 'columns'" class="tab">
+      <div v-if="storeId && tab === 'columns'" class="tab">
         <div class="pt-8 pb-4">
-          <h1 class="text-xl text-white">Columns</h1>
+          <h1 class="text-xl text-white">{{$t('title.Columns')}}</h1>
 
           <div class="flex flex-col gap-3 px-6 py-4">
             <div>
-              <label class="block text-base font-bold mb-1">Name</label>
-              <p class="text-sm mb-2 opacity-85">Which column contains the name of the product?</p>
-              <el-select v-model="columnForm.name" placeholder="Select" size="large">
+              <label class="block text-base font-bold mb-1">{{$t('label.Name')}}</label>
+              <p class="text-sm mb-2 opacity-85">{{$t('text.Which column contains the name of the product?')}}</p>
+              <el-select v-model="columnForm.name" :placeholder="$t(`label.Select`)" size="large">
                 <div :key="column" v-for="column in store?.inventory.columns.filter(item => 
                   (!columnForm.price || !item.includes(columnForm.price)) && 
                   (!columnForm.quantity || !item.includes(columnForm.quantity)) &&
@@ -110,14 +144,14 @@
                 </div>
               </el-select>
               <div class="flex justify-between flex-wrap px-1 text-sm text-right opacity-85">
-                <span>(Type: String)</span>
+                <span>({{$t('label.Type')}}: {{$t('label.String')}})</span>
               </div>
             </div>
 
             <div>
-              <label class="block text-base font-bold mb-1">Price</label>
-              <p class="text-sm mb-2 opacity-85">Which column lists the product price?</p>
-              <el-select v-model="columnForm.price" placeholder="Select" size="large">
+              <label class="block text-base font-bold mb-1">{{$t('label.Price')}}</label>
+              <p class="text-sm mb-2 opacity-85">{{$t('text.Which column lists the product price?')}}</p>
+              <el-select v-model="columnForm.price" :placeholder="$t(`label.Select`)" size="large">
                 <div :key="column" v-for="column in store?.inventory.columns.filter(item => 
                   (!columnForm.name || !item.includes(columnForm.name)) && 
                   (!columnForm.quantity || !item.includes(columnForm.quantity)) &&
@@ -128,15 +162,15 @@
                 </div>
               </el-select>
               <div class="flex justify-between flex-wrap px-1 text-sm text-right opacity-85">
-                <span>(Type: Float)</span>
-                <span>(Default value: 0.00)</span>
+                <span>({{$t('label.Type')}}: {{$t('label.Float')}})</span>
+                <span>({{$t('label.Default value')}}: 0.00)</span>
               </div>
             </div>
 
             <div>
-              <label class="block text-base font-bold mb-1">Quantity</label>
-              <p class="text-sm mb-2 opacity-85">Which column lists the product quantity?</p>
-              <el-select v-model="columnForm.quantity" placeholder="Select" size="large">
+              <label class="block text-base font-bold mb-1">{{$t('label.Quantity')}}</label>
+              <p class="text-sm mb-2 opacity-85">{{$t('text.Which column lists the product quantity?')}}</p>
+              <el-select v-model="columnForm.quantity" :placeholder="$t(`label.Select`)" size="large">
                 <div :key="column" v-for="column in store?.inventory.columns.filter(item => 
                   (!columnForm.name || !item.includes(columnForm.name)) && 
                   (!columnForm.price || !item.includes(columnForm.price)) &&
@@ -147,15 +181,15 @@
                 </div>
               </el-select>
               <div class="flex justify-between flex-wrap px-1 text-sm text-right opacity-85">
-                <span>(Type: Whole Number)</span>
-                <span>(Default value: 0)</span>
+                <span>({{$t('label.Type')}}: {{$t('label.Whole Number')}})</span>
+                <span>({{$t('label.Default value')}}: 0)</span>
               </div>
             </div>
 
             <div>
-              <label class="block text-base font-bold mb-1">Discount</label>
-              <p class="text-sm mb-2 opacity-85">Which column lists the product discount?</p>
-              <el-select v-model="columnForm.discount" placeholder="Select" size="large">
+              <label class="block text-base font-bold mb-1">{{$t('label.Discount')}}</label>
+              <p class="text-sm mb-2 opacity-85">{{$t('text.Which column lists the product discount?')}}</p>
+              <el-select v-model="columnForm.discount" :placeholder="$t(`label.Select`)" size="large">
                 <div :key="column" v-for="column in store?.inventory.columns.filter(item => 
                   (!columnForm.name || !item.includes(columnForm.name)) && 
                   (!columnForm.price || !item.includes(columnForm.price)) &&
@@ -166,15 +200,15 @@
                 </div>
               </el-select>
               <div class="flex justify-between flex-wrap px-1 text-sm text-right opacity-85">
-                <span>(Type: Whole Number)</span>
-                <span>(Default value: 0%)</span>
+                <span>({{$t('label.Type')}}: {{$t('label.Whole Number')}})</span>
+                <span>({{$t('label.Default value')}}: 0%)</span>
               </div>
             </div>
 
             <div>
-              <label class="block text-base font-bold mb-1">Cost</label>
-              <p class="text-sm mb-2 opacity-85">Which column lists the product cost?</p>
-              <el-select v-model="columnForm.cost" placeholder="Select" size="large">
+              <label class="block text-base font-bold mb-1">{{$t('label.Cost')}}</label>
+              <p class="text-sm mb-2 opacity-85">{{$t('text.Which column lists the product cost?')}}</p>
+              <el-select v-model="columnForm.cost" :placeholder="$t(`label.Select`)" size="large">
                 <div :key="column" v-for="column in store?.inventory.columns.filter(item => 
                   (!columnForm.name || !item.includes(columnForm.name)) && 
                   (!columnForm.price || !item.includes(columnForm.price)) &&
@@ -185,29 +219,29 @@
                 </div>
               </el-select>
               <div class="flex justify-between flex-wrap px-1 text-sm text-right opacity-85">
-                <span>(Type: Float)</span>
-                <span>(Default value: 0.00)</span>
+                <span>({{$t('label.Type')}}: {{$t('label.Float')}})</span>
+                <span>({{$t('label.Default value')}}: 0.00)</span>
               </div>
             </div>
           </div>
 
-          <div class="px-6 py-3">
+          <div v-if="isBossAccount" class="px-6 py-3">
             <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-              <el-button class="!block ml-auto" type="success" plain disabled>Save</el-button>
+              <el-button class="!block ml-auto" type="success" plain disabled>{{$t('label.Save')}}</el-button>
             </el-tooltip>
-            <el-button v-else class="!block ml-auto" type="success" :loading="loading.linkColumns" plain @click="linkColumns">Save</el-button>
+            <el-button v-else class="!block ml-auto" type="success" :loading="loading.linkColumns" plain @click="linkColumns">{{$t('label.Save')}}</el-button>
           </div>
         </div>
       </div>
 
-      <div v-if="tab === 'receipt'" class="tab">
+      <div v-if="storeId && tab === 'receipt'" class="tab">
         <div class="pt-8 pb-4">
-          <h1 class="text-xl text-white">Cashier</h1>
+          <h1 class="text-xl text-white">{{$t('title.Cashier')}}</h1>
 
-          <div class="flex flex-col gap-3 px-6 py-4">
+          <div v-if="isBossAccount" class="flex flex-col gap-3 px-6 py-4">
             <div>
-              <label class="block text-base font-bold mb-2">Tax</label>
-              <el-input-number v-model="cashierForm.tax" :precision="2" :step="0.1" :max="100" :disabled="!isBossAccount">
+              <label class="block text-base font-bold mb-2">{{$t('label.Tax')}}</label>
+              <el-input-number v-model="cashierForm.tax" :precision="2" :step="0.1" :max="100">
                 <template #suffix>
                   <span>%</span>
                 </template>
@@ -215,26 +249,26 @@
             </div>
           </div>
 
-          <h1 class="text-xl text-white mt-4">Reciept Printer</h1>
+          <h1 class="text-xl text-white mt-4">{{$t('title.Receipt Printer')}}</h1>
 
           <div class="flex flex-col gap-3 px-6 py-4">
             <div>
-              <label class="block text-base font-bold mb-2">Epson Ip Address</label>
+              <label class="block text-base font-bold mb-2">{{$t('label.Epson Ip Address')}}</label>
               <el-input v-model="cashierForm.ip" placeholder="192.168.1.xxx" />
               <div class="flex justify-between flex-wrap px-1 text-sm text-right opacity-85">
                 <span></span>
-                <span>(Example: 192.168.1.xxx)</span>
+                <span>({{$t('label.Example')}}: 192.168.1.xxx)</span>
               </div>
             </div>
           </div>
-
+          
           <h1 class="flex items-center justify-between text-xl text-white my-4">
-            <span>Reciept</span>
+            <span>{{$t('title.Receipt')}}</span>
             <div>
               <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-                <el-button class="!block ml-auto" type="success" plain disabled>Print Sample</el-button>
+                <el-button class="!block ml-auto" type="success" plain disabled>{{$t('label.Print Sample')}}</el-button>
               </el-tooltip>
-              <el-button v-else class="!block ml-auto" type="success" :loading="loading.printReceipt" plain @click="printReceipt">Print Sample</el-button>
+              <el-button v-else class="!block ml-auto" type="success" :loading="loading.printReceipt" plain @click="printReceipt">{{$t('label.Print Sample')}}</el-button>
             </div>
           </h1>
 
@@ -291,31 +325,31 @@
             </div>
           </div>
 
-          <div id="receipt-wrapper">
+          <div v-if="isBossAccount" id="receipt-wrapper">
             <div class="w-full">
               <label class="flex items-center justify-between text-base font-bold mb-2">
-                <span>Receipt Header</span>
-                <el-button type="success" plain @click="addHeader()">Add Header</el-button>
+                <span>{{$t('label.Receipt Header')}}</span>
+                <el-button type="success" plain @click="addHeader()">{{$t('label.Add Header')}}</el-button>
               </label>
 
               <div v-for="(header, h) in cashierForm.header" :key="header">
                 <div class="input">
                   <div>
-                    <label>Font Size</label>
-                    <el-select v-model="header.size" placeholder="Select">
+                    <label>{{$t('label.Font Size')}}</label>
+                    <el-select v-model="header.size" :placeholder="$t(`label.Select`)">
                       <el-option v-for="i in [1, 2, 3]" :key="i" :label="i" :value="i" />
                     </el-select>
                   </div>
 
                   <div>
-                    <label>Text Alignment</label>
-                    <el-select v-model="header.align" placeholder="Select">
+                    <label>{{$t('label.Text Alignment')}}</label>
+                    <el-select v-model="header.align" :placeholder="$t(`label.Select`)">
                       <el-option v-for="i in ['left', 'center', 'right']" :key="i" :label="i.charAt(0).toUpperCase() + i.substring(1).toLowerCase()" :value="i" />
                     </el-select>
                   </div>
 
                   <div class="flex-auto">
-                    <label>Text</label>
+                    <label>{{$t('label.Text')}}</label>
                     <el-input v-model="header.text">
                       <template v-if="h > 0" #append>
                         <el-button @click="removeItem(cashierForm.header, h)">
@@ -330,28 +364,28 @@
 
             <div class="w-full">
               <label class="flex items-center justify-between text-base font-bold mb-2">
-                <span>Receipt Footer</span>
-                <el-button type="success" plain @click="addFooter()">Add Footer</el-button>
+                <span>{{$t('label.Receipt Footer')}}</span>
+                <el-button type="success" plain @click="addFooter()">{{$t('label.Add Footer')}}</el-button>
               </label>
 
               <div v-for="(footer, f) in cashierForm.footer" :key="f">
                 <div class="input">
                   <div>
-                    <label>Font Size</label>
-                    <el-select v-model="footer.size" placeholder="Select">
+                    <label>{{$t('label.Font Size')}}</label>
+                    <el-select v-model="footer.size" :placeholder="$t(`label.Select`)">
                       <el-option v-for="i in [1, 2, 3]" :key="i" :label="i" :value="i" />
                     </el-select>
                   </div>
 
                   <div>
-                    <label>Text Alignment</label>
-                    <el-select v-model="footer.align" placeholder="Select">
-                      <el-option v-for="i in ['left', 'center', 'right']" :key="i" :label="i.charAt(0).toUpperCase() + i.substring(1).toLowerCase()" :value="i" />
+                    <label>{{$t('label.Text Alignment')}}</label>
+                    <el-select v-model="footer.align" :placeholder="$t(`label.Select`)">
+                      <el-option v-for="i in ['left', 'center', 'right']" :key="i" :label="$t(`label.${i.charAt(0).toUpperCase()}${i.substring(1).toLowerCase()}`)" :value="i" />
                     </el-select>
                   </div>
 
                   <div class="flex-auto">
-                    <label>Text</label>
+                    <label>{{$t('label.Text')}}</label>
                     <el-input v-model="footer.text">
                       <template v-if="f > 0" #append>
                         <el-button @click="removeItem(cashierForm.footer, f)">
@@ -367,34 +401,34 @@
 
           <div class="py-6">
             <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-              <el-button class="!block ml-auto" type="success" plain disabled>Save</el-button>
+              <el-button class="!block ml-auto" type="success" plain disabled>{{$t('label.Save')}}</el-button>
             </el-tooltip>
-            <el-button v-else class="!block ml-auto" type="success" :loading="loading.saveCashier" plain @click="saveCashierSettings">Save</el-button>
+            <el-button v-else class="!block ml-auto" type="success" :loading="loading.saveCashier" plain @click="saveCashierSettings">{{$t('label.Save')}}</el-button>
           </div>
         </div>
       </div>
 
-      <div v-if="tab === 'invoice'" class="tab">
+      <div v-if="storeId && tab === 'invoice'" class="tab">
         <div class="pt-8 pb-4">
-          <h1 class="text-xl text-white">Invoice</h1>
+          <h1 class="text-xl text-white">{{$t('title.Invoice')}}</h1>
 
           <div class="flex flex-col gap-3 px-6 py-4">
             <label class="flex items-center justify-between text-base font-bold">
-              <span>Notes</span>
-              <el-button type="success" plain @click="addNote()">Add</el-button>
+              <span>{{$t('label.Notes')}}</span>
+              <el-button type="success" plain @click="addNote()">{{$t('label.add')}}</el-button>
             </label>
-            <p class="text-sm -mt-3 mb-1 opacity-85">Standard messages to be included on all invoices.</p>
+            <p class="text-sm -mt-3 mb-1 opacity-85">{{$t('text.Standard messages to be included on all invoices')}}</p>
 
             <div class="flex flex-col gap-4">
               <div v-for="(note, i) in cashierForm.invoice_notes" :key="i">
                 <div class="flex items-center justify-center gap-4">
                   <div>
-                    <label class="block pb-4">Bold</label>
+                    <label class="block pb-4">{{$t('label.Bold')}}</label>
                     <el-checkbox class="flex items-center justify-center w-8 position-relative bottom-1" v-model="note.bold" style="transform: scale(1.6);" />
                   </div>
 
                   <div class="w-full">
-                    <label class="block pb-2">Text</label>
+                    <label class="block pb-2">{{$t('label.Text')}}</label>
                     <el-input v-model="note.text">
                       <template v-if="i > 0" #append>
                         <el-button @click="removeItem(cashierForm.invoice_notes, i)">
@@ -410,9 +444,9 @@
 
           <div class="py-6">
             <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-              <el-button class="!block ml-auto" type="success" plain disabled>Save</el-button>
+              <el-button class="!block ml-auto" type="success" plain disabled>{{$t('label.Save')}}</el-button>
             </el-tooltip>
-            <el-button v-else class="!block ml-auto" type="success" :loading="loading.saveCashier" plain @click="saveCashierSettings">Save</el-button>
+            <el-button v-else class="!block ml-auto" type="success" :loading="loading.saveCashier" plain @click="saveCashierSettings">{{$t('label.Save')}}</el-button>
           </div>
         </div>
       </div>
@@ -463,20 +497,20 @@ const userRules = reactive({
     { validator: validateUsername, trigger: 'change' }
   ],
   name: [
-    { required: true, message: `Name required`, trigger: ['blur', 'change'] }
+    { required: true, message: $t('invalid.Name is required'), trigger: ['blur', 'change'] }
   ],
   email: [
-    { required: true, message: `Email required`, trigger: ['blur', 'change'] },
-    { type: 'email', message: 'Invalid email format', trigger: ['blur', 'change'] }
+    { required: true, message: $t('invalid.Email is required'), trigger: ['blur', 'change'] },
+    { type: 'email', message: $t('invalid.Invalid email format'), trigger: ['blur', 'change'] }
   ],
 })
 
 const passwordRules = reactive({
   password1: [
-    { min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }
+    { min: 6, message: $t('invalid.Password must be at least 6 characters'), trigger: 'blur' }
   ],
   password2: [
-    { min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }
+    { min: 6, message: $t('invalid.Password must be at least 6 characters'), trigger: 'blur' }
   ],
 })
 
@@ -586,7 +620,7 @@ async function saveUserSettings() {
 
 //Gets the user store
 async function fetchStore() {
-  if(storeId) {
+  if(storeId.value) {
     store.value = await handleGetRequest(`/api/protected/store/${storeId.value}`)
 
     const { tax, inventory, header, footer, invoice_notes } = store.value
@@ -708,75 +742,101 @@ function addNote() {
 //Saves cashier settings
 async function saveCashierSettings(notifyUser = true) {
   const { tax, ip, header, footer, invoice_notes } = cashierForm
+  let response = null
   loading.saveCashier = true
+
   //Save new ip address
-  if(user.value.ip !== ip) {
-    //Make request
-    await useFetchApi(`/api/protected/settings/edit-user-settings`, {
-      method: "POST",
-      body: { ip: ip }
-    })
-
-    //Fetch updated auth data
-    await fetch()
-  }
-
-  //Check if tax is withing 0 to 100%
-  if(tax < 0 || tax > 100) {
-    sendFrontendNotification('The tax percentage must be between 0% and 100%', 'error')
-    return
-  }
-
-  //Save settings before printing receipt
-  const response = await useFetchApi(`/api/protected/settings/edit-cashier-settings`, {
+  response = await useFetchApi(`/api/protected/settings/edit-user-settings`, {
     method: "POST",
-    body: {
-      store_id: storeId.value,
-      tax: tax,
-      header: header,
-      footer: footer,
-      invoice_notes: invoice_notes,
-    }
+    body: { ip: ip }
   })
+
+  //Fetch updated auth data
+  await fetch()
+
+  //Only boss can 
+  if(isBossAccount.value) {
+    //Check if tax is withing 0 to 100%
+    if(tax < 0 || tax > 100) {
+      sendFrontendNotification('The tax percentage must be between 0% and 100%', 'error')
+      return
+    }
+
+    //Save settings before printing receipt
+    response = await useFetchApi(`/api/protected/settings/edit-cashier-settings`, {
+      method: "POST",
+      body: {
+        store_id: storeId.value,
+        tax: tax,
+        header: header,
+        footer: footer,
+        invoice_notes: invoice_notes,
+      }
+    })
+  }
   loading.saveCashier = false
 
   //Display error
-  if (response.statusCode) {
+  if (response && response.statusCode) {
     sendNotification(response.statusMessage, 'error')
     return
   }
 
   //Display Success
-  if(notifyUser)
+  if(response && notifyUser)
     sendNotification(response.message, 'success')
 }
-
-
 </script>
 
 <style lang="scss">
-#settings-sidebar {
-  height: 100vh;
-  width: 220px;
-  padding: 16px 8px;
-  border-color: #2b2b2b;
-  .sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: #bfbfbf;
-    padding: 16px;
-    font-size: 16px;
-    height: 40px;
-    border-radius: 8px;
-    margin: 4px 0;
-    user-select: none;
-    &.is-disabled {
-      color: #ffffff;
+@media (max-width: 575px) {
+  #settings-page {
+    #settings-wrapper {
+      padding-left: 80px;
     }
-    &:hover, &.active {
-      background: #ffffff14;
-      color: #ffffff;
+    #settings-sidebar {
+      #sidebar-wrapper {
+        text-align: center;
+        width: 79px !important;
+        .sidebar-item {
+          justify-content: center;
+          span {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+#settings-sidebar {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  z-index: 2;
+  #sidebar-wrapper {
+    height: 100vh;
+    width: 179px;
+    padding: 16px 8px;
+    border-color: #2b2b2b;
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #bfbfbf;
+      padding: 16px;
+      font-size: 16px;
+      height: 40px;
+      border-radius: 8px;
+      margin: 4px 0;
+      user-select: none;
+      &.is-disabled {
+        color: #ffffff;
+      }
+      &:hover, &.active {
+        background: #ffffff14;
+        color: #ffffff;
+      }
     }
   }
 }

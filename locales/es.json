@@ -1,4 +1,18 @@
 {
+  "sidebar": {
+    "My Account": "Mi Cuenta",
+    "Settings": "Ajustes",
+    "Logout": "Cerrar Sesión",
+    "Dashboard": "Tablero",
+    "Inventory": "Inventario",
+    "Logs": "Registros",
+    "Workers": "Trabajadores",
+    "Cashier": "Cajero",
+    "Layaway": "Layaway",
+    "Transactions": "Transacciones",
+    "Offline": "Desconectado",
+    "Exit Store": "Salir de la Tienda"
+  },
   "label": {
     "add": "Agregar",
     "create": "Crear",
@@ -34,7 +48,9 @@
     "Username is required": "El nombre de usuario es obligatorio",
     "Username must be between 3 and 15 characters": "El nombre de usuario debe tener entre 3 y 15 caracteres",
     "Username can only contain letters and numbers": "El nombre de usuario solo puede contener letras y números",
+    "Email is required": "Se requiere correo",
     "E-mail must be valid": "El correo electrónico debe ser válido",
+    "Invalid email format": "Formato de correo no válido",
     "Password is required": "Se requiere contraseña",
     "Password must be at least 6 characters": "La contraseña debe tener al menos 6 caracteres"
   },
