@@ -23,7 +23,6 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 #wrapper {
-  background: #1e1e1e;
   min-height: calc(100vh - 172px);
   display: flex;
   justify-content: center;

@@ -34,7 +34,6 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 #app {
-  background: #1c1c1c;
   color: #ffffff;
   min-height: 100vh;
 }

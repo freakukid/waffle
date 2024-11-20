@@ -11,10 +11,12 @@ html {
 }
 
 body {
+  background: url('/public/bg.png');
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   margin: 0;
-}
-
-body {
   .el-dialog {
     --el-dialog-margin-top: 5vh;
     border-radius: 10px;
