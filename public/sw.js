@@ -1,6 +1,6 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js')
 
-const CACHE_NAME = 'static-v28'
+const CACHE_NAME = 'static-v29'
 
 self.addEventListener('install', (event) => {
   // Immediately take control, and skip waiting
@@ -101,36 +101,36 @@ workbox.routing.registerRoute(
 // )
 
 // Cache GET Requests
-const getAPIs = [
-  //Store
-  'https://legitski.com/api/protected/store/stores',
-  /^https:\/\/legitski\.com\/api\/protected\/store\/\d+$/,
-  //Log
-  /^https:\/\/legitski\.com\/api\/protected\/log\/\d+$/,
-  //Transaction
-  /^https:\/\/legitski\.com\/api\/protected\/transaction\/\d+$/,
-  //Layaway
-  /^https:\/\/legitski\.com\/api\/protected\/layaway\/\d+$/,
-  //Customer
-  /^https:\/\/legitski\.com\/api\/protected\/customer\/\d+$/,
-  //Workers
-  /^https:\/\/legitski\.com\/api\/protected\/workers\/\d+$/,
-  //Worker Permissions
-  /^https:\/\/legitski\.com\/api\/protected\/workers\/permissions\/\d+$/,
-]
+// const getAPIs = [
+//   //Store
+//   'https://legitski.com/api/protected/store/stores',
+//   /^https:\/\/legitski\.com\/api\/protected\/store\/\d+$/,
+//   //Log
+//   /^https:\/\/legitski\.com\/api\/protected\/log\/\d+$/,
+//   //Transaction
+//   /^https:\/\/legitski\.com\/api\/protected\/transaction\/\d+$/,
+//   //Layaway
+//   /^https:\/\/legitski\.com\/api\/protected\/layaway\/\d+$/,
+//   //Customer
+//   /^https:\/\/legitski\.com\/api\/protected\/customer\/\d+$/,
+//   //Workers
+//   /^https:\/\/legitski\.com\/api\/protected\/workers\/\d+$/,
+//   //Worker Permissions
+//   /^https:\/\/legitski\.com\/api\/protected\/workers\/permissions\/\d+$/,
+// ]
 
-workbox.routing.registerRoute(
-  ({ url }) => matchesApi(getAPIs, url),
-  new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'api',
-    plugins: [{
-      cacheWillUpdate: async ({ request, response }) => {
-        // Check if response is okay, if not return null to not cache it
-        if (!response || !response.ok) {
-          return null // Return null to indicate not to cache
-        }
-        return response // Return the valid response to cache it
-      },
-    }],
-  })
-)
+// workbox.routing.registerRoute(
+//   ({ url }) => matchesApi(getAPIs, url),
+//   new workbox.strategies.StaleWhileRevalidate({
+//     cacheName: 'api',
+//     plugins: [{
+//       cacheWillUpdate: async ({ request, response }) => {
+//         // Check if response is okay, if not return null to not cache it
+//         if (!response || !response.ok) {
+//           return null // Return null to indicate not to cache
+//         }
+//         return response // Return the valid response to cache it
+//       },
+//     }],
+//   })
+// )
