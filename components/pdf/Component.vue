@@ -194,6 +194,7 @@
 
 <script setup>
 //Import
+const { $t } = useNuxtApp()
 import jsPDF from 'jspdf'
 import { toPng } from 'html-to-image'
 const { sendNotification } = useHelpers()
@@ -218,7 +219,7 @@ const rules = reactive({
   email: [{
     required: true,
     type: 'email',
-    message: 'Invalid email format',
+    message: $t('invalid.Invalid email format'),
     trigger: ['blur', 'change']
   }],
 })

@@ -54,6 +54,7 @@
 
 <script setup>
 //Import
+const { $t } = useNuxtApp()
 const offlineStore = useOfflineStore()
 const { sendNotification, sendFrontendNotification } = useHelpers()
 const { handleCustomerRequest } = useHandleRequests()
@@ -96,17 +97,17 @@ const form = reactive({
 const rules = reactive({
   name: [{
     required: true,
-    message: `Please enter the customer's name`,
+    message: $t('invalid.Name is required'),
     trigger: 'change'
   }],
   email: [{
     type: 'email',
-    message: 'Invalid email format',
+    message: $t('invalid.Invalid email format'),
     trigger: ['blur', 'change']
   }],
   phone: [{
     pattern: /^\d{10}$/,
-    message: 'Invalid phone number format',
+    message: $t('invalid.Invalid phone number format'),
     trigger: ['blur', 'change']
   }],
 })

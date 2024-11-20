@@ -75,6 +75,7 @@
 
 <script setup>
 //Import
+const { $t } = useNuxtApp()
 const { validateEmail } = useValidator()
 const { sendNotification } = useHelpers()
 const { fetch } = useUserSession()
@@ -115,9 +116,9 @@ const form = reactive({
 })
 
 const rules = reactive({
-  name: [{ min: 2, message: 'Length must be 2 or more', trigger: ['blur', 'change'] }],
-  email: [{ type: 'email', message: 'Invalid email format', trigger: ['blur', 'change']}],
-  phone: [{ pattern: /^\d{10}$/, message: 'Invalid phone number format', trigger: ['blur', 'change']}],
+  name: [{ min: 2, message: $t('invalid.The name must consist of at least 2 characters'), trigger: ['blur', 'change'] }],
+  email: [{ type: 'email', message: $t('invalid.Invalid email format'), trigger: ['blur', 'change']}],
+  phone: [{ pattern: /^\d{10}$/, message: $t('invalid.Invalid phone number format'), trigger: ['blur', 'change']}],
 })
 
 //Focus Input

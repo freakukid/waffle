@@ -54,7 +54,8 @@
     "E-mail must be valid": "Email must be valid",
     "Invalid email format": "Invalid email format",
     "Password is required": "Password is required",
-    "Password must be at least 6 characters": "Password must be at least 6 characters"
+    "Password must be at least 6 characters": "Password must be at least 6 characters",
+    "Invalid phone number format": "Invalid phone number format"
   },
   "frontend": {
     "valid": {

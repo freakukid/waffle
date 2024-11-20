@@ -54,7 +54,8 @@
     "E-mail must be valid": "El correo electrónico debe ser válido",
     "Invalid email format": "Formato de correo no válido",
     "Password is required": "Se requiere contraseña",
-    "Password must be at least 6 characters": "La contraseña debe tener al menos 6 caracteres"
+    "Password must be at least 6 characters": "La contraseña debe tener al menos 6 caracteres",
+    "Invalid phone number format": "Formato de número de teléfono no válido"
   },
   "frontend": {
     "valid": {
