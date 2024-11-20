@@ -55,7 +55,7 @@
 
     <!-- Button -->
     <el-tooltip v-if="!offlineStore.getOnlineStatus() && type === 'create'" :content="$t(`tippy.feature only available online`)" placement="top">
-      <el-button id="create-btn" class="offline" type="primary" disabled>
+      <el-button id="create-btn" class="offline" disabled>
         <div class="btn-body">
           <Icon name="mdi:store-plus" />
           <b>{{$t(`title.create store`)}}</b>
@@ -63,7 +63,7 @@
       </el-button>
     </el-tooltip>
 
-    <el-button v-else-if="type === 'create'" id="create-btn" type="primary" @click="openPopup(true)">
+    <el-button v-else-if="type === 'create'" id="create-btn" @click="openPopup(true)">
       <div class="btn-body">
         <Icon name="mdi:store-plus" />
         <b>{{$t(`title.create store`)}}</b>

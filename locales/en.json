@@ -45,11 +45,13 @@
   },
   "invalid": {
     "Name is required": "Name is required",
+    "Store name is required": "Store name is required",
+    "The name must consist of at least 2 characters": "The name must consist of at least 2 characters",
     "Username is required": "Username is required",
     "Username must be between 3 and 15 characters": "Username must be between 3 and 15 characters",
     "Username can only contain letters and numbers": "Username can only contain letters and numbers",
     "Email is required": "Email is required",
-    "E-mail must be valid": "E-mail must be valid",
+    "E-mail must be valid": "Email must be valid",
     "Invalid email format": "Invalid email format",
     "Password is required": "Password is required",
     "Password must be at least 6 characters": "Password must be at least 6 characters"

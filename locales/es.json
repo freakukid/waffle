@@ -45,6 +45,8 @@
   },
   "invalid": {
     "Name is required": "El nombre es obligatorio",
+    "Store name is required": "El nombre de la tienda es obligatorio",
+    "The name must consist of at least 2 characters": "El nombre debe constar de al menos 2 caracteres",
     "Username is required": "El nombre de usuario es obligatorio",
     "Username must be between 3 and 15 characters": "El nombre de usuario debe tener entre 3 y 15 caracteres",
     "Username can only contain letters and numbers": "El nombre de usuario solo puede contener letras y números",

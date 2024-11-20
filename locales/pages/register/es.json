@@ -1,1 +1,10 @@
-{}
+{
+  "title" : {
+    "Register": "Registro"
+  },
+  "label": {
+    "Login": "Acceso",
+    "Store Name": "Nombre de la Tienda",
+    "Have an account?": "¿Tienes una cuenta?"
+  }
+}

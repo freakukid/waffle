@@ -1,27 +1,24 @@
 import { hash } from "bcrypt"
 
 export default defineEventHandler(async (event) => {
-  let { username, name, email, password, storeCode, storeName } = await readBody(event)
+  const { username, name, email, password, storeCode, storeName } = await readBody(event)
 
   //Check if the bare minimum was filled out
-  if (!username || !password || !name || !storeName) {
-    throw createError({statusCode: 400, statusMessage: `Required parameters are missing`})
-  }
+  if (!username || !password || !name || !storeName)
+    return { statusCode: 403, statusMessage: `Required parameters are missing` }
 
   //Check if we at least have a store code or store name
   // if (!storeCode && !storeName) {
-  //   throw createError({statusCode: 400, statusMessage: "Either Store Code or Store Name must be provided"})
+  //   return { statusCode: 403, statusMessage: `Either Store Code or Store Name must be provided` }
   // }
 
   //Check username params
-  if (!/^(?:[a-zA-Z0-9]{3,15})$/.test(username)) {
-    throw createError({statusCode: 400, statusMessage: "Username must be between 3 and 15 characters and contain only letters and numbers"})
-  }
+  if (!/^(?:[a-zA-Z0-9]{3,15})$/.test(username))
+    return { statusCode: 403, statusMessage: `Username must be between 3 and 15 characters and contain only letters and numbers` }
 
   //Check password params
-  if (password.length < 6) {
-    throw createError({statusCode: 400, statusMessage: "Password must be at least 6 characters long"})
-  }
+  if (password.length < 6)
+    return { statusCode: 403, statusMessage: `Password must be at least 6 characters long` }
 
   //Checks if user already exist
   const userExists = await prisma.user.findFirst({
@@ -32,9 +29,8 @@ export default defineEventHandler(async (event) => {
       }
   })
 
-  if(userExists) {
-    throw createError({statusCode: 403, statusMessage: "Username already exist"})
-  }
+  if(userExists)
+    return { statusCode: 403, statusMessage: `Username already exist` }
 
   const isBoss = !storeCode && storeName
   let store = null
@@ -42,7 +38,7 @@ export default defineEventHandler(async (event) => {
   if(!isBoss) {
     store = await prisma.store.findFirst({ where: { code: storeCode } })
     if (!store) {
-      throw createError({statusCode: 400, statusMessage: "Store not found"})
+      return { statusCode: 403, statusMessage: `Store not found` }
     }
   }
 
@@ -115,7 +111,7 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error) {
     console.error(error)
-    throw createError({statusCode: 500, statusMessage: "Error updating user"})
+    return { statusCode: 500, statusMessage: `Error updating user` }
   }
 
   setResponseStatus(event, 201)
