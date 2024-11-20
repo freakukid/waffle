@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{'pl-16': loggedIn}">
     <NuxtPage />
   </div>
 
@@ -37,6 +37,5 @@ onBeforeMount(async () => {
   background: #1c1c1c;
   color: #ffffff;
   min-height: 100vh;
-  padding-left: 64px;
 }
 </style>

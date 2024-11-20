@@ -25,15 +25,13 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  if(!user) {
+  if(!user)
     return { statusCode: 403, statusMessage: `User not found` }
-  }
 
   const isPasswordValid = await compare(password, user.password)
 
-  if (!isPasswordValid) {
+  if (!isPasswordValid)
     return { statusCode: 403, statusMessage: `Invalid password` }
-  }
 
   //Setup session data
   const userData = {
