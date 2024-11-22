@@ -154,7 +154,7 @@ const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { $td } = useNuxtApp()
 
 //Data
-const requests = computed(offlineStore.getRequests)
+const requests = computed(offlineStore.fetchPostRequests)
 const customerRequests = computed(offlineStore.getCustomerRequests)
 const storeId = computed(pinia.getStore)
 const store = ref(null)

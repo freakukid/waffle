@@ -83,6 +83,7 @@
 <script setup>
 //Import
 const { sendNotification, sendFrontendNotification } = useHelpers()
+const { handleGetRequest } = useHandleRequests()
 const { fetch } = useUserSession()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
@@ -137,7 +138,7 @@ function exitStore() {
 
 async function updateStores() {
   //Make request
-  stores.value = await useFetchApi(`/api/protected/store/stores`)
+  stores.value = await handleGetRequest(`/api/protected/store/stores`)
   //Test data
   // console.log(JSON.stringify(stores.value))
 }

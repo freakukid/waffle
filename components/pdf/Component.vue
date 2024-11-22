@@ -115,7 +115,7 @@
           </div>
 
           <!-- NOTES -->
-          <div v-if="form.notes[0].text !== '' || form.notes.length > 1 || store.invoice_notes[0].text !== ''" class="mt-4">
+          <div v-if="form.notes[0].text !== '' || form.notes.length > 1 || (store.invoice_notes && store.invoice_notes[0].text !== '')" class="mt-4">
             <b>Notes:</b>
 
             <p v-for="note in store.invoice_notes" :key="note" class="my-3" :class="{'font-bold': note.bold}">

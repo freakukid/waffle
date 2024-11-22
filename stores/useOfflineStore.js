@@ -6,6 +6,7 @@ export const useOfflineStore = defineStore('offline', {
     isOnline: true,
     requests: [],
     customerRequests: [],
+    getRequests: {},
     makingRequests: false
   }),
   actions: {
@@ -26,7 +27,6 @@ export const useOfflineStore = defineStore('offline', {
         }
       } catch(error) {
         this.isOnline = false
-        // console.log('?')
       }
 
       // console.log(JSON.stringify(this.customerRequests))
@@ -40,11 +40,17 @@ export const useOfflineStore = defineStore('offline', {
     setOnlineStatus(isOnline) {
       this.isOnline = isOnline
     },
-    getRequests() {
+    fetchGetRequests() {
+      return this.getRequests
+    },
+    fetchPostRequests() {
       return this.requests
     },
     getCustomerRequests() {
       return this.customerRequests
+    },
+    saveGetRequest(url, response) {
+      this.getRequests[url] = response
     },
     addPostRequest(category, type, postData, fakeData) {
       this.requests.push({category: category, type: type, data: postData, ...fakeData})

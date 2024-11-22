@@ -72,7 +72,8 @@
       "No inventory data is available": "No hay datos de inventario disponibles",
       "An unexpected error occurred, please try again": "Ocurrió un error inesperado, por favor intente nuevamente",
       "Feature only available online": "Característica solo disponible en línea",
-      "Passwords do not match": "Las contraseñas no coinciden"
+      "Passwords do not match": "Las contraseñas no coinciden",
+      "This page cannot be used offline since the necessary data is not cached, Please connect to the internet for full functionality": "Esta página no se puede utilizar sin conexión porque los datos necesarios no están almacenados en caché. Conéctese a Internet para disfrutar de todas las funciones"
     },
     "warning": {
       "No column name has been provided": "No se ha proporcionado ningún nombre de columna",

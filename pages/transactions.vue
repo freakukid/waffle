@@ -432,7 +432,7 @@ function doCalc(items) {
     const taxTotal = calcTaxTotal(subtotal, transaction.tax)
     const total = calcTotal(subtotal, taxTotal)
     transaction.date = $td(transaction.timestamp, { year: 'numeric', month: 'long', day: 'numeric' })
-    transaction.tax = transaction.tax.toFixed(2)
+    transaction.tax = parseFloat(transaction.tax).toFixed(2)
     transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")

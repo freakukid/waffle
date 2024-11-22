@@ -1,9 +1,56 @@
 export default () => {
   const { sendNotification, sendFrontendNotification } = useHelpers()
 
+  const getAPIs = [
+    //Store
+    '/api/protected/store/stores',
+    /^\/api\/protected\/store\/\d+$/,
+    //Log
+    /^\/api\/protected\/log\/\d+$/,
+    //Transaction
+    /^\/api\/protected\/transaction\/\d+$/,
+    //Layaway
+    /^\/api\/protected\/layaway\/\d+$/,
+    //Customer
+    /^\/api\/protected\/customer\/\d+$/,
+    //Workers
+    /^\/api\/protected\/workers\/\d+$/,
+    //Worker Permissions
+    /^\/api\/protected\/workers\/permissions\/\d+$/,
+  ]
+
+  function matchesApi(url) {
+    return getAPIs.some(api => {
+      if (typeof api === 'string') {
+        return api === url // Check for string match
+      } else if (api instanceof RegExp) {
+        return api.test(url) // Check for regex match
+      }
+      return false // Not a match if it's not a string or regex
+    })
+  }
+
   async function handleGetRequest(url) {
+    const offlineStore = useOfflineStore()
+    const offlineKey = url.replace('/api/protected', '')
     try {
-      return await useFetchApi(url)
+      let response = null
+
+      if(offlineStore.getOnlineStatus()) {
+        response = await useFetchApi(url)
+        //Save get request
+        if(matchesApi(url))
+          offlineStore.saveGetRequest(offlineKey, response)
+      } else {
+        const getRequests = offlineStore.fetchGetRequests()
+        if (offlineKey in getRequests) {
+          response = getRequests[offlineKey]
+        } else {
+          sendFrontendNotification(`This page cannot be used offline since the necessary data is not cached, Please connect to the internet for full functionality`, 'error')
+        }
+      }
+      
+      return response
     } catch(error) {
       const { logout } = useAuth()
       const pinia = useStore()

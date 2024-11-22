@@ -72,7 +72,8 @@
       "No inventory data is available": "No inventory data is available",
       "An unexpected error occurred, please try again": "An unexpected error occurred, please try again",
       "Feature only available online": "Feature only available online",
-      "Passwords do not match": "Passwords do not match"
+      "Passwords do not match": "Passwords do not match",
+      "This page cannot be used offline since the necessary data is not cached, Please connect to the internet for full functionality": "This page cannot be used offline since the necessary data is not cached. Please connect to the internet for full functionality."
     },
     "warning": {
       "No column name has been provided": "No column name has been provided",

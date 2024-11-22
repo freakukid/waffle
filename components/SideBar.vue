@@ -97,7 +97,7 @@ const route = useRoute()
 
 //Data
 const storeId = computed(() => store.store)
-const offlineRequests = computed(offlineStore.getRequests)
+const offlineRequests = computed(offlineStore.fetchPostRequests)
 const isBossAccount = computed(isBoss)
 const permissions = ref({make_transactions: true, view_log: true})
 
