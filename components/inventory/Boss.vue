@@ -232,10 +232,13 @@ const dropTableRef = ref(null)
 
 //Filters inventory depending on search query
 const filteredInventory = computed(() => {
-  if (!form.search.query) return inventory.value
+  let { query, checked } = form.search
+  if (!query) return inventory.value
+  query = query.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+
   return inventory.value.filter((data) => {
-    return form.search.checked.some((prop) => {
-      if (data[prop] && data[prop].toString().toLowerCase().trim().includes(form.search.query.toLowerCase().trim()))
+    return checked.some((prop) => {
+      if (data[prop] && data[prop].toString().toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query))
         return true
       return false
     })
