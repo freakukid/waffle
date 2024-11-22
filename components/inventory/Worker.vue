@@ -44,7 +44,7 @@
                     </span>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <div class="text-base py-2 px-3"><label>{{$t(`title.search by`)}}</label></div>
+                        <div class="text-base py-2 px-3"><label>{{$t(`title.Search By`)}}</label></div>
                         <el-checkbox-group v-model="form.search.checked" class="flex flex-col" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
                           <el-checkbox v-for="column in store.inventory.columns" :key="column" class="!mx-0 px-4 !h-10" :label="column" :value="column">{{ column }}</el-checkbox>
                         </el-checkbox-group>
@@ -59,7 +59,7 @@
           <!-- TABLE ACTIONS -->
 
           <!-- TABLE -->
-          <el-table :data="filteredInventory" ref="tableRef" class="w-full h-full" table-layout="auto" :default-sort="{ prop: form.sort.col }" border>
+          <el-table :data="filteredInventory" ref="tableRef" class="w-full h-full" table-layout="auto" :default-sort="{ prop: form.sort.col }" border> 
             <el-table-column v-if="permissions.receiving || permissions.edit_item || permissions.delete_item" label="Operations" width="140">
               <template #header>
                 <div class="flex items-center gap-1 w-full">
@@ -130,7 +130,8 @@ const store = ref({})
 const inventory = ref([])
 const loading = reactive({startedLoading: true})
 const form = reactive({
-  search: {query: '', checked: pinia.getFilteredColumns()}
+  search: {query: '', checked: pinia.getFilteredColumns()},
+  sort: { col: '', order: '' }
 })
 
 //Element Reference
@@ -216,6 +217,10 @@ async function getStore() {
   
   if(store.value.inventory)
     inventory.value = formatInventory()
+
+  //Keep track of the current sort
+  form.sort.col = store.value.inventory?.columns[0]
+  form.sort.order = 'ascending'
 
   const filtered = pinia.getFilteredColumns()
   if(!filtered.length && store.value.inventory?.columns.length)

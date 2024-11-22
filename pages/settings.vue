@@ -457,7 +457,7 @@
 
 <script setup>
 definePageMeta({
-  middleware: 'unauth'
+  middleware: ['unauth', 'language']
 })
 
 const { fetch } = useUserSession()

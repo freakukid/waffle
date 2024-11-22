@@ -2,7 +2,7 @@
   <div>
     <div id="wrapper">
       <NuxtLink to="/inventory">
-        <el-button class="btn" type="primary">
+        <el-button class="btn">
           <div class="btn-body">
             <Icon name="mingcute:inventory-line" />
             <b>{{ $t(`text.go to inventory`) }}</b>
@@ -35,21 +35,19 @@ onBeforeMount(async () => {
   height: 300px;
   width: 300px;
   background: #1c1c1c;
-  border: 2px solid #36a1ff;
-  color: #36a1ff;
-  font-size: 32px;
+  color: #d3d3d3;
   transition: all 200ms ease-in-out;
   &:hover {
-    border-color: #00e1ff;
-    color: #00e1ff;
+    color: #fff;
   }
   .btn-body {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
+    font-size: 20px;
     svg {
-      font-size: 150px;
+      font-size: 120px;
     }
   }
 }

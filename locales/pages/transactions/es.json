@@ -4,6 +4,18 @@
     "Layaway": "Layaway",
     "Customer": "Cliente"
   },
+  "title": {
+    "Search By": "Buscar Por",
+    "id": "ID",
+    "date": "Fecha",
+    "cashier": "Cajero",
+    "product": "Producto",
+    "customer": "Cliente",
+    "status": "Estatus",
+    "company": "Compañía",
+    "email": "Email",
+    "phone": "Teléfono"
+  },
   "label": {
     "Date": "Fecha",
     "Cashier": "Cajero",

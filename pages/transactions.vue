@@ -6,44 +6,93 @@
     </div>
 
     <!-- Transaction -->
-    <el-table v-if="tab === 'transaction'" :data="transactions" style="width: 100%; height: 100%;" table-layout="auto">
-      <el-table-column prop="id" label="ID" />
-      <el-table-column prop="date" :label="$t('label.Date')" />
-      <el-table-column prop="name" :label="$t('label.Name')" />
-      <TransactionTable />
+    <div v-if="tab === 'transaction'">
+      <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
+        <!-- SEARCH -->
+        <div class="max-w-sm mx-auto w-full">
+          <el-input v-model="form.search.transaction.query" size="large" :placeholder="$t(`label.search`)" clearable>
+            <template #suffix>
+              <el-dropdown placement="bottom-end" trigger="click">
+                <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
+                  <Icon class="text-lg" name="line-md:filter-filled" />
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <div class="text-base py-2 px-3"><label>{{$t(`title.Search By`)}}</label></div>
+                    <el-checkbox-group v-model="form.search.transaction.checked" class="flex flex-col" :min="1" @change="pinia.setStaticFilters('transaction', form.search.transaction.checked)">
+                      <el-checkbox v-for="filter in ['id', 'date', 'cashier', 'product']" :key="filter" class="!mx-0 px-4 !h-10" :value="filter">{{ $t(`title.${filter}`) }}</el-checkbox>
+                    </el-checkbox-group>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </el-input>
+        </div>
+        <!-- SEARCH -->
+      </div>
+      <el-table :data="filteredTransaction" style="width: 100%; height: 100%;" table-layout="auto">
+        <el-table-column prop="id" label="ID" />
+        <el-table-column prop="date" :label="$t('label.Date')" />
+        <el-table-column prop="name" :label="$t('label.Cashier')" />
+        <TransactionTable />
 
-      <el-table-column :label="$t('label.Payment')">
-        <template #default="scope">
-          <div v-if="scope.row.payment === 'cash'">
-            <div>
-              <div class="one-line">{{$t('label.Cash')}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
-              <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t('label.Change')}}: ${{scope.row.change}}<b></b></div>
+        <el-table-column :label="$t('label.Payment')">
+          <template #default="scope">
+            <div v-if="scope.row.payment === 'cash'">
+              <div>
+                <div class="one-line">{{$t('label.Cash')}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+                <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t('label.Change')}}: ${{scope.row.change}}<b></b></div>
+              </div>
             </div>
-          </div>
-          <div v-if="scope.row.payment === 'card'">
-            <div class="one-line">{{$t('label.Card')}}: <b class="capitalize">{{scope.row.card}}</b></div>
-          </div>
-          <div v-if="scope.row.payment === 'check'">
-            <div class="one-line">{{$t('label.Check')}}: <b>{{scope.row.check}}</b></div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="total" :label="$t('label.Total')" />
-      <el-table-column prop="profit" :label="$t('label.Profit')" />
-      <el-table-column :label="$t('label.Operations')">
-        <template #default="scope">
-          <el-button size="small" type="success" @click="printReceipt(scope.row)">
-            {{$t('btn.Print Receipt')}}
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+            <div v-if="scope.row.payment === 'card'">
+              <div class="one-line">{{$t('label.Card')}}: <b class="capitalize">{{scope.row.card}}</b></div>
+            </div>
+            <div v-if="scope.row.payment === 'check'">
+              <div class="one-line">{{$t('label.Check')}}: <b>{{scope.row.check}}</b></div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="total" :label="$t('label.Total')" />
+        <el-table-column prop="profit" :label="$t('label.Profit')" />
+        <el-table-column :label="$t('label.Operations')">
+          <template #default="scope">
+            <el-button size="small" type="success" @click="printReceipt(scope.row)">
+              {{$t('btn.Print Receipt')}}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <!-- Layaway -->
     <div v-if="tab === 'layaway'">
-      <el-table :data="layaway" style="width: 100%; height: 100%;" table-layout="auto">
+      <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
+        <!-- SEARCH -->
+        <div class="max-w-sm mx-auto w-full">
+          <el-input v-model="form.search.layaway.query" size="large" :placeholder="$t(`label.search`)" clearable>
+            <template #suffix>
+              <el-dropdown placement="bottom-end" trigger="click">
+                <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
+                  <Icon class="text-lg" name="line-md:filter-filled" />
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <div class="text-base py-2 px-3"><label>{{$t(`title.Search By`)}}</label></div>
+                    <el-checkbox-group v-model="form.search.layaway.checked" class="flex flex-col" :min="1" @change="pinia.setStaticFilters('layaway', form.search.layaway.checked)">
+                      <el-checkbox v-for="filter in ['id', 'date', 'cashier', 'customer', 'product', 'status']" :key="filter" class="!mx-0 px-4 !h-10" :value="filter">{{ $t(`title.${filter}`) }}</el-checkbox>
+                    </el-checkbox-group>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </el-input>
+        </div>
+        <!-- SEARCH -->
+      </div>
+      <el-table :data="filteredLayaway" style="width: 100%; height: 100%;" table-layout="auto">
         <el-table-column prop="id" label="ID" />
         <el-table-column prop="date" :label="$t('label.Date')" />
+        <el-table-column prop="name" :label="$t('label.Cashier')" />
 
         <el-table-column prop="customer.name" :label="$t('label.Customer')">
           <template #default="scope">
@@ -54,8 +103,6 @@
             </div>
           </template>
         </el-table-column>
-
-        <el-table-column prop="name" :label="$t('label.Cashier')" />
 
         <TransactionTable />
 
@@ -120,6 +167,28 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+
+        <!-- SEARCH -->
+        <div class="max-w-sm mx-auto w-full">
+          <el-input v-model="form.search.customer.query" size="large" :placeholder="$t(`label.search`)" clearable>
+            <template #suffix>
+              <el-dropdown placement="bottom-end" trigger="click">
+                <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
+                  <Icon class="text-lg" name="line-md:filter-filled" />
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <div class="text-base py-2 px-3"><label>{{$t(`title.Search By`)}}</label></div>
+                    <el-checkbox-group v-model="form.search.customer.checked" class="flex flex-col" :min="1" @change="pinia.setStaticFilters('customer', form.search.customer.checked)">
+                      <el-checkbox v-for="filter in ['id', 'customer', 'company', 'email', 'phone']" :key="filter" class="!mx-0 px-4 !h-10" :value="filter">{{ $t(`title.${filter}`) }}</el-checkbox>
+                    </el-checkbox-group>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </el-input>
+        </div>
+        <!-- SEARCH -->
       </div>
 
       <div>
@@ -141,7 +210,7 @@
         <CustomerDeleteCustomer ref="deleteCustomerRef" :storeId="storeId" :id="form.customer?.id" :name="form.customer?.name" @deleteCustomer="deleteCustomer" />
       </div>
 
-      <el-table :data="customers" style="width: 100%; height: 100%;" table-layout="auto">
+      <el-table :data="filteredCustomer" style="width: 100%; height: 100%;" table-layout="auto">
         <el-table-column prop="id" label="ID" />
         <el-table-column prop="name" :label="$t('label.Customer')"  />
         <el-table-column prop="company" :label="$t('label.Company')" />
@@ -231,6 +300,96 @@ const options = [
   { label: $t('tabs.Customer'), value: 'customer', icon: 'material-symbols:person-rounded'}
 ]
 
+//Filters transaction depending on search query
+const filteredTransaction = computed(() => {
+  let { query, checked } = form.search.transaction
+  if (!query) return transactions.value
+  query = query.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+  
+  return transactions.value.filter((transaction) => {
+    return checked.some((key) => {
+      if (key === 'cashier') {
+        // Compare with cashier's name
+        return transaction.name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)
+      }
+
+      if (key === 'product') {
+        // Loop through items and check their names
+        return transaction.items.some((item) => {
+          const cleanedItemName = item.name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+          return cleanedItemName.includes(query)
+        })
+      }
+
+      // Handle other keys normally
+      if (transaction[key] && transaction[key].toString().toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)) {
+        return true
+      }
+
+      return false
+    })
+  })
+})
+
+//Filters layaway depending on search query
+const filteredLayaway = computed(() => {
+  let { query, checked } = form.search.layaway
+  if (!query) return layaway.value
+  query = query.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+  
+  return layaway.value.filter((layaway) => {
+    return checked.some((key) => {
+      if (key === 'cashier') {
+        // Compare with cashier's name
+        return layaway.name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)
+      }
+
+      if (key === 'customer') {
+        // Compare with customer's name
+        return layaway.customer.name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)
+      }
+
+      if (key === 'product') {
+        // Loop through items and check their names
+        return layaway.items.some((item) => {
+          const cleanedItemName = item.name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+          return cleanedItemName.includes(query)
+        })
+      }
+
+      // Handle other keys normally
+      if (layaway[key] && layaway[key].toString().toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)) {
+        return true
+      }
+
+      return false
+    })
+  })
+})
+
+//Filters customer depending on search query
+const filteredCustomer = computed(() => {
+  let { query, checked } = form.search.customer
+  if (!query) return customers.value
+  query = query.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+  
+  return customers.value.filter((customer) => {
+    return checked.some((key) => {
+      if (key === 'customer') {
+        // Compare with customer's name
+        return customer.name.toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)
+      }
+
+      // Handle other keys normally
+      if (customer[key] && customer[key].toString().toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query)) {
+        return true
+      }
+
+      return false
+    })
+  })
+})
+
 //Element Reference
 const paymentTypeRef = ref(null)
 const createCustomerRef = ref(null)
@@ -241,15 +400,13 @@ const pdfComponent = ref(null)
 //Form
 const loading = reactive({ loading: true, confirmPayment: false })
 const form = reactive({
-  layaway: {
-    item: null,
-    payment: 'cash',
-    cash: '',
-    card: '',
-    check: '',
-    total: '',
+  search: {
+    transaction: { query: '', checked: pinia.getStaticFilters('transaction')},
+    layaway: { query: '', checked: pinia.getStaticFilters('layaway')},
+    customer: { query: '', checked: pinia.getStaticFilters('customer')},
   },
-  customer: null
+  layaway: { item: null, payment: 'cash', cash: '', card: '', check: '', total: '' },
+  customer: null,
 })
 
 const initialLayaway = { item: null, payment: 'cash', cash: '', card: '', check: '', total: '' }
@@ -300,7 +457,7 @@ async function getTransactions() {
   doCalc(transactions.value)
 
   //Test Data
-  //console.log(JSON.stringify(transactions.value))
+  // console.log(JSON.stringify(transactions.value))
 }
 
 async function getLayaway() {
@@ -319,7 +476,7 @@ async function getCustomers() {
   customers.value = await handleGetRequest(`/api/protected/customer/${storeId.value}`)
   
   //Test Data
-  // console.log(JSON.stringify(customers.value))
+  console.log(JSON.stringify(customers.value))
 }
 
 //Gets the store the user is in

@@ -4,6 +4,18 @@
     "Layaway": "Layaway",
     "Customer": "Customer"
   },
+  "title": {
+    "Search By": "Search By",
+    "id": "ID",
+    "date": "Date",
+    "cashier": "Cashier",
+    "product": "Product",
+    "customer": "Customer",
+    "status": "Status",
+    "company": "Company",
+    "email": "Email",
+    "phone": "Phone"
+  },
   "label": {
     "Date": "Date",
     "Cashier": "Cashier",

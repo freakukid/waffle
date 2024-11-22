@@ -133,14 +133,19 @@ function setStore(id, name) {
 function exitStore() {
   pinia.exitStore()
   sendFrontendNotification('You exited the store!', 'success')
-
 }
 
 async function updateStores() {
   //Make request
   stores.value = await handleGetRequest(`/api/protected/store/stores`)
+  
+  //If we have one store just automatically join it
+  if(stores.value.length === 1) {
+    pinia.setStore(stores.value[0].id)
+  }
+
   //Test data
-  // console.log(JSON.stringify(stores.value))
+  console.log(JSON.stringify(stores.value))
 }
 
 function addStore(store) {

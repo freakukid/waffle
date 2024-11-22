@@ -2,10 +2,15 @@ import { defineStore } from 'pinia'
 
 export const useStore = defineStore('store', {
   state: () => ({
-    darkMode: true,
     store: 0,
+    darkMode: true,
+    printReceipt: true,
+    staticFilter: {
+      transaction: ['id', 'date', 'cashier', 'product'],
+      layaway: ['id', 'date', 'cashier', 'customer', 'product', 'status'],
+      customer: ['id', 'customer', 'company', 'email', 'phone']
+    },
     filteredColumns: {},
-    printReceipt: true
   }),
   actions: {
     toggleDarkMode() {
@@ -43,6 +48,12 @@ export const useStore = defineStore('store', {
     },
     setFilteredColumns(columns) {
       this.filteredColumns[this.store] = columns
+    },
+    getStaticFilters(key) {
+      return this.staticFilter[key]
+    },
+    setStaticFilters(key, filters) {
+      this.staticFilter[key] = filters
     },
     togglePrintReceipt() {
       this.printReceipt = !this.printReceipt

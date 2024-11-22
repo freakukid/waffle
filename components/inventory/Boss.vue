@@ -105,7 +105,7 @@
                     </span>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <div class="text-base py-2 px-3"><label>{{$t(`title.search by`)}}</label></div>
+                        <div class="text-base py-2 px-3"><label>{{$t(`title.Search By`)}}</label></div>
                         <el-checkbox-group v-model="form.search.checked" class="flex flex-col" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
                           <el-checkbox v-for="column in store.inventory.columns" :key="column" class="!mx-0 px-4 !h-10" :label="column" :value="column">{{ column }}</el-checkbox>
                         </el-checkbox-group>

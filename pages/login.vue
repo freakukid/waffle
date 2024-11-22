@@ -69,6 +69,7 @@ async function login() {
   await fetch()
 
   //Set store for workers
+  pinia.exitStore()
   const user = getAuthUser()
   if(user && !user.is_boss)
     pinia.setStore(user.worker.store_id)
