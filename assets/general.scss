@@ -89,6 +89,21 @@ body {
     // PRIMARY BTN //
   }
 }
+
+#error-popup {
+  background: #db6060 !important;
+  box-shadow: rgba(219, 96, 96, 1) 0px 0px 16px;
+  font-weight: bold;
+  header {
+    span {
+      color: white;
+      font-weight: bold;
+    }
+    svg {
+      color: white;
+    }
+  }
+}
 // ELEMENT PLUS //
 
 //This is for autofill on firefox

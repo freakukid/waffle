@@ -11,8 +11,16 @@
     "exit store": "Exit Store"
   },
   "text": {
-    "are you sure you want to delete": "Are you sure you want to delete {name}?",
-    "this cannot be undone and all worker accounts will be deleted": "This cannot be undone and all worker accounts will be deleted.",
-    "go to inventory": "Go to Inventory"
+    "go to inventory": "Go to Inventory",
+    "Are you sure you want to delete the following?": "Are you sure you want to delete the following?",
+    "the following will be deleted:": "The following will be deleted:",
+    "this cannot be undone!": "This cannot be undone!",
+    "store": "Store",
+    "worker accounts": "Worker Accounts",
+    "customers": "Customers",
+    "inventory": "Inventory",
+    "inventory logs": "Inventory Logs",
+    "transaction history": "Transaction History",
+    "layaway transactions": "Layaway Transactions"
   }
 }

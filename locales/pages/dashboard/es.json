@@ -11,8 +11,16 @@
     "exit store": "Salir de la Tienda"
   },
   "text": {
-    "are you sure you want to delete": "¿Estás seguro de que quieres eliminar {name}?",
-    "this cannot be undone and all worker accounts will be deleted": "Esto no se puede deshacer y se eliminarán todas las cuentas de los trabajadores.",
-    "go to inventory": "Ir al Inventario"
+    "go to inventory": "Ir al Inventario",
+    "Are you sure you want to delete the following?": "¿Estás seguro de que deseas eliminar lo siguiente?",
+    "the following will be deleted:": "Se suprimirá lo siguiente:",
+    "this cannot be undone!": "¡Esto no se puede deshacer!",
+    "store": "Tienda",
+    "worker accounts": "Cuentas de Trabajadores",
+    "customers": "Clientes",
+    "inventory": "Inventario",
+    "inventory logs": "Registros de Inventario",
+    "transaction history": "Historial de Transacciones",
+    "layaway transactions": "Transacciones de Pago a Plazos"
   }
 }

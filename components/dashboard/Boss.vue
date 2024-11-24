@@ -1,26 +1,5 @@
 <template>
   <div>
-    <!-- Delete -->
-    <el-dialog v-model="popup.deleteStore" :title="$t(`title.delete store`)" width="300">
-      <p style="text-align: center;">
-        {{ $t('text.are you sure you want to delete', { name: form.deleteName }) }}<br/><br/>
-      </p>
-      <p>
-        {{ $t("text.this cannot be undone and all worker accounts will be deleted") }}
-      </p>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="popup.deleteStore = false">{{ $t("label.cancel") }}</el-button>
-          
-          <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-            <el-button type="danger" disabled>{{ $t("label.delete") }}</el-button>
-          </el-tooltip>
-          <el-button v-else type="danger" @click="deleteStore()" :loading="loading.deleteStore">{{ $t("label.delete") }}</el-button>
-        </div>
-      </template>
-    </el-dialog>
-    <!-- Delete -->
-
     <div v-if="stores.length" id="store-wrapper">
       <!-- STORES -->
       <el-card v-for="store in stores" :key="store.id" class="store" body-style="height: calc(100% - 105px);">
@@ -42,7 +21,7 @@
               <el-tooltip v-if="!offlineStore.getOnlineStatus() && stores.length > 1" :content="$t(`tippy.feature only available online`)" placement="top">
                 <el-button type="danger" plain disabled>{{ $t("label.delete") }}</el-button>
               </el-tooltip>
-              <el-button v-else-if="stores.length > 1" type="danger" plain @click="popup.deleteStore = true, form.deleteName = store.name, form.deleteId = store.id">
+              <el-button v-else-if="stores.length > 1" type="danger" plain @click="form.deleteName = store.name, form.deleteId = store.id, deleteStoreRef.openPopup()">
                 {{ $t("label.delete" )}}
               </el-button>
             </div>
@@ -60,6 +39,7 @@
       </el-card>
       <!-- STORES -->
 
+      <StoreDeleteStore ref="deleteStoreRef" :id="form.deleteId" :name="form.deleteName" @deleteStore="deleteStore" />
       <StoreModifyStore type="create" @addStore="addStore" />
       <StoreModifyStore
         ref="editStoreRef"
@@ -84,18 +64,17 @@
 //Import
 const { sendNotification, sendFrontendNotification } = useHelpers()
 const { handleGetRequest } = useHandleRequests()
-const { fetch } = useUserSession()
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 
 //General
-const loading = reactive({ startedLoading: true, deleteStore: false })
-const popup = reactive({ deleteStore: false })
+const loading = reactive({ startedLoading: true })
 const stores = ref([])
 const storeId = computed(pinia.getStore)
 
 //Reference
 const editStoreRef = ref(null)
+const deleteStoreRef = ref(null)
 
 //Component Props
 const props = defineProps({
@@ -145,7 +124,7 @@ async function updateStores() {
   }
 
   //Test data
-  console.log(JSON.stringify(stores.value))
+  // console.log(JSON.stringify(stores.value))
 }
 
 function addStore(store) {
@@ -158,35 +137,9 @@ function editStore(store) {
     stores.value[index] = store
 }
 
-async function deleteStore() {
-  //Setup data
-  const { deleteId } = form
-  //If we are inside store then exit store
-  if(deleteId === storeId.value)
-    pinia.exitStore()
-
-  //Make Request
-  loading.deleteStore = true
-  const response = await useFetchApi(`/api/protected/store/delete`, {
-    method: "POST",
-    body: {
-      id: deleteId,
-    }
-  })
-  await fetch()
-  loading.deleteStore = false
-
-  //Show error notification
-  if (response.statusCode) {
-    sendNotification(response.statusMessage, 'error')
-    return
-  }
-
-  //Close popup, notify user
-  popup.deleteStore = false
-  sendNotification(response.message, 'success')
+function deleteStore(id) {
   //Remove store from list
-  stores.value = stores.value.filter(item => item.id !== response.store_id)
+  stores.value = stores.value.filter(item => item.id !== id)
 }
 //Methods
 </script>

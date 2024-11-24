@@ -40,12 +40,14 @@ export default defineEventHandler(async (event) => {
     }
   })
 
+  // Delete transactions
   const transactions = await prisma.transaction.deleteMany({
     where: {
       store_id: store_id
     }
   })
 
+  //Delete Layaway
   const layaways = await prisma.layaway.deleteMany({
     where: {
       store_id: store_id
