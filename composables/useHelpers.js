@@ -33,6 +33,9 @@ export default () => {
   function getLogDescription(logs) {
     for (const log of logs) {
       log.date = $td(log.timestamp, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+
+      if(!log.user)
+        log.user = log.user || { name: log.name }
   
       //Setup data
       if(log.action === 'import')

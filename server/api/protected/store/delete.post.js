@@ -15,6 +15,13 @@ export default defineEventHandler(async (event) => {
   if(!isStoreOwner(authUser, id))
     return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
 
+  //Delete the logs if we are deleting the table
+  const logs = await prisma.log.deleteMany({
+    where: {
+      store_id: id
+    }
+  })
+
   //Delete all users associated with the store
   await prisma.user.deleteMany({
     where: {

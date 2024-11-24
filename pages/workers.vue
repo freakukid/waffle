@@ -215,13 +215,16 @@ async function editUser() {
 }
 
 async function deleteUser() {
+  const { id, name } = form.delete.user.user
+
   //Make request
   loading.deleteUser = true
   const response = await useFetchApi(`/api/protected/workers/delete`, {
     method: "POST",
     body: {
       store_id: storeId.value,
-      id: form.delete.user.user.id
+      id: id,
+      name: name
     }
   })
   loading.deleteUser = false

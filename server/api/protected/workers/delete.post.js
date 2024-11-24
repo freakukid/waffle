@@ -6,15 +6,26 @@ export default defineEventHandler(async (event) => {
   //Setup data
   const authUser = await getAuthUser(event)
   const boss_id = authUser?.boss?.id
-  const { id, store_id } = await readBody(event)
+  const { id, name, store_id } = await readBody(event)
 
   //Check if we have required fields
-  if (!id || !store_id)
+  if (!id || !name || !store_id)
     return {statusCode: 400, statusMessage: `Required parameters are missing`}
 
   //Check if this user has access rights to view workers
   if(!isStoreOwner(authUser, store_id))
     return {statusCode: 400, statusMessage: `You do not have the rights to commit this action`}
+
+  //Update logs
+  const relatedLogs = await prisma.log.updateMany({
+    where: {
+      user_id: id,
+    },
+    data: {
+      user_id: null,
+      name: name
+    },
+  })
 
   //Delete all users associated with boss
   const user = await prisma.user.delete({
@@ -30,7 +41,6 @@ export default defineEventHandler(async (event) => {
 
   if(!user)
     return { statusCode: 400, statusMessage: 'Invalid data' }
-  
 
   setResponseStatus(event, 201)
   
