@@ -26,7 +26,7 @@
     <el-dialog id="error-popup" v-model="secondPopup" :title="$t(`title.delete store`)" width="500">
       <div class="text-white">
         <p class="text-center text-xl"><b>{{$t(`text.Are you sure you want to delete the following?`)}}</b></p>
-        <ul class="list-disc w-48 my-6 mx-auto text-lg">
+        <ul class="list-disc w-fit p-4 my-2 mx-auto text-lg">
           <li>{{$t(`text.store`)}}: {{name}}</li>
           <li>{{$t(`text.worker accounts`)}}</li>
           <li>{{$t(`text.customers`)}}</li>
