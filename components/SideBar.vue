@@ -66,7 +66,7 @@
       </div>
     </ul>
 
-    <li class="mt-auto">
+    <li class="list-none mt-auto">
       <el-dropdown placement="top-start" trigger="click">
         <div class="el-menu-tooltip__trigger">
           <Icon name="mi:user" />
