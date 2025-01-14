@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading.loading" style="height: calc(100vh - 215px); width: calc(100vw - 140px); margin: 0 32px 0 auto;">
+  <div v-if="!loading.loading" style="height: calc(100vh - 215px); width: calc(100% - 70px); margin: 0 32px 0 auto;">
     <!-- Tabs -->
     <div class="flex justify-center py-4 select-none">
       <el-segmented v-model="tab" :options="options" />

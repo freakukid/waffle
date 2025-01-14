@@ -4,7 +4,7 @@
 
     <div v-if="requests.length || customerRequests.length">
       <!-- LOGS -->
-      <div v-if="logs.length" style="width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+      <div v-if="logs.length" style="width: calc(100% - 70px); padding-top: 32px; margin: 0 32px 0 auto;">
         <h1 class="text-2xl mb-8">{{$t("Pending Inventory Operations")}}</h1>
         <el-table :data="logs" style="width: 100%; height: 100%;" table-layout="auto" >
           <el-table-column prop="date" :label="$t('label.Date')" />
@@ -19,7 +19,7 @@
       <!-- LOGS -->
 
       <!-- TRANSACTIONS -->
-      <div v-if="transactions.length" style="width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+      <div v-if="transactions.length" style="width: calc(100% - 70px); padding-top: 32px; margin: 0 32px 0 auto;">
         <h1 class="text-2xl mb-8">{{$t("Operations")}}</h1>
         <el-table :data="transactions" style="width: 100%; height: 100%;" table-layout="auto">
           <el-table-column prop="date" :label="$t('label.Date')" />
@@ -49,7 +49,7 @@
       <!-- TRANSACTIONS -->
 
       <!-- LAYAWAYS -->
-      <div v-if="layaways.length" style="width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+      <div v-if="layaways.length" style="width: calc(100% - 70px); padding-top: 32px; margin: 0 32px 0 auto;">
         <h1 class="text-2xl mb-8">{{$t("Pending Layaways")}}</h1>
         <el-table :data="layaways" style="width: 100%; height: 100%;" table-layout="auto">
           <el-table-column prop="date" :label="$t('label.Date')" />
@@ -101,7 +101,7 @@
       <!-- LAYAWAYS -->
 
       <!-- CUSTOMERS -->
-      <div v-if="customers.length" style="width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+      <div v-if="customers.length" style="width: calc(100% - 70px); padding-top: 32px; margin: 0 32px 0 auto;">
         <h1 class="text-2xl mb-8">{{$t("Pending New Customers")}}</h1>
         <el-table :data="customers" style="width: 100%; height: 100%;" table-layout="auto">
           <el-table-column prop="name" :label="$t('label.Customer')" />

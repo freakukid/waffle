@@ -1,7 +1,73 @@
 <template>
-  <el-menu id="sidebar" :collapse="true">
-    <el-menu-item class="sidebar-item" index="10">
-      <el-dropdown placement="bottom-start" trigger="click">
+  <nav ref="sidebar" :class="{close: !isExpanded}">
+    <header @click="isExpanded = !isExpanded">
+      <span>Legitski</span>
+      <div id="sidebar-toggle">
+        <Icon name="material-symbols:keyboard-double-arrow-left" />
+      </div>
+    </header>
+
+    <ul>
+      <NuxtLink to="/dashboard">
+        <li :class="{active: route.name === 'dashboard'}">
+          <Icon name="zondicons:dashboard" />
+          <span>{{$t('sidebar.Dashboard')}}</span>
+        </li>
+      </NuxtLink>
+      <div v-if="storeId">
+        <NuxtLink to="/inventory">
+          <li :class="{active: route.name === 'inventory'}">
+            <Icon name="gravity-ui:boxes-3" />
+            <span>{{$t('sidebar.Inventory')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink v-if="permissions?.view_log" to="/logs">
+          <li class="sidebar-item" index="3" :class="{active: route.name === 'logs'}">
+            <Icon name="mingcute:inventory-line" />
+            <span>{{$t('sidebar.Logs')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink v-if="isBossAccount" to="/workers">
+          <li class="sidebar-item" index="4" :class="{active: route.name === 'workers'}">
+            <Icon name="gravity-ui:person-worker" />
+            <span>{{$t('sidebar.Workers')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink v-if="permissions?.make_transactions" to="/cashier">
+          <li class="sidebar-item" index="5" :class="{active: route.name === 'cashier'}">
+            <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
+            <span>{{$t('sidebar.Cashier')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink v-if="permissions?.make_transactions" to="/layaway">
+          <li class="sidebar-item" index="6" :class="{active: route.name === 'layaway'}">
+            <Icon name="tabler:shopping-cart-pause" />
+            <span>{{$t('sidebar.Layaway')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
+          <li class="sidebar-item" index="7" :class="{active: route.name === 'transactions'}">
+            <Icon name="uil:transaction" />
+            <span>{{$t('sidebar.Transactions')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink to="/offline">
+          <li class="sidebar-item" index="8" :class="{active: route.name === 'offline'}">
+            <Icon name="oui:offline" class="text-red-500" />
+            <span>{{$t('sidebar.Offline')}}</span>
+          </li>
+        </NuxtLink>
+        <NuxtLink v-if="store.id !== storeId && isBossAccount" to="/dashboard" @click="exitStore()">
+          <li class="sidebar-item" index="9">
+            <Icon name="tabler:door-exit" class="text-red-500" />
+            <span>{{$t('sidebar.Exit Store')}}</span>
+          </li>
+        </NuxtLink>
+      </div>
+    </ul>
+
+    <li class="mt-auto">
+      <el-dropdown placement="top-start" trigger="click">
         <div class="el-menu-tooltip__trigger">
           <Icon name="mi:user" />
         </div>
@@ -23,67 +89,8 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-    </el-menu-item>
-
-    <div class="pt-6">
-      <NuxtLink to="/dashboard">
-        <el-menu-item class="sidebar-item" index="1" :class="{active: route.name === 'dashboard'}">
-          <Icon name="zondicons:dashboard" />
-          <template #title>{{$t('sidebar.Dashboard')}}</template>
-        </el-menu-item>
-      </NuxtLink>
-      <div v-if="storeId">
-        <NuxtLink to="/inventory">
-          <el-menu-item class="sidebar-item" index="2" :class="{active: route.name === 'inventory'}">
-            <Icon name="gravity-ui:boxes-3" />
-            <template #title>{{$t('sidebar.Inventory')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink v-if="permissions?.view_log" to="/logs">
-          <el-menu-item class="sidebar-item" index="3" :class="{active: route.name === 'logs'}">
-            <Icon name="mingcute:inventory-line" />
-            <template #title>{{$t('sidebar.Logs')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink v-if="isBossAccount" to="/workers">
-          <el-menu-item class="sidebar-item" index="4" :class="{active: route.name === 'workers'}">
-            <Icon name="gravity-ui:person-worker" />
-            <template #title>{{$t('sidebar.Workers')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink v-if="permissions?.make_transactions" to="/cashier">
-          <el-menu-item class="sidebar-item" index="5" :class="{active: route.name === 'cashier'}">
-            <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
-            <template #title>{{$t('sidebar.Cashier')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink v-if="permissions?.make_transactions" to="/layaway">
-          <el-menu-item class="sidebar-item" index="6" :class="{active: route.name === 'layaway'}">
-            <Icon name="tabler:shopping-cart-pause" />
-            <template #title>{{$t('sidebar.Layaway')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
-          <el-menu-item class="sidebar-item" index="7" :class="{active: route.name === 'transactions'}">
-            <Icon name="uil:transaction" />
-            <template #title>{{$t('sidebar.Transactions')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink to="/offline">
-          <el-menu-item class="sidebar-item" index="8" :class="{active: route.name === 'offline'}">
-            <Icon name="oui:offline" class="text-red-500" />
-            <template #title>{{$t('sidebar.Offline')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-        <NuxtLink v-if="store.id !== storeId && isBossAccount" to="/dashboard" @click="exitStore()">
-          <el-menu-item class="sidebar-item" index="9">
-            <Icon name="tabler:door-exit" class="text-red-500" />
-            <template #title>{{$t('sidebar.Exit Store')}}</template>
-          </el-menu-item>
-        </NuxtLink>
-      </div>
-    </div>
-  </el-menu>
+    </li>
+  </nav>
 </template>
 
 <script setup>
@@ -100,6 +107,7 @@ const storeId = computed(() => store.store)
 const offlineRequests = computed(offlineStore.fetchPostRequests)
 const isBossAccount = computed(isBoss)
 const permissions = ref({make_transactions: true, view_log: true})
+const isExpanded = ref(true)
 
 //General
 const loading = ref(true)
@@ -127,46 +135,116 @@ async function logoutUser() {
 }
 </script>
 
-<style lang="scss">
-#sidebar {
-  position: fixed;
+<style lang="scss" scoped>
+nav {
+  position: sticky;
   top: 0;
   height: 100vh;
   z-index: 2;
   background: #111;
   display: flex;
   flex-direction: column;
-  text-align: center;
   border-color: #2D2D2D;
-  .sidebar-item {
+  transition: 200ms ease-in-out;
+  width: 180px;
+  overflow: hidden;
+  &.close {
+    padding: 5px;
+    width: 60px;
+    header {
+      span {
+        position: absolute;
+        visibility: hidden;
+        transition: visibility 0s 150ms;
+      }
+      #sidebar-toggle {
+        left: -3px;
+        svg {
+          transform: rotate(180deg);
+          transition: transform 0s 200ms;
+        }
+      }
+    }
+    ul {
+      li {
+        position: relative;
+        width: 44px;
+        border-radius: 12px;
+        margin: 2px auto;
+        padding: 0 14px;
+        span {
+          position: absolute;
+          left: 40px;
+          visibility: hidden;
+          transition: visibility 0s 200ms;
+        }
+      }
+    }
+  }
+  header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #bfbfbf;
-    padding: 0;
-    svg {
-      font-size: 16px;
-    }
-    &.is-disabled {
-      color: #ffffff;
-    }
-    &:hover, &.active {
-      background-color: transparent !important;
-      .el-menu-tooltip__trigger {
+    padding: 16px 16px;
+    user-select: none;
+    #sidebar-toggle {
+      height: 28px;
+      position: relative;
+      transition: 200ms ease-in-out;
+      margin-left: auto;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 0 4px;
+      &:hover {
         background: #ffffff14;
       }
     }
   }
+  ul {
+    padding: 8px 0;
+    a {
+      li {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        gap: 8px;
+        height: 44px;
+        padding: 0 16px;
+        transition: all 200ms ease-in-out;
+        width: 100%;
+        font-size: 15px;
+        &.active, &:hover {
+          background: #ffffff14;
+        }
+        svg {
+          font-size: 16px;
+          min-width: 16px;
+        }
+        
+      }
+    }
+  }
+}
 
-  .el-menu-item .el-menu-tooltip__trigger {
-    position: unset;
-    padding: 0;
-    width: 44px;
+.el-dropdown {
+  width: 100%;
+  .el-tooltip__trigger {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    gap: 8px;
     height: 44px;
-    justify-content: center;
-    border-radius: 12px;
     transition: all 200ms ease-in-out;
+    width: 44px;
+    border-radius: 12px;
+    margin: 0 auto;
+    padding: 0 14px;
+    &:hover {
+      background: #ffffff14;
+    }
+    svg {
+      font-size: 16px;
+      min-width: 16px;
+    }
   }
 }
 </style>

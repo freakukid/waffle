@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading.startedLoading">
-    <div style="height: calc(100vh - 225px); width: calc(100vw - 140px); padding-top: 16px; margin: 0 32px 0 auto;">
+    <div style="height: calc(100vh - 225px); width: calc(100% - 70px); padding-top: 16px; margin: 0 32px 0 auto;">
       <!-- TOOLBAR -->
       <div class="flex items-center flex-nowrap gap-2 bg-[#090909] py-2 px-6 mb-2 rounded-t-[6px]">
         <el-dropdown placement="bottom-start" trigger="click">

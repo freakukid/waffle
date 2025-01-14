@@ -1,9 +1,12 @@
 <template>
-  <div id="app" :class="{'pl-16': loggedIn}">
-    <NuxtPage />
+  <div id="app">
+    <SideBar v-if="loggedIn" />
+    <div class="w-full">
+      <NuxtPage />
+    </div>
   </div>
 
-  <SideBar v-if="loggedIn" />
+  
 </template>
 
 <script setup>
@@ -34,6 +37,7 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 #app {
+  display: flex;
   color: #ffffff;
   min-height: 100vh;
 }

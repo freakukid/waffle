@@ -6,7 +6,7 @@
         {{$t('text.please wait until inventory set by your employer')}}
       </div>
 
-      <div v-else class="pt-8 flex flex-col" style="width: calc(100vw - 140px);">
+      <div v-else class="pt-8 flex flex-col" style="width: calc(100% - 70px);">
         <!-- TABLE ACTIONS -->
         <InventoryAddRow ref="addRowRef" v-if="permissions.add_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
         <InventoryEditRow ref="editRowRef" v-if="permissions.edit_item" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />

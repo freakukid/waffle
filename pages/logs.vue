@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading.startedLoading" style="height: calc(100vh - 30px);width: calc(100vw - 140px); padding-top: 32px; margin: 0 32px 0 auto;">
+  <div v-if="!loading.startedLoading" style="height: calc(100vh - 30px); width: calc(100% - 70px); padding-top: 32px; margin: 0 32px 0 auto;">
     <el-table :data="logs" style="width: 100%; height: 100%;" table-layout="auto" >
       <el-table-column prop="date" label="Date" />
       <el-table-column prop="user.name" label="User" />

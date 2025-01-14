@@ -7,7 +7,7 @@
         <!-- IMPORT -->
       </div>
 
-      <div v-else class="pt-8 flex flex-col" style="width: calc(100vw - 140px);">
+      <div v-else class="pt-8 flex flex-col" style="width: calc(100% - 70px);">
         <!-- ERROR -->
         <div v-if="(!store.inventory.name_column || !store.inventory.quantity_column) && errorMsg" class="error max-w-sm">
           <div class="flex gap-4">
