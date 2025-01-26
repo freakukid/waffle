@@ -50,7 +50,7 @@
                   </div>
                 </el-tooltip>
 
-                <el-dropdown-item v-else @click="handleRowClick('add')">
+                <el-dropdown-item v-else @click="handleRowPrompt('add')">
                   <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add item`)}}
                 </el-dropdown-item>
 
@@ -60,7 +60,7 @@
                   </div>
                 </el-tooltip>
 
-                <el-dropdown-item divided v-else @click="handleColumnClick('add', column)">
+                <el-dropdown-item divided v-else @click="updateColumnPrompt('add', column)">
                   <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add column`)}}
                 </el-dropdown-item>
 
@@ -70,7 +70,7 @@
                   </div>
                 </el-tooltip>
 
-                <el-dropdown-item v-else @click="handleColumnClick('edit', column)">
+                <el-dropdown-item v-else @click="updateColumnPrompt('edit', column)">
                   <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{$t(`title.edit columns`)}}
                 </el-dropdown-item>
 
@@ -80,7 +80,7 @@
                   </div>
                 </el-tooltip>
 
-                <el-dropdown-item v-else @click="handleColumnClick('sort', column)">
+                <el-dropdown-item v-else @click="updateColumnPrompt('sort', column)">
                   <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{$t(`title.sort columns`)}}
                 </el-dropdown-item>
 
@@ -137,7 +137,7 @@
         <!-- TABLE ACTIONS -->
 
         <!-- TABLE -->
-        <el-table v-if="inventory.length" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: form.sort.col }" border>
+        <el-table v-if="inventory.length" @row-click="handleRowClick" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: form.sort.col }" border>
           <el-table-column :label="$t(`label.operations`)" width="140">
             <template #header>
               <div class="flex items-center gap-1 w-full">
@@ -152,7 +152,7 @@
                     <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
                   </el-button>
                 </el-tooltip>
-                <el-button v-else link @click="handleRowClick('receiving', scope.row)">
+                <el-button v-else link @click.stop="handleRowPrompt('receiving', scope.row)">
                   <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
                 </el-button>
 
@@ -161,7 +161,7 @@
                     <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
                   </el-button>
                 </el-tooltip>
-                <el-button v-else class="!ml-0" link @click="handleRowClick('edit', scope.row)">
+                <el-button v-else class="!ml-0" link @click.stop="handleRowPrompt('edit', scope.row)">
                   <div class="p-2"><Icon name="material-symbols:edit-square-outline-rounded" /></div>
                 </el-button>
 
@@ -170,7 +170,7 @@
                     <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
                   </el-button>
                 </el-tooltip>
-                <el-button v-else class="!ml-0" link type="danger" @click="handleRowClick('delete', scope.row)">
+                <el-button v-else class="!ml-0" link type="danger" @click.stop="handleRowPrompt('delete', scope.row)">
                   <div class="p-2"><Icon name="material-symbols:delete-rounded" /></div>
                 </el-button>
               </div>
@@ -197,7 +197,7 @@
                         </div>
                       </el-tooltip>
 
-                      <el-dropdown-item v-else @click="handleColumnClick('delete', column)">
+                      <el-dropdown-item v-else @click="updateColumnPrompt('delete', column)">
                         <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{$t(`title.delete column`)}}
                       </el-dropdown-item>
                     </el-dropdown-menu>
@@ -292,8 +292,8 @@ function setInventory(data) {
   inventory.value = formatInventory()
 }
 
-//Handles Column Clicks for Delete Mode
-function handleColumnClick(type, col) {
+//Prompts Users to Update Column
+function updateColumnPrompt(type, col) {
   //Accesses child's method through ref
   if(type === 'sort') {
     sortColRef.value.openPopup()
@@ -306,8 +306,8 @@ function handleColumnClick(type, col) {
   }
 }
 
-//Handles Row Clicks for Edit/Delete Mode
-function handleRowClick(type, row) {
+//Prompts Users to Update Product
+function handleRowPrompt(type, row) {
   //Accesses child's method through ref
   if(type === 'add') {
     addRowRef.value.openPopup()
@@ -318,6 +318,11 @@ function handleRowClick(type, row) {
   } else if(type === 'receiving') {
     receivingRowRef.value.openPopup(row)
   }
+}
+
+//Goes to product page
+async function handleRowClick(row) {
+  await navigateTo(`/product/${row.__id}`)
 }
 
 //Formats dictionary inventory into an array of dictionaries
@@ -354,7 +359,7 @@ async function getStore() {
   
   //Test Data
   // console.log(JSON.stringify(store.value))
-  // console.log(JSON.stringify(inventory.value))
+  console.log(JSON.stringify(inventory.value))
 }
 </script>
 
@@ -395,5 +400,8 @@ async function getStore() {
 
 :deep(.el-table) {
   margin-bottom: 32px;
+  .table-row {
+    cursor: pointer;
+  }
 }
 </style>

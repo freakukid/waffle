@@ -147,9 +147,11 @@ nav {
   border-color: #2D2D2D;
   transition: 200ms ease-in-out;
   width: 180px;
+  min-width: 180px;
   overflow: hidden;
   &.close {
     padding: 5px;
+    min-width: 60px;
     width: 60px;
     header {
       span {

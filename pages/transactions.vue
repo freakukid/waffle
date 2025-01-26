@@ -278,9 +278,8 @@ definePageMeta({
 //Imports
 const pinia = useStore()
 const { $eventBus } = useNuxtApp()
-const { sendNotification } = useHelpers()
+const { sendNotification, handleTransactionCalcs } = useHelpers()
 const { formatDate, formatPhoneNumber } = useFormatter()
-const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
 const { $t, $td } = useNuxtApp()
@@ -454,7 +453,7 @@ async function getTransactions() {
   transactions.value = await handleGetRequest(`/api/protected/transaction/${storeId.value}`)
 
   //Setup data
-  doCalc(transactions.value)
+  handleTransactionCalcs(transactions.value)
 
   //Test Data
   // console.log(JSON.stringify(transactions.value))
@@ -465,7 +464,7 @@ async function getLayaway() {
   layaway.value = await handleGetRequest(`/api/protected/layaway/${storeId.value}`)
   
   //Setup data
-  doCalc(layaway.value)
+  handleTransactionCalcs(layaway.value)
 
   //Test Data
   // console.log(JSON.stringify(layaway.value))
@@ -543,7 +542,7 @@ async function confirmPayment() {
   sendNotification(response.message, 'success')
 
   //Set new layaway
-  const calcLayaway = doCalc([response.layaway])[0]
+  const calcLayaway = handleTransactionCalcs([response.layaway])[0]
   layaway.value = layaway.value.map(transaction => (transaction.id === item.id ? calcLayaway : transaction))
 
   //Close popup
@@ -578,27 +577,8 @@ async function setStatus(item, status) {
   sendNotification(response.message, 'success')
 
   //Set new layaway
-  const calcLayaway = doCalc([response.layaway])[0]
+  const calcLayaway = handleTransactionCalcs([response.layaway])[0]
   layaway.value = layaway.value.map(transaction => (transaction.id === item.id ? calcLayaway : transaction))
-}
-
-//Do transaction calculations
-function doCalc(items) {
-  for (const transaction of items) {
-    const {subtotal, noDiscountSubtotal, savings, profit} = calcSubtotal(transaction.items)
-    const taxTotal = calcTaxTotal(subtotal, transaction.tax)
-    const total = calcTotal(subtotal, taxTotal)
-    transaction.date = $td(transaction.timestamp, { year: 'numeric', month: 'long', day: 'numeric' })
-    transaction.tax = parseFloat(transaction.tax).toFixed(2)
-    transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.profit = profit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0
-  }
-
-  return items
 }
 
 //Print receipt

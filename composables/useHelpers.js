@@ -2,6 +2,7 @@ import { ElNotification } from 'element-plus'
 
 export default () => {
   const { $t, $td } = useNuxtApp()
+  const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
   
   const copyToClipboard = (text) => {
     const textArea = document.createElement('textarea')
@@ -95,10 +96,29 @@ export default () => {
     return logs
   }
 
+  function handleTransactionCalcs(items) {
+    for (const transaction of items) {
+      const {subtotal, savings, profit} = calcSubtotal(transaction.items)
+      const taxTotal = calcTaxTotal(subtotal, transaction.tax)
+      const total = calcTotal(subtotal, taxTotal)
+      transaction.date = $td(transaction.timestamp, { year: 'numeric', month: 'long', day: 'numeric' })
+      transaction.tax = parseFloat(transaction.tax).toFixed(2)
+      transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      transaction.profit = profit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0
+    }
+  
+    return items
+  }
+
   return {
     copyToClipboard,
     getLogDescription,
     sendNotification,
-    sendFrontendNotification
+    sendFrontendNotification,
+    handleTransactionCalcs
   }
 }
