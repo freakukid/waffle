@@ -51,6 +51,7 @@ export default defineNuxtConfig({
     themes: ['dark'],
   },
   plugins: [
-    { src: '~/plugins/register-service-worker.client.js', mode: 'client' }
+    { src: '~/plugins/register-service-worker.client.js', mode: 'client' },
+    { src: '~/plugins/apexcharts.js', mode: 'client' }
   ],
 })

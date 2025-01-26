@@ -16,6 +16,12 @@
         <el-statistic title="Price" :value="product.product[product.price_column]" />
       </el-col>
     </el-row>
+
+    <!-- PROFIT CHART -->
+    <client-only placeholder="Loading chart..">
+      <apexchart type="line" height="350" :options="chartOptions" :series="series" />
+    </client-only>
+    <!-- PROFIT CHART -->
     
     <!-- DATA -->
     <el-row class="mt-4">
@@ -113,8 +119,10 @@ definePageMeta({
 })
 
 //Imports
+import moment from 'moment'
 const { handleGetRequest } = useHandleRequests()
 const { getLogDescription, handleTransactionCalcs } = useHelpers()
+const { calcProduct } = useCalculations()
 const route = useRoute()
 const pinia = useStore()
 
@@ -123,6 +131,71 @@ const loading = ref(false)
 const storeId = computed(pinia.getStore)
 const productId = computed(() => (route.params.product_id ? parseInt(route.params.product_id) : 0))
 const product = ref(null)
+const chartType = ref('daily')
+
+//Chart
+const series = ref([{ name: "Profit", data: []}])
+const chartOptions = ref({
+  chart: {
+    type: 'line',
+    width: '100%',
+    height: 350
+  },
+  xaxis: {
+    type: 'datetime',
+    labels: {
+      style: {
+        colors: '#FFFFFF'  // White color for x-axis labels
+      },
+      formatter: function(val, timestamp) {
+        return moment(new Date(timestamp)).format(chartType.value === 'daily' ? 'MMM DD' : chartType.value === 'monthly' ? 'MMM YYYY' : 'YYYY')
+      }
+    },
+    title: {
+      text: 'Date',
+      style: {
+        color: '#FFFFFF',
+      }
+    },
+    axisBorder: {
+      show: true,
+      color: '#FFFFFF'  // White color for the x-axis line
+    },
+    axisTicks: {
+      show: true,
+      color: '#FFFFFF'  // White color for x-axis ticks
+    }
+  },
+  yaxis: {
+    title: {
+      text: 'Profit',
+      style: {
+        color: '#FFFFFF',
+      }
+    },
+    labels: {
+      style: {
+        colors: '#FFFFFF'  // White color for y-axis labels
+      }
+    },
+    axisBorder: {
+      show: true,
+      color: '#FFFFFF'  // White color for the y-axis line
+    },
+    axisTicks: {
+      show: true,
+      color: '#FFFFFF'  // White color for y-axis ticks
+    }
+  },
+  tooltip: {
+    theme: 'dark',
+    x: {
+      formatter: function(val) {
+        return moment(new Date(val)).format(chartType.value === 'daily' ? 'MMM DD, YYYY' : chartType.value === 'monthly' ? 'MMMM YYYY' :'YYYY')
+      }
+    }
+  }
+})
 
 //Mount
 onBeforeMount(async () => {
@@ -137,7 +210,10 @@ async function fetchProduct() {
   product.value.transactions = handleTransactionCalcs(product.value.transactions)
   product.value.layaways = handleTransactionCalcs(product.value.layaways)
 
-  console.log(JSON.stringify(product.value))
+  series.value[0].data = calcProduct(productId.value, product.value.transactions, product.value.layaways, chartType.value)
+
+  // console.log(JSON.stringify(calcProduct(productId.value, product.value.transactions, product.value.layaways)))
+  // console.log(JSON.stringify(product.value))
 }
 </script>
 

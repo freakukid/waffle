@@ -14,8 +14,6 @@
     <h1>Not logged in</h1>
   </div>
 
-
-
   <div>
     <p>Current Locale: {{ $getLocale() }}</p>
     <div>
