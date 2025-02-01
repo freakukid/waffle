@@ -21,6 +21,11 @@
     "email": "Email",
     "phone": "Teléfono"
   },
+  "tabs": {
+    "Week": "Semana",
+    "Month": "Mes",
+    "Year": "Año"
+  },
   "label": {
     "Date": "Fecha",
     "Cashier": "Cajero",

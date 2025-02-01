@@ -18,9 +18,15 @@
     </el-row>
 
     <!-- PROFIT CHART -->
-    <client-only placeholder="Loading chart..">
-      <apexchart type="line" height="350" :options="chartOptions" :series="series" />
-    </client-only>
+    <div style="width: calc(100% - 32px);">
+      <div class="flex justify-center py-4 select-none">
+        <el-segmented v-model="chartType" :options="options" />
+      </div>
+
+      <client-only placeholder="Loading chart..">
+        <apexchart type="line" height="350" :options="chartOptions" :series="series" />
+      </client-only>
+    </div>
     <!-- PROFIT CHART -->
     
     <!-- DATA -->
@@ -120,6 +126,7 @@ definePageMeta({
 
 //Imports
 import moment from 'moment'
+const { $t } = useNuxtApp()
 const { handleGetRequest } = useHandleRequests()
 const { getLogDescription, handleTransactionCalcs } = useHelpers()
 const { calcProduct } = useCalculations()
@@ -131,10 +138,15 @@ const loading = ref(false)
 const storeId = computed(pinia.getStore)
 const productId = computed(() => (route.params.product_id ? parseInt(route.params.product_id) : 0))
 const product = ref(null)
-const chartType = ref('daily')
+const chartType = ref('week')
 
 //Chart
 const series = ref([{ name: "Profit", data: []}])
+const options = [
+  { label: $t('tabs.Week'), value: 'week' },
+  { label: $t('tabs.Month'), value: 'month' },
+  { label: $t('tabs.Year'), value: 'year'}
+]
 const chartOptions = ref({
   chart: {
     type: 'line',
@@ -148,7 +160,17 @@ const chartOptions = ref({
         colors: '#FFFFFF'  // White color for x-axis labels
       },
       formatter: function(val, timestamp) {
-        return moment(new Date(timestamp)).format(chartType.value === 'daily' ? 'MMM DD' : chartType.value === 'monthly' ? 'MMM YYYY' : 'YYYY')
+        const date = moment(new Date(val))
+        if (chartType.value === 'month' || chartType.value === 'year') {
+          // Find the corresponding data point
+          const dataPoint = series.value[0].data.find(item => item.x === val)
+          if (dataPoint) {
+            const endDate = moment(new Date(dataPoint.end))
+            return `${date.format('MMM DD')} - ${endDate.format('MMM DD')}`
+          }
+        }
+        // For week or year view
+        return date.format(chartType.value === 'week' ? 'MMM DD' : 'MMM')
       }
     },
     title: {
@@ -190,11 +212,26 @@ const chartOptions = ref({
   tooltip: {
     theme: 'dark',
     x: {
-      formatter: function(val) {
-        return moment(new Date(val)).format(chartType.value === 'daily' ? 'MMM DD, YYYY' : chartType.value === 'monthly' ? 'MMMM YYYY' :'YYYY')
+      formatter: function(val, timestamp) {
+        const date = moment(new Date(val))
+        if (chartType.value === 'month' || chartType.value === 'year') {
+          // Find the corresponding data point
+          const dataPoint = series.value[0].data.find(item => item.x === val)
+          if (dataPoint) {
+            const endDate = moment(new Date(dataPoint.end))
+            return `${date.format('MMM DD')} - ${endDate.format('MMM DD')}`
+          }
+        }
+        // For week or year view
+        return date.format(chartType.value === 'week' ? 'MMM DD' : 'MMM')
       }
     }
   }
+})
+
+//Watch
+watch(chartType, () => {
+  updateChart()
 })
 
 //Mount
@@ -209,11 +246,18 @@ async function fetchProduct() {
   product.value.logs = getLogDescription(product.value.logs)
   product.value.transactions = handleTransactionCalcs(product.value.transactions)
   product.value.layaways = handleTransactionCalcs(product.value.layaways)
+  updateChart()
 
+  // Test data
+  // console.log(JSON.stringify(product.value))
+}
+
+//Update chart
+function updateChart() {
   series.value[0].data = calcProduct(productId.value, product.value.transactions, product.value.layaways, chartType.value)
 
-  // console.log(JSON.stringify(calcProduct(productId.value, product.value.transactions, product.value.layaways)))
-  // console.log(JSON.stringify(product.value))
+  // Test data
+  // console.log(JSON.stringify(series.value[0].data))
 }
 </script>
 

@@ -21,6 +21,11 @@
     "email": "Email",
     "phone": "Phone"
   },
+  "tabs": {
+    "Week": "Week",
+    "Month": "Month",
+    "Year": "Year"
+  },
   "label": {
     "Date": "Date",
     "Cashier": "Cashier",
