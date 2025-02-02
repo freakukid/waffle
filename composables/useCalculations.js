@@ -94,10 +94,14 @@ export default () => {
     return formatPrice.minus(formatPrice.times(floatDiscount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
-  function calcProduct(key, transactions, layaways, type = 'week') {
+  function calcProduct(key, transactions, layaways, type = 'Week') {
     let chartData = {}
     const combinedEntries = [...transactions, ...layaways.filter(l => l.status === 'paid')]
     const endDate = moment().endOf('day')
+    let totalPrice = new Decimal(0)
+    let totalProfit = new Decimal(0)
+    let totalQuantity = 0
+
     const calcProfit = (items) => {
       let profit = new Decimal(0)
       items.forEach(item => {
@@ -105,6 +109,10 @@ export default () => {
           const price = new Decimal(item.new_price ? item.new_price : item.price)
           const cost = new Decimal(item.cost)
           profit = profit.plus((price.minus(cost)).times(item.qty))
+          console.log(price.toFixed(2))
+          totalPrice = totalPrice.plus(price.times(item.qty))
+          totalProfit = totalProfit.plus(profit)
+          totalQuantity += parseInt(item.qty)
         }
       })
       return profit
@@ -113,20 +121,20 @@ export default () => {
     // Determine the start date
     let startDate
     switch(type) {
-      case 'week':
+      case 'Week':
         startDate = endDate.clone().subtract(7, 'days').startOf('day')
         break
-      case 'month':
+      case 'Month':
         startDate = endDate.clone().subtract(1, 'month').startOf('day')
         break
-      case 'year':
+      case 'Year':
         startDate = endDate.clone().subtract(1, 'year').startOf('month')
         break
     }
 
     // Loop until currentDate goes past endDate
     let currentDate = startDate.clone()
-    if(type === 'week') {
+    if(type === 'Week') {
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         let profit = new Decimal(0)
         const currentEndTime = currentDate.clone().add(1, 'day')
@@ -152,7 +160,7 @@ export default () => {
         // Test Data
         // console.log(currentDate.format('YYYY-MM-DD'), 'Profit:', profit.toNumber())
       }
-    } else if(type === 'month') {
+    } else if(type === 'Month') {
       let weekCount = 0
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         let profit = new Decimal(0)
@@ -189,7 +197,7 @@ export default () => {
 
         weekCount++
       }
-    } else if(type === 'year') {
+    } else if(type === 'Year') {
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         let profit = new Decimal(0)
         let currentEndTime = currentDate.clone().add(1, 'month')
@@ -212,12 +220,19 @@ export default () => {
         currentDate.add(1, 'month')
       }
     }
-    
-    return Object.entries(chartData).map(([timestamp, {profit, end}]) => ({
+
+    const dataForChart = Object.entries(chartData).map(([timestamp, {profit, end}]) => ({
       x: parseInt(timestamp),
       y: profit,
       end: end
     })).sort((a, b) => a.x - b.x)
+    
+    return {
+      chart_data: dataForChart,
+      total_price: totalPrice.toFixed(2),
+      total_profit: totalProfit.toFixed(2),
+      total_qty: totalQuantity,
+    }
   }
   
   return {

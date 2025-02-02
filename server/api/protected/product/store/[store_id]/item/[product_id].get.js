@@ -97,6 +97,7 @@ export default defineEventHandler(async (event) => {
     price_column: inventory.price_column,
     quantity_column: inventory.quantity_column,
     cost_column: inventory.cost_column,
+    discount_column: inventory.discount_column,
     product: inventory.stock[product_id],
     logs: logs,
     transactions: transactions,

@@ -1,8 +1,11 @@
 <template>
   <div v-if="product" class="py-8 mx-auto" style="width: calc(100% - 70px);">
     <el-row>
-      <el-col v-if="product.name_column" :span="24">
+      <el-col v-if="product.name_column" :span="16">
         <el-statistic title="Name" :value="product.product[product.name_column]" />
+      </el-col>
+      <el-col v-if="product.discount_column" :span="8">
+        <el-statistic title="Discount" :value="`${product.product[product.discount_column]}%`" />
       </el-col>
     </el-row>
     <el-row class="mt-4">
@@ -28,6 +31,20 @@
       </client-only>
     </div>
     <!-- PROFIT CHART -->
+
+    <!-- CHART STATS -->
+    <el-row class="mt-4">
+      <el-col :span="8">
+        <el-statistic :title="`${chartType} Total Sales`" :value="`$${chartStats.price}`" />
+      </el-col>
+      <el-col :span="8">
+        <el-statistic :title="`${chartType} Total Profit`" :class="{positive: chartStats.profit > 0, negative: chartStats.profit < 0}" :value="`${chartStats.profit > 0 ? '+' : chartStats.profit < 0 ? '-' : ''}${chartStats.profit}`" />
+      </el-col>
+      <el-col :span="8">
+        <el-statistic :title="`${chartType} Total Sold`" :value="chartStats.qty" />
+      </el-col>
+    </el-row>
+    <!-- CHART STATS -->
     
     <!-- DATA -->
     <el-row class="mt-4">
@@ -138,14 +155,15 @@ const loading = ref(false)
 const storeId = computed(pinia.getStore)
 const productId = computed(() => (route.params.product_id ? parseInt(route.params.product_id) : 0))
 const product = ref(null)
-const chartType = ref('week')
+const chartType = ref('Week')
 
 //Chart
 const series = ref([{ name: "Profit", data: []}])
+const chartStats = reactive({price: '0.00', profit: '0.00', qty: 0})
 const options = [
-  { label: $t('tabs.Week'), value: 'week' },
-  { label: $t('tabs.Month'), value: 'month' },
-  { label: $t('tabs.Year'), value: 'year'}
+  { label: $t('tabs.Week'), value: 'Week' },
+  { label: $t('tabs.Month'), value: 'Month' },
+  { label: $t('tabs.Year'), value: 'Year'}
 ]
 const chartOptions = ref({
   chart: {
@@ -161,7 +179,7 @@ const chartOptions = ref({
       },
       formatter: function(val, timestamp) {
         const date = moment(new Date(val))
-        if (chartType.value === 'month' || chartType.value === 'year') {
+        if (chartType.value === 'Month' || chartType.value === 'Year') {
           // Find the corresponding data point
           const dataPoint = series.value[0].data.find(item => item.x === val)
           if (dataPoint) {
@@ -170,7 +188,7 @@ const chartOptions = ref({
           }
         }
         // For week or year view
-        return date.format(chartType.value === 'week' ? 'MMM DD' : 'MMM')
+        return date.format(chartType.value === 'Week' ? 'MMM DD' : 'MMM')
       }
     },
     title: {
@@ -214,7 +232,7 @@ const chartOptions = ref({
     x: {
       formatter: function(val, timestamp) {
         const date = moment(new Date(val))
-        if (chartType.value === 'month' || chartType.value === 'year') {
+        if (chartType.value === 'Month' || chartType.value === 'Year') {
           // Find the corresponding data point
           const dataPoint = series.value[0].data.find(item => item.x === val)
           if (dataPoint) {
@@ -223,7 +241,7 @@ const chartOptions = ref({
           }
         }
         // For week or year view
-        return date.format(chartType.value === 'week' ? 'MMM DD' : 'MMM')
+        return date.format(chartType.value === 'Week' ? 'MMM DD' : 'MMM')
       }
     }
   }
@@ -254,7 +272,11 @@ async function fetchProduct() {
 
 //Update chart
 function updateChart() {
-  series.value[0].data = calcProduct(productId.value, product.value.transactions, product.value.layaways, chartType.value)
+  const {chart_data, total_price, total_profit, total_qty} = calcProduct(productId.value, product.value.transactions, product.value.layaways, chartType.value)
+  series.value[0].data = chart_data
+  chartStats.price = total_price
+  chartStats.profit = total_profit
+  chartStats.qty = total_qty
 
   // Test data
   // console.log(JSON.stringify(series.value[0].data))
@@ -267,7 +289,20 @@ function updateChart() {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 :deep(.truncate) {
   text-overflow: none;
+}
+
+.positive {
+  :deep(.el-statistic__number) {
+    color: #96ff63;
+  }
+}
+
+.negative {
+  :deep(.el-statistic__number) {
+    color: #ec6262;
+  }
 }
 </style>
