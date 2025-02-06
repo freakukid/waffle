@@ -23,5 +23,8 @@ node_modules
 .env.*
 !.env.example
 
+# Editor Config
+.editorconfig
+
 # Scripts
 # update-cache-name.js

@@ -1,0 +1,15 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "vetur.format.options.tabSize": 2,
+  "vue.format.defaultFormatter.html": "prettier",
+  "vue.format.defaultFormatter.js": "prettier",
+  "editor.formatOnSave": true,
+  "prettier.printWidth": 200,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "none",
+  "prettier.semi": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.wordWrap": "off"
+}

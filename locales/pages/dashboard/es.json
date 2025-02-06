@@ -1,7 +1,8 @@
 {
   "label": {
     "number of workers": "Numero de trabajadores",
-    "actions": "Comportamiento"
+    "actions": "Comportamiento",
+    "inventory logs": "Registros de Inventario"
   },
   "title": {
     "create store": "Crear Tienda",

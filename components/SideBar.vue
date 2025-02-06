@@ -15,6 +15,12 @@
         </li>
       </NuxtLink>
       <div v-if="storeId">
+        <NuxtLink to="/stats">
+          <li :class="{active: route.name === 'stats'}">
+            <Icon name="lucide:chart-line" />
+            <span>{{$t('sidebar.Stats')}}</span>
+          </li>
+        </NuxtLink>
         <NuxtLink to="/inventory">
           <li :class="{active: route.name === 'inventory'}">
             <Icon name="gravity-ui:boxes-3" />

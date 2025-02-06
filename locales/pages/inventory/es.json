@@ -22,7 +22,8 @@
   "label": {
     "column": "Columna",
     "import inventory by excel file": "Importar Inventario Mediante Archivo Excel",
-    "or": "o"
+    "or": "o",
+    "inventory logs": "Registros de Inventario"
   },
   "text": {
     "Before proceeding linking columns is required to enable key features!": "¡Antes de continuar, es necesario vincular las columnas para habilitar funciones clave!",

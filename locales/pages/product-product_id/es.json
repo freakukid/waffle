@@ -28,6 +28,15 @@
   },
   "label": {
     "Date": "Fecha",
+    "Quantity": "Cantidad",
+    "Cost": "Costo",
+    "Discount": "Descuento",
+    "Data": "Datos",
+    "Logs": "Registros",
+    "Transactions": "Transacciones",
+    "Layaways": "Layaways",
+    "User": "Usuario",
+    "Action": "Acción",
     "Cashier": "Cajero",
     "Items Sold": "Artículos Vendidos",
     "Qty": "Cantidad",
@@ -57,7 +66,16 @@
     "Edit": "Editar",
     "Paid": "Pagado",
     "Pending": "Pendiente",
-    "Declined": "Rechazado"
+    "Declined": "Rechazado",
+    "Week Total Sales": "Ventas Totales de la Semana",
+    "Month Total Sales": "Ventas Totales del Mes",
+    "Year Total Sales": "Ventas Totales del Año",
+    "Week Total Profit": "Ganancia Total de la Semana",
+    "Month Total Profit": "Ganancia Total del Mes",
+    "Year Total Profit": "Ganancia Total del Año",
+    "Week Total Quantity": "Cantidad Total de la Semana",
+    "Month Total Quantity": "Cantidad Total del Mes",
+    "Year Total Quantity": "Cantidad Total del Año"
   },
   "btn": {
     "Print Receipt": "Imprimir Recibo",

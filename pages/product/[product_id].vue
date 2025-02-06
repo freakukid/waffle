@@ -2,21 +2,21 @@
   <div v-if="product" class="py-8 mx-auto" style="width: calc(100% - 70px);">
     <el-row>
       <el-col v-if="product.name_column" :span="16">
-        <el-statistic title="Name" :value="product.product[product.name_column]" />
+        <el-statistic :title="$t(`label.Name`)" :value="product.product[product.name_column]" />
       </el-col>
       <el-col v-if="product.discount_column" :span="8">
-        <el-statistic title="Discount" :value="`${product.product[product.discount_column]}%`" />
+        <el-statistic :title="$t(`label.Discount`)" :value="`${product.product[product.discount_column]}%`" />
       </el-col>
     </el-row>
     <el-row class="mt-4">
       <el-col v-if="product.quantity_column" :span="8">
-        <el-statistic title="Quantity" :value="product.product[product.quantity_column]" />
+        <el-statistic :title="$t(`label.Quantity`)" :value="product.product[product.quantity_column]" />
       </el-col>
       <el-col v-if="product.cost_column" :span="8">
-        <el-statistic title="Cost" :value="product.product[product.cost_column]" />
+        <el-statistic :title="$t(`label.Cost`)" :value="product.product[product.cost_column]" />
       </el-col>
       <el-col v-if="product.price_column" :span="8">
-        <el-statistic title="Price" :value="product.product[product.price_column]" />
+        <el-statistic :title="$t(`label.Price`)" :value="product.product[product.price_column]" />
       </el-col>
     </el-row>
 
@@ -35,20 +35,20 @@
     <!-- CHART STATS -->
     <el-row class="mt-4">
       <el-col :span="8">
-        <el-statistic :title="`${chartType} Total Sales`" :value="`$${chartStats.price}`" />
+        <el-statistic :title="$t(`label.${chartType} Total Sales`)" :value="`$${chartStats.price}`" />
       </el-col>
       <el-col :span="8">
-        <el-statistic :title="`${chartType} Total Profit`" :class="{positive: chartStats.profit > 0, negative: chartStats.profit < 0}" :value="`${chartStats.profit > 0 ? '+' : chartStats.profit < 0 ? '-' : ''}${chartStats.profit}`" />
+        <el-statistic :title="$t(`label.${chartType} Total Profit`)" :class="{positive: chartStats.profit > 0, negative: chartStats.profit < 0}" :value="`${chartStats.profit > 0 ? '+' : chartStats.profit < 0 ? '-' : ''}${chartStats.profit}`" />
       </el-col>
       <el-col :span="8">
-        <el-statistic :title="`${chartType} Total Sold`" :value="chartStats.qty" />
+        <el-statistic :title="$t(`label.${chartType} Total Quantity`)" :value="chartStats.qty" />
       </el-col>
     </el-row>
     <!-- CHART STATS -->
     
     <!-- DATA -->
     <el-row class="mt-4">
-      <label class="text-xs mb-3">Data</label>
+      <label class="text-xs mb-3">{{$t(`label.Data`)}}</label>
       <el-table class="w-full" :data="[product.product]" table-layout="auto" row-class-name="table-row" border>
         <el-table-column v-for="column in product.columns" :key="column" :prop="column" :label="column" />
       </el-table>
@@ -56,11 +56,11 @@
     <!-- DATA -->
 
     <!-- LOGS -->
-    <label class="block text-xs mt-4 mb-3">Logs</label>
+    <label class="block text-xs mt-4 mb-3">{{$t(`label.Logs`)}}</label>
     <el-table :data="product.logs" class="w-full" max-height="320" table-layout="auto" border>
-      <el-table-column prop="date" label="Date" />
-      <el-table-column prop="user.name" label="User" />
-      <el-table-column prop="description" label="Action">
+      <el-table-column prop="date" :label="$t('label.Date')" />
+      <el-table-column prop="user.name" :label="$t('label.User')" />
+      <el-table-column prop="description" :label="$t('label.Action')">
         <template #default="scope">
           <div v-html="scope.row.description" />
         </template>
@@ -69,7 +69,7 @@
     <!-- LOGS -->
 
     <!-- TRANSACTIONS -->
-    <label class="block text-xs mt-4 mb-3">Transactions</label>
+    <label class="block text-xs mt-4 mb-3">{{$t(`label.Transactions`)}}</label>
     <el-table :data="product.transactions" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" :label="$t('label.Date')" />
@@ -99,7 +99,7 @@
     <!-- TRANSACTIONS -->
 
     <!-- LAYAWAY -->
-    <label class="block text-xs mt-4 mb-3">Layaway</label>
+    <label class="block text-xs mt-4 mb-3">{{$t(`label.Layaways`)}}</label>
     <el-table :data="product.layaways" style="width: 100%; height: 100%;" table-layout="auto">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="date" :label="$t('label.Date')" />
@@ -192,7 +192,7 @@ const chartOptions = ref({
       }
     },
     title: {
-      text: 'Date',
+      text: $t('label.Date'),
       style: {
         color: '#FFFFFF',
       }
@@ -208,7 +208,7 @@ const chartOptions = ref({
   },
   yaxis: {
     title: {
-      text: 'Profit',
+      text: $t('label.Profit'),
       style: {
         color: '#FFFFFF',
       }

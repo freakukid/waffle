@@ -16,10 +16,10 @@ export default () => {
 
       const itemSubtotal = qty.times(price)
       noDiscountSubtotal = noDiscountSubtotal.plus(itemSubtotal)
-      
+
       totalCost = totalCost.plus(qty.times(cost))
 
-      if(discount > 0) {
+      if (discount > 0) {
         const discountSubtotalPrice = itemSubtotal.minus(itemSubtotal.times(discount))
         const newPrice = price.minus(price.times(discount))
         discountSubtotal = discountSubtotal.plus(discountSubtotalPrice)
@@ -33,26 +33,26 @@ export default () => {
       }
     }
 
-    return {subtotal: discountSubtotal, noDiscountSubtotal: noDiscountSubtotal, savings: noDiscountSubtotal.minus(discountSubtotal), profit: totalPrice.minus(totalCost)}
+    return { subtotal: discountSubtotal, noDiscountSubtotal: noDiscountSubtotal, savings: noDiscountSubtotal.minus(discountSubtotal), profit: totalPrice.minus(totalCost) }
   }
 
   function calcDictSubtotal(items, qtyKey, priceKey, discountKey) {
     let noDiscountSubtotal = new Decimal(0)
     let discountSubtotal = new Decimal(0)
-    
+
     //Add subtotal
     Object.values(items).forEach((item) => {
       const qty = new Decimal(item[qtyKey])
       const price = new Decimal(item[priceKey])
       let discount = 0
-      if(discountKey) {
+      if (discountKey) {
         discount = new Decimal(item[discountKey]).div(100)
       }
 
       const itemSubtotal = qty.times(price)
       noDiscountSubtotal = noDiscountSubtotal.plus(itemSubtotal)
 
-      if(discount > 0) {
+      if (discount > 0) {
         discountSubtotal = discountSubtotal.plus(itemSubtotal.minus(itemSubtotal.times(discount)))
         item['__new_price'] = price.minus(price.times(discount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       } else {
@@ -60,7 +60,7 @@ export default () => {
       }
     })
 
-    return {subtotal: discountSubtotal, noDiscountSubtotal: noDiscountSubtotal, savings: noDiscountSubtotal.minus(discountSubtotal)}
+    return { subtotal: discountSubtotal, noDiscountSubtotal: noDiscountSubtotal, savings: noDiscountSubtotal.minus(discountSubtotal) }
   }
 
   function calcTaxTotal(subtotal, tax) {
@@ -109,7 +109,6 @@ export default () => {
           const price = new Decimal(item.new_price ? item.new_price : item.price)
           const cost = new Decimal(item.cost)
           profit = profit.plus((price.minus(cost)).times(item.qty))
-          console.log(price.toFixed(2))
           totalPrice = totalPrice.plus(price.times(item.qty))
           totalProfit = totalProfit.plus(profit)
           totalQuantity += parseInt(item.qty)
@@ -120,7 +119,7 @@ export default () => {
 
     // Determine the start date
     let startDate
-    switch(type) {
+    switch (type) {
       case 'Week':
         startDate = endDate.clone().subtract(7, 'days').startOf('day')
         break
@@ -132,9 +131,8 @@ export default () => {
         break
     }
 
-    // Loop until currentDate goes past endDate
     let currentDate = startDate.clone()
-    if(type === 'Week') {
+    if (type === 'Week') {
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         let profit = new Decimal(0)
         const currentEndTime = currentDate.clone().add(1, 'day')
@@ -160,7 +158,7 @@ export default () => {
         // Test Data
         // console.log(currentDate.format('YYYY-MM-DD'), 'Profit:', profit.toNumber())
       }
-    } else if(type === 'Month') {
+    } else if (type === 'Month') {
       let weekCount = 0
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         let profit = new Decimal(0)
@@ -197,7 +195,7 @@ export default () => {
 
         weekCount++
       }
-    } else if(type === 'Year') {
+    } else if (type === 'Year') {
       while (currentDate.isSameOrBefore(endDate, 'day')) {
         let profit = new Decimal(0)
         let currentEndTime = currentDate.clone().add(1, 'month')
@@ -221,12 +219,12 @@ export default () => {
       }
     }
 
-    const dataForChart = Object.entries(chartData).map(([timestamp, {profit, end}]) => ({
+    const dataForChart = Object.entries(chartData).map(([timestamp, { profit, end }]) => ({
       x: parseInt(timestamp),
       y: profit,
       end: end
     })).sort((a, b) => a.x - b.x)
-    
+
     return {
       chart_data: dataForChart,
       total_price: totalPrice.toFixed(2),
@@ -234,7 +232,132 @@ export default () => {
       total_qty: totalQuantity,
     }
   }
-  
+
+  function calcStore(transactions, layaways, type = 'Week') {
+    let chartData = {}
+    const combinedEntries = [...transactions, ...layaways.filter(l => l.status === 'paid')]
+    const endDate = moment().endOf('day')
+    let totalPrice = new Decimal(0)
+    let totalProfit = new Decimal(0)
+
+    // Determine the start date
+    let startDate
+    switch (type) {
+      case 'Week':
+        startDate = endDate.clone().subtract(7, 'days').startOf('day')
+        break
+      case 'Month':
+        startDate = endDate.clone().subtract(1, 'month').startOf('day')
+        break
+      case 'Year':
+        startDate = endDate.clone().subtract(1, 'year').startOf('month')
+        break
+    }
+
+    let currentDate = startDate.clone()
+    if (type === 'Week') {
+      while (currentDate.isSameOrBefore(endDate, 'day')) {
+        let profit = new Decimal(0)
+        const currentEndTime = currentDate.clone().add(1, 'day')
+
+        // Loop through combined entries checking if timestamp is between currentDate and currentEndTime. If it is add to profit, if not do nothing
+        for (let entry of combinedEntries) {
+          const entryDate = moment(entry.timestamp)
+          if (entryDate.isBetween(currentDate, currentEndTime, null, '[)')) {
+            profit = profit.plus(entry.profit)
+            totalProfit = totalProfit.plus(entry.profit)
+            totalPrice = totalPrice.plus(entry.total)
+          }
+        }
+
+        // Now update the chartData suitable for apex chart of the end date
+        chartData[currentDate.valueOf()] = {
+          profit: profit.toNumber(),
+          end: currentEndTime.valueOf()
+        }
+
+        // Increment currentDate by one day
+        currentDate.add(1, 'day')
+
+        // Test Data
+        // console.log(currentDate.format('YYYY-MM-DD'), 'Profit:', profit.toNumber())
+      }
+    } else if (type === 'Month') {
+      let weekCount = 0
+      while (currentDate.isSameOrBefore(endDate, 'day')) {
+        let profit = new Decimal(0)
+        let currentEndTime
+
+        if (weekCount < 4) { // For the first 4 weeks
+          currentEndTime = currentDate.clone().add(7, 'day')
+        } else { // For the last (partial) week, go up to endDate
+          currentEndTime = endDate
+        }
+
+        // Loop through combined entries checking if timestamp is between currentDate and currentEndTime. If it is add to profit, if not do nothing
+        for (let entry of combinedEntries) {
+          const entryDate = moment(entry.timestamp)
+          if (entryDate.isBetween(currentDate, currentEndTime, null, '[)')) {
+            profit = profit.plus(entry.profit)
+            totalProfit = totalProfit.plus(entry.profit)
+            totalPrice = totalPrice.plus(entry.total)
+          }
+        }
+
+        // Now update the chartData suitable for ApexCharts of the end date
+        chartData[currentDate.valueOf()] = {
+          profit: profit.toNumber(),
+          end: currentEndTime.valueOf()
+        }
+
+        // Increment currentDate by one week, but check if it's the last iteration
+        if (weekCount < 4) {
+          currentDate.add(1, 'week')
+        } else {
+          // Stop the loop after handling the last week
+          break
+        }
+
+        weekCount++
+      }
+    } else if (type === 'Year') {
+      while (currentDate.isSameOrBefore(endDate, 'day')) {
+        let profit = new Decimal(0)
+        let currentEndTime = currentDate.clone().add(1, 'month')
+
+        // Loop through combined entries checking if timestamp is between currentDate and currentEndTime. If it is add to profit, if not do nothing
+        for (let entry of combinedEntries) {
+          const entryDate = moment(entry.timestamp)
+          if (entryDate.isBetween(currentDate, currentEndTime, null, '[)')) {
+            profit = profit.plus(entry.profit)
+            totalProfit = totalProfit.plus(entry.profit)
+            totalPrice = totalPrice.plus(entry.total)
+          }
+        }
+
+        // Now update the chartData suitable for ApexCharts of the end date
+        chartData[currentDate.valueOf()] = {
+          profit: profit.toNumber(),
+          end: currentEndTime.valueOf()
+        }
+
+        currentDate.add(1, 'month')
+      }
+    }
+
+    const dataForChart = Object.entries(chartData).map(([timestamp, { profit, end }]) => ({
+      x: parseInt(timestamp),
+      y: profit,
+      end: end
+    })).sort((a, b) => a.x - b.x)
+
+    return {
+      chart_data: dataForChart,
+      total_price: totalPrice.toFixed(2),
+      total_profit: totalProfit.toFixed(2),
+    }
+  }
+
   return {
     calcSubtotal,
     calcDictSubtotal,
@@ -244,6 +367,7 @@ export default () => {
     calcAvgCostPerItem,
     calcChange,
     calcProduct,
+    calcStore,
     calcDiscountedItemPrice
   }
 }
