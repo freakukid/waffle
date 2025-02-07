@@ -1,0 +1,20 @@
+{
+  "tabs": {
+    "Week": "Week",
+    "Month": "Month",
+    "Year": "Year"
+  },
+  "label": {
+    "Date": "Date",
+    "Profit": "Profit",
+    "Week Total Sales": "Week Total Sales",
+    "Month Total Sales": "Month Total Sales",
+    "Year Total Sales": "Year Total Sales",
+    "Week Total Profit": "Week Total Profit",
+    "Month Total Profit": "Month Total Profit",
+    "Year Total Profit": "Year Total Profit",
+    "Week Total Quantity": "Week Total Quantity",
+    "Month Total Quantity": "Month Total Quantity",
+    "Year Total Quantity": "Year Total Quantity"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "tabs": {
+    "Week": "Semana",
+    "Month": "Mes",
+    "Year": "Año"
+  },
+  "label": {
+    "Date": "Fecha",
+    "Profit": "Ganancia",
+    "Week Total Sales": "Ventas Totales de la Semana",
+    "Month Total Sales": "Ventas Totales del Mes",
+    "Year Total Sales": "Ventas Totales del Año",
+    "Week Total Profit": "Ganancia Total de la Semana",
+    "Month Total Profit": "Ganancia Total del Mes",
+    "Year Total Profit": "Ganancia Total del Año",
+    "Week Total Quantity": "Cantidad Total de la Semana",
+    "Month Total Quantity": "Cantidad Total del Mes",
+    "Year Total Quantity": "Cantidad Total del Año"
+  }
+}
