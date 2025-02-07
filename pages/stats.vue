@@ -20,13 +20,64 @@
     <!-- CHART STATS -->
     <el-row class="mt-4">
       <el-col :span="8">
-        <el-statistic :title="$t(`label.${chartType} Total Sales`)" :value="`$${chartStats.price}`" />
+        <el-statistic 
+          :title="$t(`label.Total Transactions`)" 
+          :value="Number(chartStats.transactions)" 
+        />
       </el-col>
       <el-col :span="8">
-        <el-statistic :title="$t(`label.${chartType} Total Profit`)" :class="{positive: chartStats.profit > 0, negative: chartStats.profit < 0}" :value="`${chartStats.profit > 0 ? '+' : chartStats.profit < 0 ? '-' : ''}${chartStats.profit}`" />
+        <el-statistic 
+          :title="$t(`label.${chartType} Total Sales`)" 
+          :value="Number(chartStats.price)" 
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
+      </el-col>
+      <el-col :span="8">
+        <el-statistic 
+          :title="$t(`label.${chartType} Total Profit`)" 
+          :class="{positive: chartStats.profit > 0, negative: chartStats.profit < 0}" 
+          :value="Math.abs(Number(chartStats.profit))" 
+          :formatter="(value) => `${chartStats.profit > 0 ? '+' : chartStats.profit < 0 ? '-' : ''}${value.toFixed(2)}`"
+        />
       </el-col>
     </el-row>
     <!-- CHART STATS -->
+    <div class="flex items-center justify-between">
+      <label class="block text-xs mt-4 mb-3">{{$t(itemType === 'total_sold' ? 'label.Most Sold Items' : 'label.Most Profitable Items')}}</label>
+      <el-segmented v-model="itemType" :options="itemOptions" />
+    </div>
+    <div>
+      <el-table 
+        ref="tableRef"
+        class="w-full" 
+        :data="Object.values(stats.inventory.stock).filter(item => item.total_sold > 0).slice((currentPage - 1) * pageSize, currentPage * pageSize)" 
+        table-layout="auto" 
+        row-class-name="table-row" 
+        border
+        :default-sort="{ prop: itemType, order: 'descending'}"
+      >
+        <el-table-column :prop="stats.inventory.name_column" :label="$t('label.Name')" />
+        <el-table-column :prop="stats.inventory.quantity_column" :label="$t('label.Quantity')" />
+        <el-table-column prop="total_sold" :label="$t('label.Sold')" />
+        <el-table-column prop="total_profit" :label="$t('label.Profit')">
+          <template #default="scope">
+            <span :class="{ 'positive': scope.row.total_profit > 0, 'negative': scope.row.total_profit < 0 }">
+              {{ scope.row.total_profit > 0 ? '+' : scope.row.total_profit < 0 ? '-' : '' }}{{ Math.abs(scope.row.total_profit).toFixed(2) }}
+            </span>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+      <div class="flex items-center justify-end mt-4">
+        <el-pagination
+          v-model:current-page="currentPage"
+          :page-size="pageSize"
+          :total="Object.values(stats.inventory.stock).filter(item => item.total_sold > 0).length"
+          layout="prev, pager, next"
+          :hide-on-single-page="true"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,15 +99,30 @@ const loading = ref(true);
 const storeId = computed(pinia.getStore);
 const stats = ref(null);
 const chartType = ref("Week");
+const itemType = ref("total_sold");
+const currentPage = ref(1);
+const pageSize = ref(10);
+const tableRef = ref(null);
+
+// Computed default sort based on itemType
+const defaultSort = computed(() => ({
+  prop: itemType.value,
+  order: 'descending'
+}));
 
 //Chart
 const series = ref([{ name: "Profit", data: [] }]);
-const chartStats = reactive({ price: "0.00", profit: "0.00" });
+const chartStats = reactive({ price: "0.00", profit: "0.00", transactions: 0 });
 const options = [
   { label: $t("tabs.Week"), value: "Week" },
   { label: $t("tabs.Month"), value: "Month" },
   { label: $t("tabs.Year"), value: "Year" },
 ];
+const itemOptions = [
+  { label: $t("tabs.Most Sold"), value: "total_sold" },
+  { label: $t("tabs.Most Profitable"), value: "total_profit" },
+];
+
 const chartOptions = ref({
   chart: {
     type: "line",
@@ -144,6 +210,14 @@ watch(chartType, () => {
   updateChart();
 });
 
+watch(itemType, (newType) => {
+  nextTick(() => {
+    if (tableRef.value) {
+      tableRef.value.sort(newType, 'descending');
+    }
+  });
+});
+
 onBeforeMount(async () => {
   await fetchStats();
   loading.value = false;
@@ -156,33 +230,43 @@ async function fetchStats() {
   updateChart();
 
   //Test data
-  // console.log(JSON.stringify(stats.value));
+  console.log(JSON.stringify(stats.value));
 }
 
 //Update chart
-function updateChart() {
-  const { chart_data, total_price, total_profit } = calcStore(
+async function updateChart() {
+  if (!stats.value) return;
+
+  const { chart_data, total_price, total_profit, total_transactions } = calcStore(
     stats.value.transactions,
     stats.value.layaways,
+    stats.value.inventory.stock,
     chartType.value
   );
   series.value[0].data = chart_data;
   chartStats.price = total_price;
   chartStats.profit = total_profit;
+  chartStats.transactions = total_transactions;
 
-  // Test data
-  // console.log(JSON.stringify(series.value[0].data));
+  // Re-apply current sort
+  nextTick(() => {
+    if (tableRef.value) {
+      tableRef.value.sort(itemType.value, 'descending');
+    }
+  });
 }
 </script>
 
 <style lang="scss" scoped>
 .positive {
+  color: #96ff63;
   :deep(.el-statistic__number) {
     color: #96ff63;
   }
 }
 
 .negative {
+  color: #ec6262;
   :deep(.el-statistic__number) {
     color: #ec6262;
   }
