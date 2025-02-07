@@ -103,12 +103,12 @@ export default () => {
       const total = calcTotal(subtotal, taxTotal)
       transaction.date = $td(transaction.timestamp, { year: 'numeric', month: 'long', day: 'numeric' })
       transaction.tax = parseFloat(transaction.tax).toFixed(2)
-      transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      transaction.profit = profit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0
+      transaction.subtotal = subtotal.toFixed(2)
+      transaction.tax_total = taxTotal.toFixed(2)
+      transaction.savings = savings.toFixed(2)
+      transaction.total = total.toFixed(2)
+      transaction.profit = profit.toFixed(2)
+      transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2) : 0
     }
   
     return items

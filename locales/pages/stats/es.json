@@ -2,11 +2,17 @@
   "tabs": {
     "Week": "Semana",
     "Month": "Mes",
-    "Year": "Año"
+    "Year": "Año",
+    "Most Sold": "Más Vendidos",
+    "Most Profitable": "Más Rentables"
   },
   "label": {
+    "Name": "Nombre",
+    "Quantity": "Cantidad",
+    "Sold": "Vendido",
     "Date": "Fecha",
     "Profit": "Ganancia",
+    "Total Transactions": "Total de Transacciones",
     "Week Total Sales": "Ventas Totales de la Semana",
     "Month Total Sales": "Ventas Totales del Mes",
     "Year Total Sales": "Ventas Totales del Año",
@@ -15,6 +21,8 @@
     "Year Total Profit": "Ganancia Total del Año",
     "Week Total Quantity": "Cantidad Total de la Semana",
     "Month Total Quantity": "Cantidad Total del Mes",
-    "Year Total Quantity": "Cantidad Total del Año"
+    "Year Total Quantity": "Cantidad Total del Año",
+    "Most Sold Items": "Artículos más Vendidos",
+    "Most Profitable Items": "Artículos más Rentables"
   }
 }

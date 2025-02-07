@@ -5,7 +5,11 @@
         <el-statistic :title="$t(`label.Name`)" :value="product.product[product.name_column]" />
       </el-col>
       <el-col v-if="product.discount_column" :span="8">
-        <el-statistic :title="$t(`label.Discount`)" :value="`${product.product[product.discount_column]}%`" />
+        <el-statistic 
+          :title="$t(`label.Discount`)" 
+          :value="Number(product.product[product.discount_column])"
+          :formatter="(value) => `${value}%`"
+        />
       </el-col>
     </el-row>
     <el-row class="mt-4">
@@ -13,10 +17,18 @@
         <el-statistic :title="$t(`label.Quantity`)" :value="product.product[product.quantity_column]" />
       </el-col>
       <el-col v-if="product.cost_column" :span="8">
-        <el-statistic :title="$t(`label.Cost`)" :value="product.product[product.cost_column]" />
+        <el-statistic 
+          :title="$t(`label.Cost`)" 
+          :value="Number(product.product[product.cost_column])"
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
       </el-col>
       <el-col v-if="product.price_column" :span="8">
-        <el-statistic :title="$t(`label.Price`)" :value="product.product[product.price_column]" />
+        <el-statistic 
+          :title="$t(`label.Price`)" 
+          :value="Number(product.product[product.price_column])"
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
       </el-col>
     </el-row>
 
@@ -35,10 +47,19 @@
     <!-- CHART STATS -->
     <el-row class="mt-4">
       <el-col :span="8">
-        <el-statistic :title="$t(`label.${chartType} Total Sales`)" :value="`$${chartStats.price}`" />
+        <el-statistic 
+          :title="$t(`label.${chartType} Total Sales`)" 
+          :value="Number(chartStats.price)" 
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
       </el-col>
       <el-col :span="8">
-        <el-statistic :title="$t(`label.${chartType} Total Profit`)" :class="{positive: chartStats.profit > 0, negative: chartStats.profit < 0}" :value="`${chartStats.profit > 0 ? '+' : chartStats.profit < 0 ? '-' : ''}${chartStats.profit}`" />
+        <el-statistic 
+          :title="$t(`label.${chartType} Total Profit`)" 
+          :class="{ positive: Number(chartStats.profit) > 0, negative: Number(chartStats.profit) < 0 }" 
+          :value="Number(chartStats.profit)"
+          :formatter="(value) => `${value > 0 ? '+' : value < 0 ? '-' : ''}${Math.abs(value).toFixed(2)}`"
+        />
       </el-col>
       <el-col :span="8">
         <el-statistic :title="$t(`label.${chartType} Total Quantity`)" :value="chartStats.qty" />
