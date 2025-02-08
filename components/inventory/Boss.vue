@@ -7,18 +7,18 @@
         <!-- IMPORT -->
       </div>
 
-      <div v-else class="pt-8 flex flex-col" style="width: calc(100% - 70px);">
+      <div v-else class="pt-8 flex flex-col" style="width: calc(100% - 70px)">
         <!-- ERROR -->
         <div v-if="(!store.inventory.name_column || !store.inventory.quantity_column) && errorMsg" class="error max-w-sm">
           <div class="flex gap-4">
             <div class="mt-2 w-5"><Icon class="text-2xl" name="mdi:alert" /></div>
-            <span>{{$t(`text.Before proceeding linking columns is required to enable key features!`)}}</span>
+            <span>{{ $t(`text.Before proceeding linking columns is required to enable key features!`) }}</span>
           </div>
-          
+
           <div class="flex gap-2 mt-4">
-            <el-button class="block ml-auto" type="danger" @click="errorMsg = false">{{$t(`label.cancel`)}}</el-button>
+            <el-button class="block ml-auto" type="danger" @click="errorMsg = false">{{ $t(`label.cancel`) }}</el-button>
             <NuxtLink to="/settings#columns">
-              <el-button class="block" type="danger">{{$t(`title.link columns`)}}</el-button>
+              <el-button class="block" type="danger">{{ $t(`title.link columns`) }}</el-button>
             </NuxtLink>
           </div>
         </div>
@@ -31,7 +31,14 @@
         <InventoryDeleteRow ref="deleteRowRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
         <InventoryAddColumn ref="addColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
         <InventoryEditColumn ref="editColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
-        <InventoryDeleteColumn ref="deleteColRef" :storeId="storeId" :inventory="store.inventory" :inventoryList="inventory" @setInventory="setInventory" @resetFilteredColumns="resetFilteredColumns" />
+        <InventoryDeleteColumn
+          ref="deleteColRef"
+          :storeId="storeId"
+          :inventory="store.inventory"
+          :inventoryList="inventory"
+          @setInventory="setInventory"
+          @resetFilteredColumns="resetFilteredColumns"
+        />
         <InventorySortColumn ref="sortColRef" :storeId="storeId" :inventory="store.inventory" @setInventory="setInventory" />
         <InventoryExport ref="exportTableRef" :inventory="store.inventory" />
         <InventoryDropTable ref="dropTableRef" :storeId="storeId" @setInventory="setInventory" />
@@ -40,73 +47,63 @@
         <div class="flex items-center flex-wrap gap-2 bg-[#090909] py-2 px-6">
           <el-dropdown placement="bottom-start" trigger="click">
             <span class="p-2 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
-              {{$t(`label.menu`)}}
+              {{ $t(`label.menu`) }}
             </span>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add item`)}}
-                  </div>
+                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50"><Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{ $t(`title.add item`) }}</div>
                 </el-tooltip>
 
-                <el-dropdown-item v-else @click="handleRowPrompt('add')">
-                  <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add item`)}}
-                </el-dropdown-item>
+                <el-dropdown-item v-else @click="handleRowPrompt('add')"> <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{ $t(`title.add item`) }} </el-dropdown-item>
 
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add column`)}}
-                  </div>
+                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50"><Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{ $t(`title.add column`) }}</div>
                 </el-tooltip>
 
                 <el-dropdown-item divided v-else @click="updateColumnPrompt('add', column)">
-                  <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{$t(`title.add column`)}}
+                  <Icon class="text-green-500 mr-3 mt-[1px]" name="ic:baseline-plus" /> {{ $t(`title.add column`) }}
                 </el-dropdown-item>
 
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                   <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{$t(`title.edit columns`)}}
+                    <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{ $t(`title.edit columns`) }}
                   </div>
                 </el-tooltip>
 
                 <el-dropdown-item v-else @click="updateColumnPrompt('edit', column)">
-                  <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{$t(`title.edit columns`)}}
+                  <Icon class="mr-3 mt-[1px]" name="material-symbols:edit-square-outline-rounded" /> {{ $t(`title.edit columns`) }}
                 </el-dropdown-item>
 
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
-                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{$t(`title.sort columns`)}}
-                  </div>
+                  <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50"><Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{ $t(`title.sort columns`) }}</div>
                 </el-tooltip>
 
                 <el-dropdown-item v-else @click="updateColumnPrompt('sort', column)">
-                  <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{$t(`title.sort columns`)}}
+                  <Icon class="mr-3 mt-[1px]" name="solar:sort-horizontal-bold" /> {{ $t(`title.sort columns`) }}
                 </el-dropdown-item>
 
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                   <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.link columns`)}}
+                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{ $t(`title.link columns`) }}
                   </div>
                 </el-tooltip>
 
                 <NuxtLink v-else to="/settings#columns">
-                  <el-dropdown-item>
-                    <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{$t(`title.link columns`)}}
-                  </el-dropdown-item>
+                  <el-dropdown-item> <Icon class="mr-3 mt-[1px]" name="fluent:database-plug-connected-20-filled" /> {{ $t(`title.link columns`) }} </el-dropdown-item>
                 </NuxtLink>
 
                 <el-dropdown-item divided @click="exportTableRef.outputExcelFile()">
-                  <Icon class="mr-3 mt-[1px]" name="vscode-icons:file-type-excel" /> {{$t(`title.export table`)}}
+                  <Icon class="mr-3 mt-[1px]" name="vscode-icons:file-type-excel" /> {{ $t(`title.export table`) }}
                 </el-dropdown-item>
 
                 <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                   <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                    <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> {{$t(`title.drop table`)}}
+                    <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> {{ $t(`title.drop table`) }}
                   </div>
                 </el-tooltip>
                 <el-dropdown-item v-else @click="dropTableRef.openPopup()">
-                  <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> {{$t(`title.drop table`)}}
+                  <Icon class="text-red-700 mr-3 mt-[1px]" name="mdi:database-remove-outline" /> {{ $t(`title.drop table`) }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -117,12 +114,14 @@
             <el-input v-model="form.search.query" size="large" :placeholder="$t(`label.search`)" clearable>
               <template #suffix>
                 <el-dropdown placement="bottom-end" trigger="click">
-                  <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">                    
+                  <span class="px-3 py-1 cursor-pointer text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
                     <Icon class="text-lg" name="line-md:filter-filled" />
                   </span>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <div class="text-base py-2 px-3"><label>{{$t(`title.Search By`)}}</label></div>
+                      <div class="text-base py-2 px-3">
+                        <label>{{ $t(`title.Search By`) }}</label>
+                      </div>
                       <el-checkbox-group v-model="form.search.checked" class="flex flex-col" :min="1" @change="pinia.setFilteredColumns(form.search.checked)">
                         <el-checkbox v-for="column in store.inventory.columns" :key="column" class="!mx-0 px-4 !h-10" :label="column" :value="column">{{ column }}</el-checkbox>
                       </el-checkbox-group>
@@ -137,17 +136,31 @@
         <!-- TABLE ACTIONS -->
 
         <!-- TABLE -->
-        <el-table v-if="inventory.length" @row-click="handleRowClick" ref="tableRef" class="w-full h-full" :data="filteredInventory" table-layout="auto" row-class-name="table-row" :default-sort="{ prop: form.sort.col }" border>
+        <el-table
+          v-if="inventory.length"
+          @row-click="handleRowClick"
+          ref="tableRef"
+          class="w-full h-full"
+          :data="filteredInventory"
+          table-layout="auto"
+          row-class-name="table-row"
+          :default-sort="{ prop: form.sort.col }"
+          border
+        >
           <el-table-column :label="$t(`label.operations`)" width="140">
             <template #header>
               <div class="flex items-center gap-1 w-full">
-                <div class="text-center w-full">{{$t(`label.operations`)}}</div>
+                <div class="text-center w-full">{{ $t(`label.operations`) }}</div>
               </div>
             </template>
 
             <template #default="scope">
               <div class="flex justify-center">
-                <el-tooltip v-if="!store.inventory.name_column || !store.inventory.quantity_column || !store.inventory.cost_column" :content="$t(`tippy.name, quantity, cost column must be registered before receiving`)" placement="top">
+                <el-tooltip
+                  v-if="!store.inventory.name_column || !store.inventory.quantity_column || !store.inventory.cost_column"
+                  :content="$t(`tippy.name, quantity, cost column must be registered before receiving`)"
+                  placement="top"
+                >
                   <el-button disabled link>
                     <div class="p-2"><Icon name="gravity-ui:boxes-3" /></div>
                   </el-button>
@@ -180,7 +193,7 @@
           <el-table-column v-for="column in store.inventory.columns" :key="column" :prop="column" :label="column">
             <template #header>
               <div class="flex items-center gap-1 w-full">
-                <div>{{column}}</div>
+                <div>{{ column }}</div>
 
                 <el-dropdown trigger="click">
                   <span class="w-8 text-center rounded-md hover:bg-zinc-800 hover:text-white transition-all leading-5">
@@ -188,17 +201,21 @@
                   </span>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> {{$t(`title.sort ascending`)}}</el-dropdown-item>
-                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')"><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> {{$t(`title.sort descending`)}}</el-dropdown-item>
-                      
+                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')"
+                        ><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> {{ $t(`title.sort ascending`) }}</el-dropdown-item
+                      >
+                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')"
+                        ><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> {{ $t(`title.sort descending`) }}</el-dropdown-item
+                      >
+
                       <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                         <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
-                          <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{$t(`title.delete column`)}}
+                          <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{ $t(`title.delete column`) }}
                         </div>
                       </el-tooltip>
 
                       <el-dropdown-item v-else @click="updateColumnPrompt('delete', column)">
-                        <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{$t(`title.delete column`)}}
+                        <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{ $t(`title.delete column`) }}
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
@@ -227,10 +244,10 @@ const storeId = computed(pinia.getStore)
 const isBossAccount = computed(isBoss)
 const store = ref({})
 const inventory = ref([])
-const loading = reactive({startedLoading: true})
+const loading = reactive({ startedLoading: true })
 const errorMsg = ref(true)
 const form = reactive({
-  search: {query: '', checked: pinia.getFilteredColumns()},
+  search: { query: '', checked: pinia.getFilteredColumns() },
   sort: { col: '', order: '' }
 })
 
@@ -251,11 +268,22 @@ const dropTableRef = ref(null)
 const filteredInventory = computed(() => {
   let { query, checked } = form.search
   if (!query) return inventory.value
-  query = query.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+  query = query
+    .toLowerCase()
+    .replace(/[^a-z0-9]/gi, '')
+    .trim()
 
   return inventory.value.filter((data) => {
     return checked.some((prop) => {
-      if (data[prop] && data[prop].toString().toLowerCase().replace(/[^a-z0-9]/gi, '').trim().includes(query))
+      if (
+        data[prop] &&
+        data[prop]
+          .toString()
+          .toLowerCase()
+          .replace(/[^a-z0-9]/gi, '')
+          .trim()
+          .includes(query)
+      )
         return true
       return false
     })
@@ -263,7 +291,7 @@ const filteredInventory = computed(() => {
 })
 
 //Mount
-onBeforeMount(async () => {    
+onBeforeMount(async () => {
   await getStore()
   loading.startedLoading = false
 })
@@ -295,13 +323,13 @@ function setInventory(data) {
 //Prompts Users to Update Column
 function updateColumnPrompt(type, col) {
   //Accesses child's method through ref
-  if(type === 'sort') {
+  if (type === 'sort') {
     sortColRef.value.openPopup()
-  } else if(type === 'add') {
+  } else if (type === 'add') {
     addColRef.value.openPopup()
-  } else if(type === 'edit') {
+  } else if (type === 'edit') {
     editColRef.value.openPopup()
-  } else if(type === 'delete') {
+  } else if (type === 'delete') {
     deleteColRef.value.openPopup(col)
   }
 }
@@ -309,13 +337,13 @@ function updateColumnPrompt(type, col) {
 //Prompts Users to Update Product
 function handleRowPrompt(type, row) {
   //Accesses child's method through ref
-  if(type === 'add') {
+  if (type === 'add') {
     addRowRef.value.openPopup()
-  } else if(type === 'edit') {
+  } else if (type === 'edit') {
     editRowRef.value.openPopup(row)
-  } else if(type === 'delete') {
+  } else if (type === 'delete') {
     deleteRowRef.value.openPopup(row)
-  } else if(type === 'receiving') {
+  } else if (type === 'receiving') {
     receivingRowRef.value.openPopup(row)
   }
 }
@@ -343,10 +371,9 @@ function resetFilteredColumns(columns) {
 async function getStore() {
   //Make Request
   store.value = await handleGetRequest(`/api/protected/store/${storeId.value}`)
-    
+
   //If we have inventory format add id (index) to data
-  if(store.value.inventory)
-    inventory.value = formatInventory()
+  if (store.value.inventory) inventory.value = formatInventory()
 
   //Keep track of the current sort
   form.sort.col = store.value.inventory?.columns[0]
@@ -354,17 +381,17 @@ async function getStore() {
 
   //Get store value filtering
   const filtered = pinia.getFilteredColumns()
-  if(!filtered.length && store.value.inventory?.columns.length)
-    resetFilteredColumns(store.value.inventory.columns)
-  
+  if (!filtered.length && store.value.inventory?.columns.length) resetFilteredColumns(store.value.inventory.columns)
+
   //Test Data
   // console.log(JSON.stringify(store.value))
-  console.log(JSON.stringify(inventory.value))
+  // console.log(JSON.stringify(inventory.value))
 }
 </script>
 
 <style lang="scss">
-.el-dropdown-menu__item:hover, .el-dropdown-menu__item:focus {
+.el-dropdown-menu__item:hover,
+.el-dropdown-menu__item:focus {
   background-color: #2b2b2b !important;
   color: #fff !important;
 }
