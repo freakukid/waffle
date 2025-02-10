@@ -29,6 +29,11 @@ export default defineEventHandler(async (event) => {
       store_id: parseInt(store_id),
     },
     select: {
+      store: {
+        select: {
+          name: true
+        }
+      },
       columns: true,
       name_column: true,
       price_column: true,
