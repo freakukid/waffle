@@ -201,13 +201,12 @@
                   </span>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')"
-                        ><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> {{ $t(`title.sort ascending`) }}</el-dropdown-item
-                      >
-                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')"
-                        ><Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> {{ $t(`title.sort descending`) }}</el-dropdown-item
-                      >
-
+                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'ascending')" @click="sortTable(column, 'ascending')">
+                        <Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-up-filled" /> {{ $t(`title.sort ascending`) }}
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="!(form.sort.col === column && form.sort.order === 'descending')" @click="sortTable(column, 'descending')">
+                        <Icon class="mr-3 mt-[1px]" name="tabler:arrow-big-down-filled" /> {{ $t(`title.sort descending`) }}
+                      </el-dropdown-item>
                       <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
                         <div class="flex items-center text-sm py-2 px-4 cursor-default opacity-50">
                           <Icon class="text-red-700 mr-3 mt-[1px]" name="lineicons:trash-can" /> {{ $t(`title.delete column`) }}
