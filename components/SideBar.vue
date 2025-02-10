@@ -21,38 +21,38 @@
             <span>{{ $t('sidebar.Inventory') }}</span>
           </li>
         </NuxtLink>
-        <NuxtLink to="/stats">
-          <li :class="{ active: route.name === 'stats' }">
-            <Icon name="lucide:chart-line" />
-            <span>{{ $t('sidebar.Stats') }}</span>
-          </li>
-        </NuxtLink>
         <NuxtLink v-if="permissions?.make_transactions" to="/cashier">
-          <li class="sidebar-item" index="5" :class="{ active: route.name === 'cashier' }">
+          <li class="sidebar-item" index="2" :class="{ active: route.name === 'cashier' }">
             <Icon name="streamline:money-cashier-shop-shopping-pay-payment-cashier-store-cash-register-machine" />
             <span>{{ $t('sidebar.Cashier') }}</span>
           </li>
         </NuxtLink>
         <NuxtLink v-if="permissions?.make_transactions" to="/layaway">
-          <li class="sidebar-item" index="6" :class="{ active: route.name === 'layaway' }">
+          <li class="sidebar-item" index="3" :class="{ active: route.name === 'layaway' }">
             <Icon name="tabler:shopping-cart-pause" />
             <span>{{ $t('sidebar.Layaway') }}</span>
           </li>
         </NuxtLink>
+        <NuxtLink to="/stats">
+          <li class="sidebar-item" index="4" :class="{ active: route.name === 'stats' }">
+            <Icon name="lucide:chart-line" />
+            <span>{{ $t('sidebar.Stats') }}</span>
+          </li>
+        </NuxtLink>
         <NuxtLink v-if="permissions?.make_transactions" to="/transactions">
-          <li class="sidebar-item" index="7" :class="{ active: route.name === 'transactions' }">
+          <li class="sidebar-item" index="5" :class="{ active: route.name === 'transactions' }">
             <Icon name="uil:transaction" />
             <span>{{ $t('sidebar.Transactions') }}</span>
           </li>
         </NuxtLink>
         <NuxtLink v-if="permissions?.view_log" to="/logs">
-          <li class="sidebar-item" index="3" :class="{ active: route.name === 'logs' }">
+          <li class="sidebar-item" index="6" :class="{ active: route.name === 'logs' }">
             <Icon name="mingcute:inventory-line" />
             <span>{{ $t('sidebar.Logs') }}</span>
           </li>
         </NuxtLink>
         <NuxtLink v-if="isBossAccount" to="/workers">
-          <li class="sidebar-item" index="4" :class="{ active: route.name === 'workers' }">
+          <li class="sidebar-item" index="7" :class="{ active: route.name === 'workers' }">
             <Icon name="gravity-ui:person-worker" />
             <span>{{ $t('sidebar.Workers') }}</span>
           </li>
