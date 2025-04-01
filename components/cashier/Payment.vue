@@ -3,7 +3,7 @@
     <!-- Popup -->
     <el-dialog v-model="popup" :title="$t('label.Payment Method')" @opened="focusInput(payment)">
       <div class="flex justify-end mb-4">
-        <el-segmented v-model="isSinglePayment" :options="[{label: 'Single Payment', value: true}, {label: 'Multi Payment', value: false}]" @change="calcMoneyDue(), $reset()" />
+        <el-segmented v-model="isSinglePayment" :options="[{label: $t('label.Single Payment'), value: true}, {label: $t('label.Multi Payment'), value: false}]" @change="calcMoneyDue(), $reset()" />
       </div>
 
       <div class="text-blue-400 text-center text-2xl mb-2"><b>{{$t('label.Total')}}: ${{parseFloat(total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
@@ -24,7 +24,7 @@
 
         <div class="flex justify-center my-4">
           <div v-show="payment === 'cash'">
-            <el-input v-model="form.cash" ref="cashRef" class="w-60 text-center" placeholder="Cash Given" @input="sanitizeCash($event, 'cash'), form.card = '0.00', form.check = '0.00', form.checkNumber = '', form.cardType = ''" />
+            <el-input v-model="form.cash" ref="cashRef" class="w-60 text-center" :placeholder="$t('label.Cash Given')" @input="sanitizeCash($event, 'cash'), form.card = '0.00', form.check = '0.00', form.checkNumber = '', form.cardType = ''" />
             <div class="text-red-400 text-center text-2xl mt-2"><b v-if="form.cash && parseFloat(form.cash) > parseFloat(total)">{{$t('label.Change Due')}}: ${{calcChange(form.cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
           </div>
           <el-radio-group v-if="payment === 'card'" v-model="form.cardType" @change="form.cash = '0.00', form.check = '0.00', form.checkNumber = ''">
@@ -45,7 +45,7 @@
         <div>
           <div class="text-xl flex items-center justify-center gap-1 mb-2"><Icon size="28" class="text-green-400" name="mdi:cash-usd" /> Cash</div>
           <div class="flex flex-col">
-            <el-input v-model="form.cash" class="!w-60 mx-auto text-center" placeholder="Cash Given" @input="sanitizeCash($event, 'cash'), calcMoneyDue()" />
+            <el-input v-model="form.cash" class="!w-60 mx-auto text-center" :placeholder="$t('label.Cash Given')" @input="sanitizeCash($event, 'cash'), calcMoneyDue()" />
           </div>
         </div>
         <!-- CASH -->
@@ -59,7 +59,7 @@
               <el-radio value="mastercard">Mastercard</el-radio>
               <el-radio value="discover">Discover</el-radio>
             </el-radio-group>
-            <el-input v-model="form.card" class="!w-60 mx-auto text-center" placeholder="Credit Value" @input="sanitizeCash($event, 'card'), calcMoneyDue()" />
+            <el-input v-model="form.card" class="!w-60 mx-auto text-center" :placeholder="$t('label.Credit Value')" @input="sanitizeCash($event, 'card'), calcMoneyDue()" />
           </div>
         </div>
         <!-- CARD -->
@@ -68,7 +68,7 @@
           <div class="text-xl flex items-center justify-center gap-1 mb-2"><Icon size="28" name="material-symbols:checkbook-rounded" /> Check</div>
           <div class="flex flex-col gap-4">
             <el-input v-model="form.checkNumber" class="!w-80 mx-auto" :placeholder="$t('label.Check Number')" />
-            <el-input v-model="form.check" class="!w-60 mx-auto text-center" placeholder="Check Value" @input="sanitizeCash($event, 'check'), calcMoneyDue()" />
+            <el-input v-model="form.check" class="!w-60 mx-auto text-center" :placeholder="$t('label.Check Value')" @input="sanitizeCash($event, 'check'), calcMoneyDue()" />
           </div>
         </div>
         <!-- CHECK -->

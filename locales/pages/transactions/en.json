@@ -50,7 +50,13 @@
     "Edit": "Edit",
     "Paid": "Paid",
     "Pending": "Pending",
-    "Declined": "Declined"
+    "Declined": "Declined",
+    "Payment Due": "Payment Due",
+    "Single Payment": "Single Payment",
+    "Multi Payment": "Multi Payment",
+    "Cash Given": "Cash Given",
+    "Credit Value": "Credit Value",
+    "Check Value": "Check Value"
   },
   "btn": {
     "Print Receipt": "Print Receipt",

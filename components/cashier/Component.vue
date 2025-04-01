@@ -119,7 +119,7 @@
           <div>{{ $t('label.Total Price') }}: {{ form.transaction.total }}</div>
         </div>
 
-        <el-card v-if="customer" class="text-sm ml-auto" style="width: 250px">
+        <el-card v-if="customer" class="text-sm ml-5 my-4" style="width: 250px">
           <div>
             <b>{{ $t('label.Customer') }}:</b> {{ customer.name }}
           </div>

@@ -50,7 +50,13 @@
     "Edit": "Editar",
     "Paid": "Pagado",
     "Pending": "Pendiente",
-    "Declined": "Rechazado"
+    "Declined": "Rechazado",
+    "Payment Due": "Pago Pendiente",
+    "Single Payment": "Pago Único",
+    "Multi Payment": "Pago Múltiple",
+    "Cash Given": "Efectivo Entregado",
+    "Credit Value": "Valor del Crédito",
+    "Check Value": "Valor del Cheque"
   },
   "btn": {
     "Print Receipt": "Imprimir Recibo",

@@ -39,7 +39,13 @@
     "Submit Discount": "Submit Discount",
     "Transaction Discount": "Transaction Discount",
     "Amount Off": "Amount Off",
-    "Percent Off": "Percent Off"
+    "Percent Off": "Percent Off",
+    "Payment Due": "Payment Due",
+    "Single Payment": "Single Payment",
+    "Multi Payment": "Multi Payment",
+    "Cash Given": "Cash Given",
+    "Credit Value": "Credit Value",
+    "Check Value": "Check Value"
   },
   "text": {
     "To enable the cashier feature, the name and price columns must be linked in the settings": "To enable the cashier feature, the name and price columns must be linked in the settings.",
