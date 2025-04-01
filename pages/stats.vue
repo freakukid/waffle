@@ -19,16 +19,54 @@
 
     <!-- CHART STATS -->
     <el-row class="mt-4">
+      <el-col :span="16">
+        <el-statistic 
+          :title="$t(`label.Store Name`)" 
+          :value="stats.inventory.store.name" 
+        />
+      </el-col>
       <el-col :span="8">
         <el-statistic 
           :title="$t(`label.Total Transactions`)" 
           :value="Number(chartStats.transactions)" 
         />
       </el-col>
+    </el-row>
+    <el-row class="mt-4">
+      <el-col :span="8">
+        <el-statistic 
+          :title="$t(`label.Total Card`)"
+          :value="Number(chartStats.card)" 
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
+      </el-col>
+      <el-col :span="8">
+        <el-statistic 
+          :title="$t(`label.Total Cash`)"
+          :value="Number(chartStats.cash)" 
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
+      </el-col>
+      <el-col :span="8">
+        <el-statistic 
+          :title="$t(`label.Total Check`)"
+          :value="Number(chartStats.check)" 
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
+      </el-col>
+    </el-row>
+    <el-row class="mt-4">
       <el-col :span="8">
         <el-statistic 
           :title="$t(`label.${chartType} Total Sales`)" 
           :value="Number(chartStats.price)" 
+          :formatter="(value) => `$${value.toFixed(2)}`"
+        />
+      </el-col>
+      <el-col :span="8">
+        <el-statistic 
+          :title="$t(`label.Total Cost`)"
+          :value="Number(chartStats.cost)" 
           :formatter="(value) => `$${value.toFixed(2)}`"
         />
       </el-col>
@@ -42,6 +80,7 @@
       </el-col>
     </el-row>
     <!-- CHART STATS -->
+
     <div class="flex items-center justify-between">
       <label class="block text-xs mt-4 mb-3">{{$t(itemType === 'total_sold' ? 'label.Most Sold Items' : 'label.Most Profitable Items')}}</label>
       <el-segmented v-model="itemType" :options="itemOptions" />
@@ -111,7 +150,7 @@ const defaultSort = computed(() => ({
 
 //Chart
 const series = ref([{ name: "Profit", data: [] }]);
-const chartStats = reactive({ price: "0.00", profit: "0.00", transactions: 0 });
+const chartStats = reactive({ price: "0.00",cost: "0.00", profit: "0.00", transactions: 0, card: "0.00", cash: "0.00", check: "0.00" });
 const options = [
   { label: $t("tabs.Week"), value: "Week" },
   { label: $t("tabs.Month"), value: "Month" },
@@ -236,7 +275,7 @@ async function fetchStats() {
 async function updateChart() {
   if (!stats.value) return;
 
-  const { chart_data, total_price, total_profit, total_transactions } = calcStore(
+  const { chart_data, total_cost, total_price, total_profit, total_transactions, total_card, total_cash, total_check } = calcStore(
     stats.value.transactions,
     stats.value.layaways,
     stats.value.inventory.stock,
@@ -244,8 +283,12 @@ async function updateChart() {
   );
   series.value[0].data = chart_data;
   chartStats.price = total_price;
+  chartStats.cost = total_cost;
   chartStats.profit = total_profit;
   chartStats.transactions = total_transactions;
+  chartStats.card = total_card;
+  chartStats.cash = total_cash;
+  chartStats.check = total_check;
 
   // Re-apply current sort
   nextTick(() => {

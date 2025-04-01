@@ -265,9 +265,13 @@ export default () => {
     let chartData = {}
     const combinedEntries = [...transactions, ...layaways.filter(l => l.status === 'paid')]
     const endDate = moment().endOf('day')
+    let totalTransactions = 0
     let totalPrice = new Decimal(0)
     let totalProfit = new Decimal(0)
-    let totalTransactions = 0
+    let totalCost = new Decimal(0)
+    let totalCard = new Decimal(0)
+    let totalCash = new Decimal(0)
+    let totalCheck = new Decimal(0)
 
     // Reset total_profit and total_sold for all stock items
     Object.keys(stock).forEach(key => {
@@ -283,6 +287,7 @@ export default () => {
         const cost = new Decimal(entryItem.cost)
         stock[key].total_profit = (stock[key].total_profit || 0).plus((price.minus(cost)).times(entryItem.qty))
         stock[key].total_sold = (stock[key].total_sold || 0) + entryItem.qty
+        totalCost = totalCost.plus(cost.times(entryItem.qty))
       }
     }
 
@@ -296,6 +301,9 @@ export default () => {
           profit = profit.plus(entry.profit)
           totalProfit = totalProfit.plus(entry.profit)
           totalPrice = totalPrice.plus(entry.total)
+          totalCard = entry.payment === 'card' ? totalCard.plus(new Decimal(entry.total)) : totalCard
+          totalCash = entry.payment === 'cash' ? totalCash.plus(new Decimal(entry.total)) : totalCash
+          totalCheck = entry.payment === 'check' ? totalCheck.plus(new Decimal(entry.total)) : totalCheck
           totalTransactions++
           processEntryItems(entry)
         }
@@ -369,7 +377,11 @@ export default () => {
       chart_data: dataForChart,
       total_price: totalPrice.toFixed(2),
       total_profit: totalProfit.toFixed(2),
-      total_transactions: totalTransactions
+      total_cost: totalCost.toFixed(2),
+      total_transactions: totalTransactions,
+      total_card: totalCard.toFixed(2),
+      total_cash: totalCash.toFixed(2),
+      total_check: totalCheck.toFixed(2)
     }
   }
 
