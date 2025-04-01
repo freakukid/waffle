@@ -80,15 +80,16 @@ function addCustomer(customer) {
 async function createLayaway(store, form) {
   //Setup Data
   const { id, tax, inventory } = store
-  const { name_column, price_column, quantity_column, discount_column, cost_column } = inventory
-  const { items, total } = form
+  const { name_column, quantity_column } = inventory
+  const { items, total, discount, discountType } = form
   const transactionItems = Object.values(items).map(item => ({
     name: item[name_column],
     key: item.__key,
     qty: item.__qty,
-    price: item[price_column],
-    discount: discount_column ? item[discount_column] : 0,
-    cost: cost_column ? item[cost_column] : item[price_column],
+    price: item.__price,
+    discount: item.__discount,
+    discount_type: item.__discount_type,
+    cost: item.__cost,
   }))
 
   //Exit function if no items in this transaction
@@ -98,7 +99,7 @@ async function createLayaway(store, form) {
   //Make request to create layaway
   loading.value = true
   let response = null
-  const postData = { store_id: id, customer_id: customer.value.id, tax: tax, items: transactionItems, quantity_column: quantity_column, status: 'pending', timestamp: new Date() }
+  const postData = { store_id: id, customer_id: customer.value.id, tax: tax, items: transactionItems, quantity_column: quantity_column, status: 'pending', timestamp: new Date(), discount: discount, discount_type: discountType }
   const isUserOnline = await offlineStore.tryPingingServer()
 
   if(isUserOnline) {
@@ -115,6 +116,8 @@ async function createLayaway(store, form) {
       tax: tax,
       total: total,
       status: 'pending',
+      discount: discount,
+      discount_type: discountType
     }
     offlineStore.addPostRequest('layaway', 'create', postData, { layaway: fakeLayaway })
     sendFrontendNotification(`Your changes have been added to the offline queue and will take effect once you're back online`, 'offline_success')

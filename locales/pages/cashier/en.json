@@ -32,10 +32,21 @@
     "Check Number": "Check Number",
     "Submit Payment": "Submit Payment",
     "Create": "Create",
-    "No Product": "No Product"
+    "No Product": "No Product",
+    "Discount": "Discount",
+    "Add Discount": "Add Discount",
+    "Edit Discount": "Edit Discount",
+    "Submit Discount": "Submit Discount",
+    "Transaction Discount": "Transaction Discount",
+    "Amount Off": "Amount Off",
+    "Percent Off": "Percent Off"
   },
   "text": {
     "To enable the cashier feature, the name and price columns must be linked in the settings": "To enable the cashier feature, the name and price columns must be linked in the settings.",
-    "The cashier feature is not yet activated, please wait for the manager to enable it": "The cashier feature is not yet activated, please wait for the manager to enable it."
+    "The cashier feature is not yet activated, please wait for the manager to enable it": "The cashier feature is not yet activated, please wait for the manager to enable it.",
+    "The amount cannot be negative.": "The amount cannot be negative.",
+    "The amount cannot be greater than the original price.": "The amount cannot be greater than the original price.",
+    "The percent cannot be negative.": "The percent cannot be negative.",
+    "The percent cannot be greater than 100.": "The percent cannot be greater than 100."
   }
 }

@@ -32,7 +32,7 @@
     "Items Sold": "Items Sold",
     "Qty": "Qty",
     "Price": "Price",
-    "Discount (Base Price) | Percent": "Discount (Base Price) | Percent"
+    "Discount": "Discount"
   },
   "btn": {
     "Invoice Menu": "Invoice Menu",

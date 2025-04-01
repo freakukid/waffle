@@ -96,29 +96,10 @@ export default () => {
     return logs
   }
 
-  function handleTransactionCalcs(items) {
-    for (const transaction of items) {
-      const {subtotal, savings, profit} = calcSubtotal(transaction.items)
-      const taxTotal = calcTaxTotal(subtotal, transaction.tax)
-      const total = calcTotal(subtotal, taxTotal)
-      transaction.date = $td(transaction.timestamp, { year: 'numeric', month: 'long', day: 'numeric' })
-      transaction.tax = parseFloat(transaction.tax).toFixed(2)
-      transaction.subtotal = subtotal.toFixed(2)
-      transaction.tax_total = taxTotal.toFixed(2)
-      transaction.savings = savings.toFixed(2)
-      transaction.total = total.toFixed(2)
-      transaction.profit = profit.toFixed(2)
-      transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2) : 0
-    }
-  
-    return items
-  }
-
   return {
     copyToClipboard,
     getLogDescription,
     sendNotification,
-    sendFrontendNotification,
-    handleTransactionCalcs
+    sendFrontendNotification
   }
 }

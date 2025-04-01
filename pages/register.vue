@@ -88,9 +88,7 @@ const rules = reactive({
 })
 
 async function register() {
-  alert(formRef.value)
   formRef.value.validate(async (valid) => {
-    alert(valid)
     if(valid) {
       const username = form.username.toLowerCase().trim()
       //Make Request

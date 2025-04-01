@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     return { statusCode: 400, statusMessage: 'You do not have the rights to commit this action' }
 
   //Data
-  const { store_id, items, tax, subtotal, tax_total, savings, total, payment, cash, card, change } = await readBody(event)
+  const { store_id, items, tax, subtotal, tax_total, savings, total, cash, card, check, card_type, change, discount, discount_type } = await readBody(event)
 
   //Check data
   if(!store_id || !subtotal || !tax_total || !total)
@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
     return { statusCode: 400, statusMessage: 'Printer is not connected' }
 
   //Setup Logo
-  const image = join(cwd(), 'public', 'test.png')
+  const image = join(cwd(), 'public', 'test1.png')
   printer.alignCenter()
   try {
     await printer.printImage(image)
@@ -78,11 +78,13 @@ export default defineEventHandler(async (event) => {
     let product = items[i]
     printer.tableCustom([
       { text: product.name, align:"LEFT", width:0.6 },
-      { text: calcItemTotal(product.qty, product.price, product.discount), align:"RIGHT", width:0.25 },
+      { text: calcItemTotal(product.qty, product.price, product.discount, product.discount_type), align:"RIGHT", width:0.25 },
     ])
 
-    if(product.discount > 0)
+    if(product.discount > 0 && product.discount_type === 'percent')
       printer.println(`  (${product.qty} @ ${product.price} ea) | Discount ${product.discount}%`)
+    else if(product.discount > 0 && product.discount_type === 'amount')
+      printer.println(`  (${product.qty} @ ${product.price} ea) | Discount $${parseFloat(product.discount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`)
     else if(product.qty > 1)
       printer.println(`  (${product.qty} @ ${product.price} ea)`)
   }
@@ -93,12 +95,20 @@ export default defineEventHandler(async (event) => {
   if(savings && savings !== '0.00') {
     printer.tableCustom([
       { text: `SAVINGS:`, align:"RIGHT", width:0.6 },
-      { text: savings, align:"RIGHT", width:0.25 },
+      { text: parseFloat(savings).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25 },
     ])
   }
+
+  if(parseFloat(discount) > 0) {
+    printer.tableCustom([
+      { text: `DISCOUNT:`, align:"RIGHT", width:0.6 },
+      { text: discount_type === 'percent' ? `${discount}%` : parseFloat(discount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25 },
+    ])
+  }
+
   printer.tableCustom([
     { text: `SUBTOTAL:`, align:"RIGHT", width:0.6 },
-    { text: subtotal, align:"RIGHT", width:0.25 },
+    { text: parseFloat(subtotal).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25 },
   ])
   printer.tableCustom([
     { text: `TAX(${tax}%):`, align:"RIGHT", width:0.6 },
@@ -106,36 +116,36 @@ export default defineEventHandler(async (event) => {
   ])
   printer.tableCustom([
     { text: `TOTAL:`, align:"RIGHT", width:0.6, bold: true },
-    { text: total, align:"RIGHT", width:0.25, bold: true },
+    { text: parseFloat(total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25, bold: true },
   ])
 
   printer.newLine()
 
-  if(payment === 'cash') {
+  if(parseFloat(cash) > 0) {
     printer.tableCustom([
       { text: `CASH:`, align:"RIGHT", width:0.6, bold: true },
-      { text: cash, align:"RIGHT", width:0.25, bold: true },
+      { text: parseFloat(cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25, bold: true },
     ])
-
-    if(change && parseFloat(change.replace(/,/g, '')) > 0) {
-      printer.tableCustom([
-        { text: `CHANGE DUE:`, align:"RIGHT", width:0.6, bold: true },
-        { text: change, align:"RIGHT", width:0.25, bold: true },
-      ])
-    }
   }
 
-  if(payment === 'card') {
+  if(parseFloat(card) > 0) {
     printer.tableCustom([
-      { text: `${card.toUpperCase()}:`, align:"RIGHT", width:0.6, bold: true },
-      { text: total, align:"RIGHT", width:0.25, bold: true },
+      { text: `${card_type.toUpperCase()}:`, align:"RIGHT", width:0.6, bold: true },
+      { text: parseFloat(card).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25, bold: true },
     ])
   }
 
-  if(payment === 'check') {
+  if(parseFloat(check) > 0) {
     printer.tableCustom([
       { text: `CHECK:`, align:"RIGHT", width:0.6, bold: true },
-      { text: total, align:"RIGHT", width:0.25, bold: true },
+      { text: parseFloat(check).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25, bold: true },
+    ])
+  }
+
+  if(change && parseFloat(change.replace(/,/g, '')) > 0) {
+    printer.tableCustom([
+      { text: `CHANGE DUE:`, align:"RIGHT", width:0.6, bold: true },
+      { text: parseFloat(change).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','), align:"RIGHT", width:0.25, bold: true },
     ])
   }
 
@@ -186,14 +196,17 @@ function setupCustomText(printer, item) {
 }
 
 //Calculates item subtotal
-function calcItemTotal(q, p, d) {
+function calcItemTotal(q, p, d, d_type) {
   const qty = new Decimal(q)
   const price = new Decimal(p)
-  const discount = new Decimal(d).div(100)
+  const discount = new Decimal(d)
   let itemSubtotal = qty.times(price)
 
   if(discount > 0) {
-    itemSubtotal = itemSubtotal.minus(itemSubtotal.times(discount))
+    if(d_type === 'percent')
+      itemSubtotal = itemSubtotal.minus(itemSubtotal.times(discount.div(100)))
+    else if(d_type === 'amount')
+      itemSubtotal = itemSubtotal.minus(discount.times(qty))
   }
 
   return itemSubtotal.toFixed(2)

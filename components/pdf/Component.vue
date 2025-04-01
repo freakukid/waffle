@@ -16,7 +16,7 @@
           </div>
 
           <div class="w-1/3 flex items-center justify-center">
-            <img class="max-w-[260px] h-[76px]" src="@/public/test.png" crossorigin="anonymous" />
+            <img class="max-w-[260px] h-[76px]" src="@/public/test1.png" crossorigin="anonymous" />
           </div>
 
           <div class="text-right leading-tight w-1/3">
@@ -67,11 +67,15 @@
             <el-table-column label="Product">
               <template #default="scope">
                 <div><b>{{scope.row.name}}</b></div>
-                <div v-if="scope.row.discount > 0">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea) | Discount ${scope.row.discount}%`}}</div>
+                <div v-if="scope.row.discount > 0 && scope.row.discount_type === 'percent'">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea) | Discount ${scope.row.discount}%`}}</div>
+                <div v-else-if="scope.row.discount > 0 && scope.row.discount_type === 'amount'">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea) | Discount $${scope.row.discount}`}}</div>
                 <div v-else-if="scope.row.qty > 1">{{`&nbsp;&nbsp;(${scope.row.qty} @ ${scope.row.price} ea)`}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="subtotal" label="Price" align="right" />
+            <el-table-column #default="scope" label="Price" align="right">
+              <span :class="{'line-through': scope.row.discount > 0}">{{scope.row.price}}</span>
+              <span v-if="scope.row.discount > 0">&nbsp;{{scope.row.new_price}}</span>
+            </el-table-column>
           </el-table>
           <!-- TRANSACTION -->
 
@@ -93,21 +97,51 @@
             <!-- TOTAL -->
             <table>
               <tbody>
-                <tr v-if="layaway.savings > 0">
+                <tr v-if="parseFloat(layaway.savings) > 0">
+                  <td class="w-36">SAVINGS:</td>
+                  <td class="text-right">{{parseFloat(layaway.savings).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</td>
+                </tr>
+
+                <tr v-if="parseFloat(layaway.discount) > 0">
                   <td class="w-36">DISCOUNT:</td>
-                  <td class="text-right">{{layaway.savings}}</td>
+                  <td v-if="layaway.discount_type === 'percent'" class="text-right">{{layaway.discount}}%</td>
+                  <td v-else-if="layaway.discount_type === 'amount'" class="text-right">${{parseFloat(layaway.discount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</td>
                 </tr>
                 <tr>
                   <td>SUBTOTAL:</td>
-                  <td class="text-right">{{layaway.subtotal}}</td>
+                  <td class="text-right">{{parseFloat(layaway.subtotal).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</td>
                 </tr>
                 <tr class="border-b border-gray-300">
                   <td class="pb-1">TAX({{layaway.tax}}%):</td>
-                  <td class="text-right pb-1">{{layaway.tax_total}}</td>
+                  <td class="text-right pb-1">{{parseFloat(layaway.tax_total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</td>
                 </tr>
                 <tr>
-                  <td class="text-2xl"><b>TOTAL:</b></td>
-                  <td class="text-2xl text-right">{{layaway.total}}</td>
+                  <td class="text-2xl pb-4"><b>TOTAL:&nbsp;</b></td>
+                  <td class="text-2xl text-right pb-4">{{parseFloat(layaway.total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</td>
+                </tr>
+
+                <tr v-if="layaway.status === 'paid'">
+                  <td><b>STATUS:</b></td>
+                  <td class="text-right"><b>PAID</b></td>
+                </tr>
+
+
+                <tr v-if="layaway.status === 'paid' && parseFloat(layaway.cash) > 0">
+                  <td><b>CASH:</b></td>
+                  <td class="text-right"><b>{{layaway.cash.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</b></td>
+                </tr>
+                <tr v-if="layaway.status === 'paid' && parseFloat(layaway.card) > 0">
+                  <td class="uppercase"><b>{{layaway.card_type}}:</b></td>
+                  <td class="text-right"><b>{{layaway.card.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</b></td>
+                </tr>
+                <tr v-if="layaway.status === 'paid' && parseFloat(layaway.check) > 0">
+                  <td><b>CHECK:</b></td>
+                  <td class="text-right"><b>{{layaway.check.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</b></td>
+                </tr>
+
+                <tr v-if="parseFloat(layaway.change.replace(/,/g, '')) > 0">
+                  <td><b>CHANGE DUE:</b></td>
+                  <td class="text-right"><b>{{layaway.change.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}}</b></td>
                 </tr>
               </tbody>
             </table>

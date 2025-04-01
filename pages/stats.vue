@@ -90,8 +90,7 @@ definePageMeta({
 import moment from 'moment'
 const { $t } = useNuxtApp();
 const { handleGetRequest } = useHandleRequests();
-const { handleTransactionCalcs } = useHelpers();
-const { calcStore } = useCalculations();
+const { calcStore, calcTransactions } = useCalculations();
 const pinia = useStore();
 
 //Data
@@ -225,8 +224,8 @@ onBeforeMount(async () => {
 
 async function fetchStats() {
   stats.value = await handleGetRequest(`/api/protected/stats/${storeId.value}`);
-  stats.value.transactions = handleTransactionCalcs(stats.value.transactions);
-  stats.value.layaways = handleTransactionCalcs(stats.value.layaways);
+  stats.value.transactions = calcTransactions(stats.value.transactions);
+  stats.value.layaways = calcTransactions(stats.value.layaways);
   updateChart();
 
   //Test data

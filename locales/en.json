@@ -65,7 +65,8 @@
       "Item removed!": "Item removed!",
       "Your changes have been added to the offline queue and will take effect once you're back online": "Your changes have been added to the offline queue and will take effect once you're back online",
       "Enter store": "Enter store: {name}",
-      "Operation successful!": "Operation successful!"
+      "Operation successful!": "Operation successful!",
+      "Discount Added!": "Discount Added!"
     },
     "invalid": {
       "Both the Name and Price columns are required on the cashier page": "Both the Name and Price columns are required on the cashier page",

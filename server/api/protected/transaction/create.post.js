@@ -7,11 +7,11 @@ export default defineEventHandler(async (event) => {
   const authUser = await getAuthUser(event)
   const user_id = authUser?.id
   const name = authUser?.name
-  const { store_id, tax, items, quantity_column, payment, cash, card, check, timestamp } = await readBody(event)
+  const { store_id, tax, items, quantity_column, cash, card, card_type, check, check_number, discount, discount_type, timestamp } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
   
   //Check if we have required fields
-  if (!store_id || !items.length || !payment)
+  if (!store_id || !items.length)
     return { statusCode: 400, statusMessage: `Required parameters are missing` }
   
   //Check if this user has access rights to this data
@@ -90,10 +90,13 @@ export default defineEventHandler(async (event) => {
       items: items,
       tax: tax,
       name: name,
-      payment: payment,
       cash: cash ? parseFloat(cash) : 0,
-      card: card,
-      check: check,
+      card: card ? parseFloat(card) : 0,
+      card_type: card_type,
+      check: check ? parseFloat(check) : 0,
+      check_number: check_number,
+      discount: parseFloat(discount),
+      discount_type: discount_type,
       user: { connect: { id: user_id } },
       store: { connect: { id: store_id } }
     }

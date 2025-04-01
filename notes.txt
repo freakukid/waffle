@@ -2,3 +2,18 @@ Database update:
 npx prisma db push
 
 https://icones.js.org/
+
+
+1. create a discount popup
+2. percent or amount input
+3. apply current discount
+4. limit maximum amount to the max price
+5. this popup will be used for the whole transaction
+6. fix the cashier ui to show the discount
+7. fix layaway receipt
+8. fix the receipt
+
+
+1. I need to redo the transaction calculations!
+2. I need to add the ability to add discount for the whole transaction!
+3. Should I incorporate for partial transactions?

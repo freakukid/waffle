@@ -29,18 +29,10 @@
 
           <el-table-column :label="$t('label.Payment')">
             <template #default="scope">
-              <div v-if="scope.row.payment === 'cash'">
-                <div>
-                  <div class="one-line">{{$t("label.Cash")}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
-                  <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t("label.Change")}}: ${{scope.row.change}}<b></b></div>
-                </div>
-              </div>
-              <div v-if="scope.row.payment === 'card'">
-                <div class="one-line">{{$t("label.Card")}}: <b class="capitalize">{{scope.row.card}}</b></div>
-              </div>
-              <div v-if="scope.row.payment === 'check'">
-                <div class="one-line">{{$t("label.Check")}}: <b>{{scope.row.check}}</b></div>
-              </div>
+              <div v-if="scope.row.cash > 0" class="one-line">{{$t('label.Cash')}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+              <div v-if="scope.row.card > 0" class="one-line">{{$t('label.Card')}}: <b class="capitalize">${{parseFloat(scope.row.card).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} ({{scope.row.card_type}})</b></div>
+              <div v-if="scope.row.check > 0" class="one-line">{{$t('label.Check')}}: <b>${{parseFloat(scope.row.check).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} ({{scope.row.check_number}})</b></div>
+              <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t('label.Change')}}: <b>${{scope.row.change}}</b></div>
             </template>
           </el-table-column>
           <el-table-column prop="total" :label="$t('label.Total')" />
@@ -150,7 +142,7 @@ const offlineStore = useOfflineStore()
 const { formatPhoneNumber } = useFormatter()
 const { getLogDescription } = useHelpers()
 const { handleGetRequest } = useHandleRequests()
-const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
+const { calcTransactions } = useCalculations()
 const { $td } = useNuxtApp()
 
 //Data
@@ -173,7 +165,7 @@ const transactions = computed(() => {
 
 const layaways = computed(() => {
   const list = (requests.value || []).filter(item => item.category === 'layaway').map(item => item.layaway)
-  return doCalc(list)
+  return calcTransactions(list)
 })
 
 const customers = computed(() => {
@@ -199,23 +191,5 @@ async function getStore() {
   //Test Data
   // console.log(JSON.stringify(store.value))
   // console.log(JSON.stringify(inventory.value))
-}
-
-//Do transaction calculations
-function doCalc(items) {
-  for (const transaction of items) {
-    const {subtotal, noDiscountSubtotal, savings, profit} = calcSubtotal(transaction.items)
-    const taxTotal = calcTaxTotal(subtotal, transaction.tax)
-    const total = calcTotal(subtotal, taxTotal)
-    transaction.tax = parseFloat(transaction.tax).toFixed(2)
-    transaction.subtotal = subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.tax_total = taxTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.savings = savings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.total = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.profit = profit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    transaction.change = transaction.payment === 'cash' ? calcChange(transaction.cash, total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0
-  }
-
-  return items
 }
 </script>

@@ -34,22 +34,15 @@
         <el-table-column prop="id" label="ID" />
         <el-table-column prop="date" :label="$t('label.Date')" />
         <el-table-column prop="name" :label="$t('label.Cashier')" />
+
         <TransactionTable />
 
         <el-table-column :label="$t('label.Payment')">
           <template #default="scope">
-            <div v-if="scope.row.payment === 'cash'">
-              <div>
-                <div class="one-line">{{$t('label.Cash')}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
-                <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t('label.Change')}}: ${{scope.row.change}}<b></b></div>
-              </div>
-            </div>
-            <div v-if="scope.row.payment === 'card'">
-              <div class="one-line">{{$t('label.Card')}}: <b class="capitalize">{{scope.row.card}}</b></div>
-            </div>
-            <div v-if="scope.row.payment === 'check'">
-              <div class="one-line">{{$t('label.Check')}}: <b>{{scope.row.check}}</b></div>
-            </div>
+            <div v-if="scope.row.cash > 0" class="one-line">{{$t('label.Cash')}}: <b>${{parseFloat(scope.row.cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</b></div>
+            <div v-if="scope.row.card > 0" class="one-line">{{$t('label.Card')}}: <b class="capitalize">${{parseFloat(scope.row.card).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} ({{scope.row.card_type}})</b></div>
+            <div v-if="scope.row.check > 0" class="one-line">{{$t('label.Check')}}: <b>${{parseFloat(scope.row.check).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} ({{scope.row.check_number}})</b></div>
+            <div v-if="parseFloat(scope.row.change) > 0" class="one-line">{{$t('label.Change')}}: <b>${{scope.row.change}}</b></div>
           </template>
         </el-table-column>
         <el-table-column prop="total" :label="$t('label.Total')" />
@@ -253,15 +246,7 @@
     </div>
 
     <!-- Dialog -->
-    <CashierPaymentType ref="paymentTypeRef"
-      v-model:payment="form.layaway.payment"
-      v-model:cash="form.layaway.cash"
-      v-model:card="form.layaway.card"
-      v-model:check="form.layaway.check"
-      :loading="loading.confirmPayment"
-      :total="form.layaway.total"
-      @createTransaction="confirmPayment"
-    />
+    <CashierPayment ref="paymentRef" :loading="loading.confirmPayment" :total="form.layaway?.total" @createTransaction="confirmPayment" />
     <!-- Dialog -->
 
     <!-- Pdf -->
@@ -278,7 +263,8 @@ definePageMeta({
 //Imports
 const pinia = useStore()
 const { $eventBus } = useNuxtApp()
-const { sendNotification, handleTransactionCalcs } = useHelpers()
+const { sendNotification } = useHelpers()
+const { calcTransactions } = useCalculations()
 const { formatDate, formatPhoneNumber } = useFormatter()
 const { isBoss, getPermissions } = useChecks()
 const { handleGetRequest } = useHandleRequests()
@@ -390,7 +376,7 @@ const filteredCustomer = computed(() => {
 })
 
 //Element Reference
-const paymentTypeRef = ref(null)
+const paymentRef = ref(null)
 const createCustomerRef = ref(null)
 const editCustomerRef = ref(null)
 const deleteCustomerRef = ref(null)
@@ -404,11 +390,11 @@ const form = reactive({
     layaway: { query: '', checked: pinia.getStaticFilters('layaway')},
     customer: { query: '', checked: pinia.getStaticFilters('customer')},
   },
-  layaway: { item: null, payment: 'cash', cash: '', card: '', check: '', total: '' },
+  layaway: null,
   customer: null,
 })
 
-const initialLayaway = { item: null, payment: 'cash', cash: '', card: '', check: '', total: '' }
+const initialLayaway = { total: '' }
 const $resetLayaway = () => { form.layaway = initialLayaway }
 const initialCustomer = { id: 0, name: '', email: '', phone: '', company: '', address: '', city: '', zipcode: '', state: '', country: '' }
 const $resetCustomer = () => { form.customer = initialLayaway }
@@ -453,7 +439,7 @@ async function getTransactions() {
   transactions.value = await handleGetRequest(`/api/protected/transaction/${storeId.value}`)
 
   //Setup data
-  handleTransactionCalcs(transactions.value)
+  calcTransactions(transactions.value)
 
   //Test Data
   // console.log(JSON.stringify(transactions.value))
@@ -464,10 +450,10 @@ async function getLayaway() {
   layaway.value = await handleGetRequest(`/api/protected/layaway/${storeId.value}`)
   
   //Setup data
-  handleTransactionCalcs(layaway.value)
+  calcTransactions(layaway.value)
 
   //Test Data
-  // console.log(JSON.stringify(layaway.value))
+  console.log(JSON.stringify(layaway.value))
 }
 
 //Fetch customers
@@ -475,7 +461,7 @@ async function getCustomers() {
   customers.value = await handleGetRequest(`/api/protected/customer/${storeId.value}`)
   
   //Test Data
-  console.log(JSON.stringify(customers.value))
+  // console.log(JSON.stringify(customers.value))
 }
 
 //Gets the store the user is in
@@ -494,14 +480,9 @@ async function getStore() {
 }
 
 function openPaymentPrompt(layaway) {
-  const total = layaway.total.replace(/,/g, '')
-  $resetLayaway()
+  form.layaway = layaway
 
-  form.layaway.item = layaway
-  form.layaway.total = total
-  form.layaway.cash = total
-
-  paymentTypeRef.value.openPopup(true)
+  paymentRef.value.openPopup()
 }
 
 async function openCustomerEdit(customer) {
@@ -510,23 +491,24 @@ async function openCustomerEdit(customer) {
   editCustomerRef.value.openPopup(true)
 }
 
-async function confirmPayment() {
+async function confirmPayment(paymentForm) {
   //Setup data
-  const {item, payment, cash, card, check} = form.layaway
+  const { cash, card, check, cardType, checkNumber } = paymentForm
   //Make request
   loading.confirmPayment = true
   const response = await useFetchApi(`/api/protected/layaway/set-status`, {
     method: "POST",
     body: {
       store_id: storeId.value,
-      id: item.id,
+      id: form.layaway.id,
       status: 'paid',
-      prev_status: item.status,
-      items: item.items,
-      payment: payment,
+      prev_status: form.layaway.status,
+      items: form.layaway.items,
       cash: cash,
       card: card,
       check: check,
+      card_type: cardType,
+      check_number: checkNumber,
       quantity_column: inventory.value.quantity_column
     }
   })
@@ -542,11 +524,11 @@ async function confirmPayment() {
   sendNotification(response.message, 'success')
 
   //Set new layaway
-  const calcLayaway = handleTransactionCalcs([response.layaway])[0]
-  layaway.value = layaway.value.map(transaction => (transaction.id === item.id ? calcLayaway : transaction))
+  const calcLayaway = calcTransactions([response.layaway])[0]
+  layaway.value = layaway.value.map(transaction => (transaction.id === form.layaway.id ? calcLayaway : transaction))
 
   //Close popup
-  paymentTypeRef.value.openPopup(false)
+  paymentRef.value.closePopup(false)
 }
 
 async function setStatus(item, status) {
@@ -559,10 +541,11 @@ async function setStatus(item, status) {
       status: status,
       prev_status: item.status,
       items: item.items,
-      payment: '',
-      cash: '',
-      card: '',
-      check: '',
+      cash: 0,
+      card: 0,
+      check: 0,
+      card_type: '',
+      check_number: '',
       quantity_column: inventory.value.quantity_column
     }
   })
@@ -577,14 +560,14 @@ async function setStatus(item, status) {
   sendNotification(response.message, 'success')
 
   //Set new layaway
-  const calcLayaway = handleTransactionCalcs([response.layaway])[0]
+  const calcLayaway = calcTransactions([response.layaway])[0]
   layaway.value = layaway.value.map(transaction => (transaction.id === item.id ? calcLayaway : transaction))
 }
 
 //Print receipt
 async function printReceipt(transaction) {
   //Setup data
-  const {items, tax, subtotal, tax_total, savings, total, payment, cash, card, change} = transaction
+  const {items, tax, subtotal, tax_total, savings, total, cash, card, check, card_type, change, discount, discount_type} = transaction
 
   //Make request
   const response = await useFetchApi(`/api/protected/transaction/print`, {
@@ -597,10 +580,13 @@ async function printReceipt(transaction) {
       tax_total: tax_total,
       savings: savings,
       total: total,
-      payment: payment,
-      cash: cash.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      cash: cash,
       card: card,
-      change: change
+      check: check,
+      card_type: card_type,
+      change: change,
+      discount: discount,
+      discount_type: discount_type
     }
   })
 

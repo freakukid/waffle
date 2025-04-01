@@ -28,15 +28,16 @@ const loading = ref(false)
 async function createTransaction(store, form) {
   //Setup Data
   const { id, tax, inventory } = store
-  const { name_column, price_column, quantity_column, discount_column, cost_column } = inventory
-  const { payment, cash, card, check, items, total, subtotal, taxTotal, savings } = form
+  const { name_column, quantity_column } = inventory
+  const { cash, card, cardType, check, checkNumber, items, total, subtotal, taxTotal, savings, change, discount, discountType } = form
   const transactionItems = Object.values(items).map(item => ({
     name: item[name_column],
     key: item.__key,
     qty: item.__qty,
-    price: item[price_column],
-    discount: discount_column ? item[discount_column] : 0,
-    cost: cost_column ? item[cost_column] : item[price_column],
+    price: item.__price,
+    discount: item.__discount,
+    discount_type: item.__discount_type,
+    cost: item.__cost,
   }))
 
   //Exit function if no items in this transaction
@@ -46,7 +47,7 @@ async function createTransaction(store, form) {
   //Make request to create transaction
   loading.value = true
   let response = null
-  const postData = { store_id: id, tax: tax, items: transactionItems, quantity_column: quantity_column, payment: payment, cash: cash, card: card, check: check, timestamp: new Date() }
+  const postData = { store_id: id, tax: tax, items: transactionItems, quantity_column: quantity_column, cash: cash, card: card, card_type: cardType, check: check, check_number: checkNumber, discount: discount, discount_type: discountType, timestamp: new Date() }
   const isUserOnline = await offlineStore.tryPingingServer()
   if(isUserOnline) {
     response = await handleTransactionRequest(postData)
@@ -59,11 +60,14 @@ async function createTransaction(store, form) {
       items: transactionItems,
       tax: tax,
       name: user.name,
-      payment: payment,
       cash: cash ? parseFloat(cash) : 0,
-      card: card,
-      check: check,
+      card: card ? parseFloat(card) : 0,
+      card_type: cardType,
+      check: check ? parseFloat(check) : 0,
+      check_number: checkNumber,
       total: total,
+      discount: discount,
+      discount_type: discountType
     }
     offlineStore.addPostRequest('transaction', 'create', postData, { transaction: fakeTransaction })
     sendFrontendNotification(`Your changes have been added to the offline queue and will take effect once you're back online`, 'offline_success')
@@ -71,14 +75,14 @@ async function createTransaction(store, form) {
 
   //Print Reciept
   if(isUserOnline && printReceiptAfterTransaction.value) {
-    const change = payment === 'cash' ? calcChange(cash, total.replace(/,/g, '')) : 0
-    await printReceipt(id, transactionItems, tax.toFixed(2), subtotal, taxTotal, savings, total, payment, cash, card, change)
+    //TODO
+    await printReceipt(id, transactionItems, tax.toFixed(2), subtotal, taxTotal, savings, total, cash, card, check, cardType, change, discount, discountType)
   }
 
   //Reset transaction, set inventory data, close popup
   loading.value = false
   component.value.$resetTransactionState()
-  component.value.openPaymentPopup(false)
+  component.value.togglePaymentPopup(false)
   if(response)
     component.value.setInventory(response.inventory)
 
@@ -87,7 +91,7 @@ async function createTransaction(store, form) {
 }
 
 //Prints receipt
-async function printReceipt(storeId, items, tax, subtotal, tax_total, savings, total, payment, cash, card, change) {
+async function printReceipt(storeId, items, tax, subtotal, tax_total, savings, total, cash, card, check, cardType, change, discount, discountType) {
   //Make Request
   const response = await useFetchApi(`/api/protected/transaction/print`, {
     method: "POST",
@@ -99,10 +103,13 @@ async function printReceipt(storeId, items, tax, subtotal, tax_total, savings, t
       tax_total: tax_total,
       savings: savings,
       total: total,
-      payment: payment,
-      cash: parseFloat(cash).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-      card: card,
-      change: change.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      cash: parseFloat(cash),
+      card: parseFloat(card),
+      check: parseFloat(check),
+      card_type: cardType,
+      change: change,
+      discount: discount,
+      discount_type: discountType
     }
   })
 

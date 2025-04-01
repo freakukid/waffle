@@ -195,8 +195,8 @@ definePageMeta({
 import moment from 'moment'
 const { $t } = useNuxtApp()
 const { handleGetRequest } = useHandleRequests()
-const { getLogDescription, handleTransactionCalcs } = useHelpers()
-const { calcProduct } = useCalculations()
+const { getLogDescription } = useHelpers()
+const { calcProduct, calcTransactions } = useCalculations()
 const route = useRoute()
 const pinia = useStore()
 
@@ -336,8 +336,8 @@ onBeforeMount(async () => {
 async function fetchProduct() {
   product.value = await handleGetRequest(`/api/protected/product/store/${storeId.value}/item/${productId.value}`)
   product.value.logs = getLogDescription(product.value.logs)
-  product.value.transactions = handleTransactionCalcs(product.value.transactions)
-  product.value.layaways = handleTransactionCalcs(product.value.layaways)
+  product.value.transactions = calcTransactions(product.value.transactions)
+  product.value.layaways = calcTransactions(product.value.layaways)
   updateChart()
 
   // Test data

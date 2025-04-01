@@ -274,7 +274,7 @@
 
           <div class="flex items-center flex-col py-6">
             <div id="receipt">
-              <img src="@/public/test.png" />
+              <img src="@/public/test1.png" />
 
               <br/>
 
@@ -531,7 +531,7 @@ const cashierForm = reactive({
   footer: [{text: '', align: 'left', size: 1}],
   invoice_notes: [{text: '', bold: false}],
 })
-const items = [{name: 'Product Name', qty: 1, price: '100.00', discount: 0, total: '100.00'}, {name: 'Product Name', qty: 3, price: '50.00', discount: 0, total: '150.00'}, {name: 'Product Name', qty: 10, price: '25.00', discount: 10, total: '225.00'}]
+const items = [{name: 'Product Name', qty: 1, price: '100.00', discount: 0, discount_type: 'percent', total: '100.00'}, {name: 'Product Name', qty: 3, price: '50.00', discount: 0, discount_type: 'percent', total: '150.00'}, {name: 'Product Name', qty: 10, price: '25.00', discount: 10, discount_type: 'percent', total: '225.00'}]
 
 //Mount
 onBeforeMount(async () => {
@@ -716,8 +716,12 @@ async function printReceipt() {
       tax_total: '4.75',
       total: '479.75',
       savings: '25.00',
-      payment: 'card',
-      card: 'mastercard'
+      cash: 0,
+      card: 479.75,
+      check: 0,
+      card_type: 'mastercard',
+      discount: 0,
+      discount_type: 'percent'
     }
   })
   loading.printReceipt = false

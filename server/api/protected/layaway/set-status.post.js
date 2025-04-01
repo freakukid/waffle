@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const { getAuthUser, isStoreOwner, isStoreWorker, getWorkerPermissions } = useAuthChecks()
   //Setup data
   const authUser = await getAuthUser(event)
-  const { store_id, id, status, prev_status, payment, cash, card, check, items, quantity_column } = await readBody(event)
+  const { store_id, id, status, prev_status, cash, card, check, card_type, check_number, items, quantity_column } = await readBody(event)
   const isValidWorker = isStoreWorker(authUser, store_id)
   const validStatuses = ['paid', 'pending', 'declined']
   
@@ -100,10 +100,11 @@ export default defineEventHandler(async (event) => {
     },
     data: {
       status: status,
-      payment: payment,
       cash: cash ? parseFloat(cash) : 0,
-      card: card,
-      check: check,
+      card: card ? parseFloat(card) : 0,
+      check: check ? parseFloat(check) : 0,
+      card_type: card_type,
+      check_number: check_number
     },
     include: {
       customer: true

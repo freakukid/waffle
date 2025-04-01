@@ -32,7 +32,7 @@
     "Items Sold": "Artículos Vendidos",
     "Qty": "Cantidad",
     "Price": "Precio",
-    "Discount (Base Price) | Percent": "Descuento (Precio Base) | Porcentaje"
+    "Discount": "Descuento"
   },
   "btn": {
     "Invoice Menu": "Menú de Facturas",

@@ -65,7 +65,8 @@
       "Item removed!": "Artículo eliminado!",
       "Your changes have been added to the offline queue and will take effect once you're back online": "Sus cambios se han agregado a la cola sin conexión y entrarán en vigor una vez que vuelva a estar en línea",
       "Enter store": "Entrar a la tienda: {name}",
-      "Operation successful!": "¡Operación exitosa!"
+      "Operation successful!": "¡Operación exitosa!",
+      "Discount Added!": "¡Descuento añadido!"
     },
     "invalid": {
       "Both the Name and Price columns are required on the cashier page": "Tanto la columna Nombre como la columna Precio son obligatorias en la página del cajero",

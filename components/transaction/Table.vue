@@ -13,17 +13,18 @@
     <el-table-column :label="$t('label.Price')">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item" class="text-center">
-          <div v-if="item.discount === 0">{{item.price}}</div>
-          <div v-else-if="item.discount > 0 && item.new_price">{{item.new_price}}</div>
-          <div v-else>{{calcDiscountedItemPrice(item.price, item.discount)}}</div>
+          <span :class="{'line-through': item.discount > 0}">{{item.price}}</span>
+          <span v-if="item.discount > 0">&nbsp;{{item.new_price}}</span>
         </div>
       </template>
     </el-table-column>
-    <el-table-column :label="$t('label.Discount (Base Price) | Percent')">
+    <el-table-column :label="$t('label.Discount')">
       <template #default="scope">
         <div v-for="item in scope.row.items" :key="item">
-          <div v-if="item.discount == 0">&nbsp;</div>
-          <div v-else class="truncate">({{item.price}}) | {{item.discount}}%</div>
+          <div v-if="item.discount > 0" class="text-center">
+            <span v-if="item.discount_type === 'percent'">{{item.discount}}%</span>
+            <span v-else-if="item.discount_type === 'amount'">-${{item.discount}}</span>
+          </div>
         </div>
       </template>
     </el-table-column>
@@ -31,5 +32,5 @@
 </template>
 
 <script setup>
-const { calcDiscountedItemPrice } = useCalculations()
+
 </script>
