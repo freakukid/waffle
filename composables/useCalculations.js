@@ -301,9 +301,9 @@ export default () => {
           profit = profit.plus(entry.profit)
           totalProfit = totalProfit.plus(entry.profit)
           totalPrice = totalPrice.plus(entry.total)
-          totalCard = entry.payment === 'card' ? totalCard.plus(new Decimal(entry.total)) : totalCard
-          totalCash = entry.payment === 'cash' ? totalCash.plus(new Decimal(entry.total)) : totalCash
-          totalCheck = entry.payment === 'check' ? totalCheck.plus(new Decimal(entry.total)) : totalCheck
+          totalCard = totalCard.plus(new Decimal(entry.card))
+          totalCash = totalCash.plus(new Decimal(entry.cash))
+          totalCheck = totalCheck.plus(new Decimal(entry.check))
           totalTransactions++
           processEntryItems(entry)
         }

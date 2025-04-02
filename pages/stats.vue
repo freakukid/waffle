@@ -245,57 +245,58 @@ const chartOptions = ref({
 
 //Watch
 watch(chartType, () => {
-  updateChart();
-});
+  updateChart()
+})
 
 watch(itemType, (newType) => {
   nextTick(() => {
     if (tableRef.value) {
       tableRef.value.sort(newType, 'descending');
     }
-  });
-});
+  })
+})
 
 onBeforeMount(async () => {
-  await fetchStats();
-  loading.value = false;
-});
+  await fetchStats()
+  loading.value = false
+})
 
 async function fetchStats() {
-  stats.value = await handleGetRequest(`/api/protected/stats/${storeId.value}`);
-  stats.value.transactions = calcTransactions(stats.value.transactions);
-  stats.value.layaways = calcTransactions(stats.value.layaways);
-  updateChart();
+  stats.value = await handleGetRequest(`/api/protected/stats/${storeId.value}`)
+  stats.value.transactions = calcTransactions(stats.value.transactions)
+  stats.value.layaways = calcTransactions(stats.value.layaways)
+  updateChart()
 
   //Test data
-  console.log(JSON.stringify(stats.value));
+  console.log(JSON.stringify(stats.value))
 }
 
 //Update chart
 async function updateChart() {
-  if (!stats.value) return;
+  if (!stats.value) return
 
   const { chart_data, total_cost, total_price, total_profit, total_transactions, total_card, total_cash, total_check } = calcStore(
     stats.value.transactions,
     stats.value.layaways,
     stats.value.inventory.stock,
     chartType.value
-  );
-  series.value[0].data = chart_data;
-  chartStats.price = total_price;
-  chartStats.cost = total_cost;
-  chartStats.profit = total_profit;
-  chartStats.transactions = total_transactions;
-  chartStats.card = total_card;
-  chartStats.cash = total_cash;
-  chartStats.check = total_check;
+  )
+  
+  series.value[0].data = chart_data
+  chartStats.price = total_price
+  chartStats.cost = total_cost
+  chartStats.profit = total_profit
+  chartStats.transactions = total_transactions
+  chartStats.card = total_card
+  chartStats.cash = total_cash
+  chartStats.check = total_check
 
   // Re-apply current sort
   nextTick(() => {
     if (tableRef.value) {
-      tableRef.value.sort(itemType.value, 'descending');
+      tableRef.value.sort(itemType.value, 'descending')
     }
-  });
+  })
 }
 </script>
 

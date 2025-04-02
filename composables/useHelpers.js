@@ -2,7 +2,6 @@ import { ElNotification } from 'element-plus'
 
 export default () => {
   const { $t, $td } = useNuxtApp()
-  const { calcSubtotal, calcTaxTotal, calcTotal, calcChange } = useCalculations()
   
   const copyToClipboard = (text) => {
     const textArea = document.createElement('textarea')
