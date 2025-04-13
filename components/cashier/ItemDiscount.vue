@@ -3,7 +3,7 @@
     <!-- Popup -->
     <el-dialog v-model="popup" :title="$t('label.Discount')">
       <div class="text-blue-400 text-center text-xl mb-2">
-        <b>{{ $t('label.Price') }}: <span :class="{'line-through': newPrice !== '0.00'}">${{ price }}</span> <span v-if="newPrice !== '0.00'">{{newPrice}}</span></b>
+        <b>{{ $t('label.Price') }}: <span :class="{'line-through': (type === 'amount' && parseFloat(amount) > 0 || type === 'percent' && parseFloat(percent) > 0)}">${{ price }}</span> <span v-if="(type === 'amount' && parseFloat(amount) > 0 || type === 'percent' && parseFloat(percent) > 0)">{{newPrice}}</span></b>
       </div>
 
       <div class="flex justify-center">
@@ -24,8 +24,8 @@
               <span>$</span>
             </template>
           </el-input>
-          <div class="text-red-400 text-center mt-2"><b v-if="parseFloat(amount) < 0">{{ $t('text.The amount cannot be negative.') }}</b></div>
-          <div class="text-red-400 text-center mt-2"><b v-if="parseFloat(amount) > parseFloat(price)">{{ $t('text.The amount cannot be greater than the original price.') }}</b></div>
+          <div class="text-red-400 text-center mt-2"><b v-if="parseFloat(amount) < 0">{{ $t('text.The amount cannot be negative') }}</b></div>
+          <div class="text-red-400 text-center mt-2"><b v-if="parseFloat(amount) > parseFloat(price)">{{ $t('text.The amount cannot be greater than the original price') }}</b></div>
         </div>
         <div v-show="type === 'percent'">
           <el-input v-model="percent" ref="percentRef" class="w-20 text-center" placeholder="Percent" @input="sanitizeNum($event), calcNewPrice()">
@@ -33,8 +33,8 @@
               <span>%</span>
             </template>
           </el-input>
-          <div class="text-red-400 text-center mt-2"><b v-if="percent < 0">{{ $t('text.The percent cannot be negative.') }}</b></div>
-          <div class="text-red-400 text-center mt-2"><b v-if="percent > 100">{{ $t('text.The percent cannot be greater than 100.') }}</b></div>
+          <div class="text-red-400 text-center mt-2"><b v-if="percent < 0">{{ $t('text.The percent cannot be negative') }}</b></div>
+          <div class="text-red-400 text-center mt-2"><b v-if="percent > 100">{{ $t('text.The percent cannot be greater than 100') }}</b></div>
         </div>
       </div>
 
@@ -76,7 +76,7 @@ const fixedRef = ref()
 const percentRef = ref()
 
 const focusInput = (value) => {
-  if (value === 'fixed')
+  if (value === 'amount')
     fixedRef.value?.select()
   else if (value === 'percent')
     percentRef.value?.focus()

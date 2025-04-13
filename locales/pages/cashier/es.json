@@ -50,9 +50,9 @@
   "text": {
     "To enable the cashier feature, the name and price columns must be linked in the settings": "Para habilitar la función de cajero, las columnas de nombre y precio deben estar vinculadas en la configuración.",
     "The cashier feature is not yet activated, please wait for the manager to enable it": "La función de cajero aún no está activada, espere a que el administrador la habilite.",
-    "The amount cannot be negative.": "La cantidad no puede ser negativa.",
-    "The amount cannot be greater than the original price.": "La cantidad no puede ser mayor que el precio original.",
-    "The percent cannot be negative.": "El porcentaje no puede ser negativo.",
-    "The percent cannot be greater than 100.": "El porcentaje no puede ser mayor que 100."
+    "The amount cannot be negative": "La cantidad no puede ser negativa.",
+    "The amount cannot be greater than the original price": "La cantidad no puede ser mayor que el precio original.",
+    "The percent cannot be negative": "El porcentaje no puede ser negativo.",
+    "The percent cannot be greater than 100": "El porcentaje no puede ser mayor que 100."
   }
 }

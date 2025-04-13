@@ -3,7 +3,7 @@
     <!-- Popup -->
     <el-dialog v-model="popup" :title="$t('label.Discount')">
       <div class="text-blue-400 text-center text-xl mb-2">
-        <b>{{ $t('label.Total') }}: <span :class="{'line-through': newPrice !== '0.00'}">${{ total }}</span> <span v-if="newPrice !== '0.00'">{{newPrice}}</span></b>
+        <b>{{ $t('label.Total') }}: <span :class="{'line-through': (type === 'amount' && parseFloat(amount) > 0 || type === 'percent' && parseFloat(percent) > 0)}">${{ total }}</span> <span v-if="(type === 'amount' && parseFloat(amount) > 0 || type === 'percent' && parseFloat(percent) > 0)">{{newPrice}}</span></b>
       </div>
 
       <div class="flex justify-center">
@@ -75,7 +75,7 @@ const fixedRef = ref()
 const percentRef = ref()
 
 const focusInput = (value) => {
-  if (value === 'fixed')
+  if (value === 'amount')
     fixedRef.value?.select()
   else if (value === 'percent')
     percentRef.value?.focus()
@@ -94,7 +94,7 @@ const $reset = () => {
 function openPopup(subtotal, discount, discountType) {
   popup.value = true
   type.value = discountType
-  total.value = subtotal
+  total.value = parseFloat(subtotal).toFixed(2)
 
   if(discountType === 'percent') {
     percent.value = discount
