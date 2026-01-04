@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
       return { statusCode: 400, statusMessage: `You do not have the rights to commit this action` }
   }
 
-  //Create Customer
+  //Update Customer
   const customer = await prisma.customer.update({
     where: {
       id: id,

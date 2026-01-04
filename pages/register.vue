@@ -31,7 +31,7 @@
           <el-input v-model="form.storeName" type="text" autocomplete="off" />
         </el-form-item>
 
-        <el-button class="!h-10 w-full mt-6" type="primary" native-type="submit" @click="register" :loading="loading">{{ $t('title.Register') }}</el-button>
+        <el-button class="!h-10 w-full mt-6" type="primary" native-type="submit" @click="register" :loading="loading" disabled>{{ $t('title.Register') }}</el-button>
 
         <div class="flex items-center justify-center flex-wrap text-center mt-8">
           {{ $t("label.Have an account?") }}&nbsp;<el-link class="!text-base" :underline="false" href="/login" type="primary">{{ $t('label.Login') }}</el-link>
