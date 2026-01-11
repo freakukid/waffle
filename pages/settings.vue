@@ -10,6 +10,9 @@
         <el-menu-item class="sidebar-item" :class="{active: tab === 'preference'}" index="2" @click="tab = 'preference'">
           <Icon name="oui:controls-horizontal" /> <span>{{$t('title.Preference')}}</span>
         </el-menu-item>
+        <el-menu-item class="sidebar-item" :class="{active: tab === 'api'}" index="6" @click="tab = 'api'">
+          <Icon name="mdi:api" /> <span>{{$t('title.API')}}</span>
+        </el-menu-item>
 
         <div v-if="storeId">
           <div v-if="isBossAccount">
@@ -120,6 +123,37 @@
                 <el-option :label="$t('label.English')" value="en" />
                 <el-option :label="$t('label.Spanish')" value="es" />
               </el-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="tab === 'api'" class="tab">
+        <div class="pt-8 pb-4">
+          <h1 class="text-xl text-white">{{$t('title.API')}}</h1>
+          <p class="text-sm mb-2 opacity-85">{{$t('text.Use this key to access your data from external apps')}}</p>
+
+          <div class="px-6 py-4">
+            <div>
+              <label class="block text-base font-bold mb-2">{{$t('title.API Key')}}</label>
+              <div v-if="user.api_key" class="flex items-center gap-2">
+                <el-input v-model="user.api_key" :type="form.showApiKey ? '' : 'password'" readonly class="font-mono" />
+                <el-button class="!h-[42px]" @click="form.showApiKey = !form.showApiKey">
+                  <Icon class="text-base" :name="form.showApiKey ? 'tabler:eye-off' : 'tabler:eye'" />
+                </el-button>
+                <el-button class="!ml-0 !h-[42px]" @click="copyApiKey">
+                  <Icon class="text-base" name="material-symbols:content-copy" />
+                </el-button>
+              </div>
+              <p v-else class="text-sm opacity-60 italic">{{$t('text.No API key generated yet')}}</p>
+              <div class="flex gap-2 mt-4">
+                <el-tooltip v-if="!offlineStore.getOnlineStatus()" :content="$t(`tippy.feature only available online`)" placement="top">
+                  <el-button type="primary" disabled>{{ user.api_key ? $t('label.Regenerate') : $t('label.Generate') }}</el-button>
+                </el-tooltip>
+                <el-button v-else class="ml-auto" type="primary" :loading="loading.regenerateKey" @click="regenerateApiKey">
+                  {{ user.api_key ? $t('label.Regenerate') : $t('label.Generate') }}
+                </el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -474,9 +508,9 @@ const hash = computed(() => { return window.location.hash.replace('#', '') || ''
 const pinia = useStore()
 const offlineStore = useOfflineStore()
 const isBossAccount = computed(isBoss)
-const tabOptions = ['account', 'preference', 'columns', 'receipt', 'invoice']
+const tabOptions = ['account', 'preference', 'api', 'columns', 'receipt', 'invoice']
 
-const loading = reactive({startedLoading: true, saveUser: false, updatePassword: false, linkColumns: false, printReceipt: false, saveCashier: false})
+const loading = reactive({startedLoading: true, saveUser: false, updatePassword: false, linkColumns: false, printReceipt: false, saveCashier: false, regenerateKey: false})
 const tab = ref('account')
 const user = ref(getAuthUser())
 const userForm = ref(null)
@@ -488,7 +522,8 @@ const form = reactive({
   password2: '',
   email: user.value.email,
   language: user.value.language,
-  seePassword: false
+  seePassword: false,
+  showApiKey: false
 })
 const userRules = reactive({
   username: [
@@ -616,6 +651,50 @@ async function saveUserSettings() {
   $switchLocale(form.language)
 
   sendNotification(response.message, 'success')
+}
+
+function copyApiKey() {
+  if (user.value.api_key) {
+    navigator.clipboard.writeText(user.value.api_key)
+    sendNotification('API key copied!', 'success')
+  }
+}
+
+async function regenerateApiKey() {
+  // Show confirmation dialog if user already has an API key
+  if (user.value.api_key) {
+    try {
+      await ElMessageBox.confirm(
+        $t('text.Regenerating will invalidate your current API key'),
+        $t('title.Regenerate API Key'),
+        {
+          confirmButtonText: $t('label.Regenerate'),
+          cancelButtonText: $t('label.cancel'),
+          type: 'warning'
+        }
+      )
+    } catch {
+      return // User cancelled
+    }
+  }
+
+  loading.regenerateKey = true
+  const response = await useFetchApi(`/api/protected/settings/edit-user-settings`, {
+    method: "POST",
+    body: { regenerate: true }
+  })
+  loading.regenerateKey = false
+
+  if (response.statusCode) {
+    sendNotification(response.statusMessage, 'error')
+    return
+  }
+
+  //Fetch updated auth data
+  await fetch()
+  user.value = getAuthUser()
+
+  sendNotification('API key generated!', 'success')
 }
 
 //Gets the user store

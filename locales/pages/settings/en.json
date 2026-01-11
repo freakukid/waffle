@@ -10,7 +10,10 @@
     "Receipt": "Receipt",
     "Receipt Printer": "Receipt Printer",
     "Invoice": "Invoice",
-    "Language": "Language"
+    "Language": "Language",
+    "API": "API",
+    "API Key": "API Key",
+    "Regenerate API Key": "Regenerate API Key"
   },
   "label": {
     "Update": "Update",
@@ -46,7 +49,9 @@
     "Select": "Select",
     "Left": "Left",
     "Center": "Center",
-    "Right": "Right"
+    "Right": "Right",
+    "Generate": "Generate",
+    "Regenerate": "Regenerate"
   },
   "text": {
     "Only a manager can edit account details": "Only a manager can edit account details.",
@@ -57,6 +62,11 @@
     "Which column lists the product quantity?": "Which column lists the product quantity?",
     "Which column lists the product discount?": "Which column lists the product discount?",
     "Which column lists the product cost?": "Which column lists the product cost?",
-    "Standard messages to be included on all invoices": "Standard messages to be included on all invoices."
+    "Standard messages to be included on all invoices": "Standard messages to be included on all invoices.",
+    "Use this key to access your data from external apps": "Use this key to access your data from external apps.",
+    "No API key generated yet": "No API key generated yet.",
+    "API key copied to clipboard": "API key copied to clipboard.",
+    "API key generated successfully": "API key generated successfully.",
+    "Regenerating will invalidate your current API key": "Regenerating will invalidate your current API key. Any apps using the old key will stop working."
   }
 }

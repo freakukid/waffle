@@ -44,6 +44,7 @@ model Settings {
   user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
   ip              String      @default("")
   language        String      @default("en")
+  api_key         String?     @unique
 }
 
 // A Store has one Boss (one to one)

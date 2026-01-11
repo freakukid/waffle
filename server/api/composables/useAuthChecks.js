@@ -1,5 +1,10 @@
 export default () => {
   async function getAuthUser(event) {
+    // Check for API key auth first (set by middleware)
+    if (event.context.user) {
+      return event.context.user
+    }
+    // Fall back to session auth
     const session = await getUserSession(event)
     return session.user
   }
@@ -58,7 +63,8 @@ export default () => {
         settings: {
           select: {
             ip: true,
-            language: true
+            language: true,
+            api_key: true
           }
         }
       }
@@ -71,7 +77,8 @@ export default () => {
       username: user.username,
       email: user.email,
       ip: user.settings.ip,
-      language: user.settings.language
+      language: user.settings.language,
+      api_key: user.settings.api_key
     }
 
     if(user.boss) {

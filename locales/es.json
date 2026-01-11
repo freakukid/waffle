@@ -125,7 +125,9 @@
       "Settings Updated!": "¡Configuración Actualizada!",
       "Permissions Updated!": "¡Permisos Actualizados!",
       "Email Sent!": "¡Correo enviado!",
-      "Receipt Printed!": "¡Recibo Impreso!"
+      "Receipt Printed!": "¡Recibo Impreso!",
+      "API key generated!": "¡Clave API generada!",
+      "API key copied!": "¡Clave API copiada!"
     },
     "invalid": {
       "Required parameters are missing": "Faltan los parámetros obligatorios.",

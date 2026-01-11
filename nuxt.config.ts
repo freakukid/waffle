@@ -3,6 +3,16 @@ export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
   compatibilityDate: '2024-10-11',
+  routeRules: {
+    '/api/**': {
+      cors: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, X-API-Key',
+      }
+    }
+  },
   css: [
     '@/assets/general.scss',
     '@/assets/tailwind.scss'

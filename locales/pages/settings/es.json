@@ -10,7 +10,10 @@
     "Receipt": "Recibo",
     "Receipt Printer": "Impresora de Recibos",
     "Invoice": "Factura",
-    "Language": "Idioma"
+    "Language": "Idioma",
+    "API": "API",
+    "API Key": "Clave API",
+    "Regenerate API Key": "Regenerar Clave API"
   },
   "label": {
     "Update": "Actualizar",
@@ -46,7 +49,9 @@
     "Select": "Seleccionar",
     "Left": "Izquierda",
     "Center": "Centro",
-    "Right": "Derecha"
+    "Right": "Derecha",
+    "Generate": "Generar",
+    "Regenerate": "Regenerar"
   },
   "text": {
     "Only a manager can edit account details": "Sólo un administrador puede editar los detalles de la cuenta.",
@@ -57,6 +62,11 @@
     "Which column lists the product quantity?": "¿En qué columna se muestra la cantidad del producto?",
     "Which column lists the product discount?": "¿En qué columna se muestra el descuento del producto?",
     "Which column lists the product cost?": "¿En qué columna se muestra el costo del producto?",
-    "Standard messages to be included on all invoices": "Mensajes estándar que deben incluirse en todas las facturas."
+    "Standard messages to be included on all invoices": "Mensajes estándar que deben incluirse en todas las facturas.",
+    "Use this key to access your data from external apps": "Usa esta clave para acceder a tus datos desde aplicaciones externas.",
+    "No API key generated yet": "Aún no se ha generado una clave API.",
+    "API key copied to clipboard": "Clave API copiada al portapapeles.",
+    "API key generated successfully": "Clave API generada exitosamente.",
+    "Regenerating will invalidate your current API key": "Regenerar invalidará tu clave API actual. Las aplicaciones que usen la clave anterior dejarán de funcionar."
   }
 }

@@ -125,7 +125,9 @@
       "Settings Updated!": "Settings Updated!",
       "Permissions Updated!": "Permissions Updated!",
       "Email Sent!": "Email Sent!",
-      "Receipt Printed!": "Receipt Printed!"
+      "Receipt Printed!": "Receipt Printed!",
+      "API key generated!": "API key generated!",
+      "API key copied!": "API key copied!"
     },
     "invalid": {
       "Required parameters are missing": "Required parameters are missing.",
