@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <SideBar v-if="loggedIn" />
+    <SideBar v-if="loggedIn && !isDocsPage" />
     <div class="w-full">
       <NuxtPage />
     </div>
@@ -8,7 +8,9 @@
 </template>
 
 <script setup>
+const route = useRoute()
 const { loggedIn } = useUserSession()
+const isDocsPage = computed(() => route.path.startsWith('/docs'))
 const offlineStore = useOfflineStore()
 const storeId = computed(() => pinia.store)
 

@@ -19,7 +19,8 @@ export default defineEventHandler(async (event) => {
       settings: {
         select: {
           ip: true,
-          language: true
+          language: true,
+          api_key: true
         }
       }
     }
@@ -40,7 +41,8 @@ export default defineEventHandler(async (event) => {
     username: user.username,
     email: user.email,
     ip: user.settings.ip,
-    language: user.settings.language
+    language: user.settings.language,
+    api_key: user.settings.api_key
   }
 
   if(user.boss) {
