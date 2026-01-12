@@ -51,7 +51,8 @@
     "Center": "Center",
     "Right": "Right",
     "Generate": "Generate",
-    "Regenerate": "Regenerate"
+    "Regenerate": "Regenerate",
+    "Go to Docs": "Go to Docs"
   },
   "text": {
     "Only a manager can edit account details": "Only a manager can edit account details.",

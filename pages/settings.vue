@@ -132,6 +132,7 @@
         <div class="pt-8 pb-4">
           <h1 class="text-xl text-white">{{$t('title.API')}}</h1>
           <p class="text-sm mb-2 opacity-85">{{$t('text.Use this key to access your data from external apps')}}</p>
+          <NuxtLink to="/docs" class="text-sm text-blue-400 hover:text-blue-300 underline">{{$t('label.Go to Docs')}}</NuxtLink>
 
           <div class="px-6 py-4">
             <div>

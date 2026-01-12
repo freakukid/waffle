@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const { getAuthUser } = useAuthChecks()
   //Setup data
   const authUser = await getAuthUser(event)
-  const boss_id = authUser?.boss.id
+  const boss_id = authUser?.boss?.id
 
   //Check if we have required fields
   if (!boss_id)

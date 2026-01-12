@@ -51,7 +51,8 @@
     "Center": "Centro",
     "Right": "Derecha",
     "Generate": "Generar",
-    "Regenerate": "Regenerar"
+    "Regenerate": "Regenerar",
+    "Go to Docs": "Ir a la Documentación"
   },
   "text": {
     "Only a manager can edit account details": "Sólo un administrador puede editar los detalles de la cuenta.",
